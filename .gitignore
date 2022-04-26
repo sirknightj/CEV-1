@@ -1,0 +1,15 @@
+tests/unit/report/
+tests/unit/.temp/
+tests/unit/bin/
+export
+tests/unit/src/TestSuite.hx
+bin
+dump
+.vscode
+*.diff
+*.hxproj
+.unittest
+
+.DS_Store
+Thumbs.db
+Desktop.ini
