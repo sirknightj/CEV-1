@@ -30,9 +30,9 @@ class Upgrade {
 	public var description(default, null):String;
 	public var effects(default, null):String;
 	public var unlocks(default, null):String; // building that this unlocks
-	public var electricity_cost(default, null):Int;
-	public var metal_cost(default, null):Int;
-	public var science_cost(default, null):Int;
+	public var electricityCost(default, null):Int;
+	public var metalCost(default, null):Int;
+	public var scienceCost(default, null):Int;
 	public var unlocked(default, null):Bool; // true iff upgrade bought
 	public var available(default, null):Bool; // true iff all prereqs bought (available items are a subset of unlocked items)
 	public var x(default, null):Int; // x position of node in tree layout
@@ -47,9 +47,9 @@ class Upgrade {
 		this.description = u.description;
 		this.effects = u.effects;
 		this.unlocks = u.unlocks;
-		this.electricity_cost = u.electricity_cost;
-		this.metal_cost = u.metal_cost;
-		this.science_cost = u.science_cost;
+		this.electricityCost = u.electricity_cost;
+		this.metalCost = u.metal_cost;
+		this.scienceCost = u.science_cost;
 		this.unlocked = u.starting;
 		this.available = false; // correctly set by recalculateAvailable later
 		this.x = u.x;
@@ -84,13 +84,14 @@ class Tree {
 	var upgrades = new Map<String, Upgrade>(); // name of Upgrade -> Upgrade
 
 	public function new() {
-		var upgradeData:Array<UpgradeJson> = haxe.Json.parse(Assets.getText(AssetPaths.tree__json));
-		for (v in upgradeData) {
+		var data:Array<UpgradeJson> = haxe.Json.parse(Assets.getText(AssetPaths.tree__json));
+		for (v in data) {
 			upgrades.set(v.name, new Upgrade(v, this));
 		}
 		recalculateAvailable();
 	}
 
+	/** Returns all upgrades. **/
 	public function getAll():Array<Upgrade> {
 		return [for (v in upgrades.iterator()) v];
 	}
