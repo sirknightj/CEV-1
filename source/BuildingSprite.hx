@@ -22,7 +22,8 @@ class BuildingSprite extends FlxSprite {
 		setPosition(x * grid.cellSize, y * grid.cellSize);
 	}
 
-	function isMouseOverlapping():Bool {
+	/** Returns true iff the mouse is currently hovering over this building sprite. **/
+	private function isMouseOverlapping():Bool {
 		if (!FlxG.mouse.overlaps(this)) {
 			return false;
 		}
@@ -40,7 +41,7 @@ class BuildingSprite extends FlxSprite {
 	}
 
 	override function update(elapsed:Float) {
-		hovering = FlxG.mouse.overlaps(this) && isMouseOverlapping();
+		hovering = isMouseOverlapping();
 		if (hovering && FlxG.mouse.justPressed) {
 			trace('Just clicked on ${this.building.type.name} (${building.x},${building.y})');
 		}

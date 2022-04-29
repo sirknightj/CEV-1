@@ -14,6 +14,7 @@ typedef IntPoint = {
 
 class Building {
 	public var type(default, null):BuildingType;
+	// top left coordinate
 	public var x(default, null):Int;
 	public var y(default, null):Int;
 	public var rotation(default, null):Rotation;

@@ -11,7 +11,7 @@ import openfl.geom.Point;
 class Grid extends FlxSprite {
 	public var size(default, null):Int;
 
-	var buildings:Array<Building> = [];
+	public var buildings:Array<Building> = [];
 	private var totalSize:Int;
 	private var buildingSprites:FlxTypedSpriteGroup<BuildingSprite>;
 
@@ -29,12 +29,15 @@ class Grid extends FlxSprite {
 			thickness: thickness
 		};
 
+		// make sprite background
 		makeGraphic(size * cellSize + thickness, size * cellSize + thickness, FlxColor.TRANSPARENT, true);
 
+		// draw vertical grid lines
 		for (x in 0...size + 1) {
 			var xs = x * cellSize + thickness / 2;
 			FlxSpriteUtil.drawLine(this, xs, 0, xs, height, lineOptions);
 		}
+		// draw horizontal grid lines
 		for (y in 0...size + 1) {
 			var ys = y * cellSize + thickness / 2;
 			FlxSpriteUtil.drawLine(this, 0, ys, width, ys, lineOptions);
@@ -45,7 +48,7 @@ class Grid extends FlxSprite {
 
 	/** Returns true iff building type can be placed with the given rotation at the location. **/
 	public function isPlacementAllowed(type:BuildingType, x:Int, y:Int, rotation:Rotation):Bool {
-		if (rotation != NONE) {
+		if (rotation != Rotation.NONE) {
 			// TODO
 			throw 'Rotations are not yet implemented';
 		}
@@ -87,13 +90,15 @@ class Grid extends FlxSprite {
 	}
 
 	/** Places and returns the building at the given location. Throws error if illegal to place building. **/
-	public function place(type:BuildingType, x:Int, y:Int, rotation:Rotation = NONE):Building {
+	public function place(type:BuildingType, x:Int, y:Int, rotation:Rotation = Rotation.NONE):Building {
 		if (!isPlacementAllowed(type, x, y, rotation)) {
 			throw 'Placement of building type ${type} at ($x, $y, $rotation) not allowed';
 		}
 		var building = new Building(type, x, y, rotation);
 		buildings.push(building);
 		buildingSprites.add(new BuildingSprite(building, this));
+		// TODO: for all buildings: if solar panel: recalculateEffects()
+
 		return building;
 	}
 

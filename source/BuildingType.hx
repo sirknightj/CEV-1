@@ -60,6 +60,7 @@ class BuildingType {
 		} else if (upgrade.name == "Automated mines" && ["Mine", "Automated mine"].contains(name)) {
 			this.metalEffect *= 2;
 		}
+		// TODO: put all the upgrade effects into this function
 	}
 }
 
@@ -80,6 +81,12 @@ typedef BuildingTypeJson = {
 	var metal_effect:Int;
 	var science_effect:Int;
 }
+
+// three building classes:
+// - BuildingType (basically like a class)
+// - Building (contains reference to BuildingType)
+// - BuildingSprite (contains reference to Building)
+// TODO: combine BuildingSprite into Building
 
 /** Singleton **/
 class BuildingTypeFactory {

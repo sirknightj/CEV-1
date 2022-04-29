@@ -35,6 +35,7 @@ class Upgrade {
 	public var scienceCost(default, null):Int;
 	public var unlocked(default, null):Bool; // true iff upgrade bought
 	public var available(default, null):Bool; // true iff all prereqs bought (available items are a subset of unlocked items)
+	// TODO:
 	public var x(default, null):Int; // x position of node in tree layout
 	public var y(default, null):Int; // y position of node in tree layout
 
