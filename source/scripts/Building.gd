@@ -11,8 +11,8 @@ var water_effects = 69
 var size
 
 # Coordinates of the top-left corner of this building
-var posx
-var posy
+var posx : int
+var posy : int
 
 var color : Color
 
@@ -35,13 +35,10 @@ func _ready():
 	_gridy : the y of the (x, y) representing the top-left corner of this building
 """
 func init_shape(_matrix : Array = [], _color : Color = Color(0, 0, 0), _size : int = 10, _gridx : int = 0, _gridy : int = 0) -> void:
-	print('Init was called')
 	matrix = _matrix
 	color = _color
 	size = _size
-	if matrix.size() == 0:
-		print('Matrix was uninitialized!')
-		return
+	assert(matrix.size() > 0)
 
 	var x : int = 0
 	for _x in _matrix:
@@ -110,7 +107,7 @@ func resize_building(box_size : int) -> void:
 	Moves this building to a different (x, y). The (x, y) represent the
 	new top-left position of this building on the grid.
 """
-func move_building(x : int, y : int):
+func move_building(x : int, y : int) -> void:
 	posx = x
 	posy = y
 	set_position(getGridSquareVector(posx, posy))

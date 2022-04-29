@@ -21,18 +21,26 @@ var height : int  # the height per square
 var grid_size : int   # the number of squares the width of this grid is
 var buildings : Array # the buildings that we own on this grid
 
+var SideBar
 onready var Building = preload("res://Building.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	turn = 0
 	recalculate_grid_dims(15)
+	SideBar = get_node("Sidebar")
 	print('Got here!')
+
+"""
+	Handles the logic for the next turn
+"""
+func on_next_turn():
+	print("MainGameScene.on_next_turn was called!")
 
 """
 	Place the building at the grid square (_x, _y).
 """
-func place_building(_x: int, _y: int):
+func place_building(_x: int, _y: int) -> void:
 	# TODO: load the buildings dynamically
 	var building = Building.instance()
 	# This is the farm shape
@@ -47,7 +55,7 @@ func place_building(_x: int, _y: int):
 """
 	Updates self.width and self.height given a new grid_size
 """
-func recalculate_grid_dims(_grid_size : int):
+func recalculate_grid_dims(_grid_size : int) -> void:
 	grid_size = _grid_size
 	width = $Grid.get_transform()[0][0] / grid_size
 	height = $Grid.get_transform()[1][1] / grid_size
@@ -57,7 +65,7 @@ func recalculate_grid_dims(_grid_size : int):
 """
 	Returns a Vector2 representing the position of the grid square (_x, _y)
 """
-func getGridSquareVector(_x : int, _y : int):
+func getGridSquareVector(_x : int, _y : int) -> Vector2:
 	assert(0 <= _x and _x < grid_size and 0 <= _y and _y < grid_size)
 	# TODO: check that the grid square is available
 	return Vector2(width * _x, height * _y)
@@ -65,7 +73,7 @@ func getGridSquareVector(_x : int, _y : int):
 """
 	# Calculate the total income we have
 """
-func recalculate_incomes():
+func recalculate_incomes() -> void:
 	for building in buildings:
 		print(str(building.water_effects))
 
@@ -73,7 +81,7 @@ func recalculate_incomes():
 	Returns the grid square the mouse is in
 	Note: May return an invalid grid square when the mouse is not in the grid
 """
-func getMouseSquare():
+func getMouseSquare() -> Array:
 	return [round(get_global_mouse_position()[0] / width), round(get_global_mouse_position()[1] / height)]
 
 # called whenever the timer goes off
