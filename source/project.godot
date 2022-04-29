@@ -1,0 +1,45 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Node2D",
+"class": "Building",
+"language": "GDScript",
+"path": "res://scripts/Building.gd"
+}, {
+"base": "Building",
+"class": "Farm",
+"language": "GDScript",
+"path": "res://scripts/Farm.gd"
+} ]
+_global_script_class_icons={
+"Building": "",
+"Farm": ""
+}
+
+[application]
+
+config/name="CEV-1"
+run/main_scene="res://MainGameScene.tscn"
+config/icon="res://icon.png"
+
+[display]
+
+window/size/width=1280
+window/size/height=720
+window/size/resizable=false
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"

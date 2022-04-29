@@ -2,20 +2,15 @@
 
 ## Prerequisites
 
-Follow instructions to install Haxe and HaxeFixel following the instructions on the [website](https://haxeflixel.com/documentation/getting-started/).
+Install GODOT from the [website](https://godotengine.org/download).
 
-Be sure to install the `lime` command.
+Unzip the file and run the executable.
 
 ## Development
 
-Please format your code before committing!
-
-```sh
-haxelib run formatter -s source
-```
+Empty section.
 
 ## Playing the game
 
-* Run the file `run.cmd`.
-* This will open a command prompt window and host the game on [http://127.0.0.1:3000/](http://127.0.0.1:3000/). A browser window will automatically open.
-* When done, use `Ctrl+C` or simply close the command prompt window.
+* Click the `Play` button in the GODOT editor.
+* A game window will pop up.
