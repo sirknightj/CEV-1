@@ -13,15 +13,9 @@ _global_script_classes=[ {
 "class": "Building",
 "language": "GDScript",
 "path": "res://scripts/Building.gd"
-}, {
-"base": "Building",
-"class": "Farm",
-"language": "GDScript",
-"path": "res://scripts/Farm.gd"
 } ]
 _global_script_class_icons={
-"Building": "",
-"Farm": ""
+"Building": ""
 }
 
 [application]

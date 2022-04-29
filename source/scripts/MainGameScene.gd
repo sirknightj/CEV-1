@@ -36,11 +36,11 @@ func place_building(_x: int, _y: int):
 	# TODO: load the buildings dynamically
 	var building = Building.instance()
 	# This is the farm shape
-	building.init_shape([true,  true,  true,  true,  false, false, false, false, false, false,
-						 true,  true,  true,  false, false, false, false, false, false, false,
-						 false, false, false, false, false, false, false, false, false, false], Color(0, 0, 0))
+	building.init_shape([[true,  true,  true,  true],
+						 [true,  true,  true,  false]], Color(0, 0, 0), width, 0, 0)
+	# building.move_building(0, 6)
+	# building.rotate_building(90)
 	get_parent().add_child(building)
-	building.set_position(getGridSquareVector(10, 5))
 	buildings.push_back(building)
 	# $Grid.visible = false
 
@@ -71,11 +71,13 @@ func recalculate_incomes():
 
 """
 	Returns the grid square the mouse is in
+	Note: May return an invalid grid square when the mouse is not in the grid
 """
 func getMouseSquare():
 	return [round(get_global_mouse_position()[0] / width), round(get_global_mouse_position()[1] / height)]
 
 # called whenever the timer goes off
 func _on_Timer_timeout():
-	print('Timer Called!')
-	print(getMouseSquare())
+	#print('Timer Called!')
+	#print(getMouseSquare())
+	pass
