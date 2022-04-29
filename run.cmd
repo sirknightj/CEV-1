@@ -1,1 +1,1 @@
-lime test html5
+lime test html5 -debug

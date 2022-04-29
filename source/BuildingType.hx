@@ -4,6 +4,7 @@ import Tree.Upgrade;
 import openfl.Assets;
 
 class BuildingType {
+	public var id(default, null):String;
 	public var name(default, null):String;
 	public var unlocked(default, null):Bool;
 	public var shape(default, null):Array<Array<Bool>>;
@@ -25,6 +26,7 @@ class BuildingType {
 	public var scienceEffect(default, null):Int;
 
 	public function new(b:BuildingTypeJson) {
+		this.id = b.id;
 		this.name = b.name;
 		this.unlocked = false;
 		this.shape = b.shape;
@@ -79,36 +81,61 @@ typedef BuildingTypeJson = {
 	var science_effect:Int;
 }
 
+/** Singleton **/
 class BuildingTypeFactory {
+	private static var instance:BuildingTypeFactory;
+
 	var buildingTypes = new Map<String, BuildingType>(); // name of BuildingType -> BuildingType
 
-	public function new() {
+	private function new() {
 		var data:Array<BuildingTypeJson> = haxe.Json.parse(Assets.getText(AssetPaths.buildings__json));
 		for (v in data) {
-			buildingTypes.set(v.name, new BuildingType(v));
-			trace(buildingTypes[v.name]);
+			buildingTypes.set(v.id, new BuildingType(v));
+		}
+	}
+
+	/**
+		Ensures that the singleton is initialized. The reason this has to be a separate method is that the Assets library might not be available when the class is first run. Make sure to call this function in the beginning of every function.
+	**/
+	private static function make() {
+		if (instance == null) {
+			instance = new BuildingTypeFactory();
 		}
 	}
 
 	/** Returns all building types. **/
-	public function getAll():Array<BuildingType> {
-		return [for (v in buildingTypes.iterator()) v];
+	public static function getAll():Array<BuildingType> {
+		make();
+		return [for (v in instance.buildingTypes.iterator()) v];
 	}
 
 	/** Returns all unlocked building types. **/
-	public function getUnlocked():Array<BuildingType> {
-		return [for (v in buildingTypes.iterator()) if (v.unlocked) v];
+	public static function getUnlocked():Array<BuildingType> {
+		make();
+		return [for (v in instance.buildingTypes.iterator()) if (v.unlocked) v];
 	}
 
-	public function get(name:String) {
-		if (!buildingTypes.exists(name)) {
-			throw 'No building type exists with name "$name"';
+	public static function getByName(name:String):BuildingType {
+		make();
+		for (b in instance.buildingTypes.iterator()) {
+			if (b.name == name) {
+				return b;
+			}
 		}
-		return buildingTypes.get(name);
+		throw 'No building type exists with name "$name"';
 	}
 
-	public function onNewUpgrade(upgrade:Upgrade) {
-		for (b in buildingTypes) {
+	public static function getById(id:String):BuildingType {
+		make();
+		if (!instance.buildingTypes.exists(id)) {
+			throw 'No building type exists with id "$id"';
+		}
+		return instance.buildingTypes.get(id);
+	}
+
+	public static function onNewUpgrade(upgrade:Upgrade) {
+		make();
+		for (b in instance.buildingTypes) {
 			b.onNewUpgrade(upgrade);
 		}
 	}

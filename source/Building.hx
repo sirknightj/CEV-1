@@ -18,7 +18,7 @@ class Building {
 	public var y(default, null):Int;
 	public var rotation(default, null):Rotation;
 
-	public var points(default, null):Array<IntPoint>;
+	public var points(default, null):Array<IntPoint> = [];
 
 	public function new(type:BuildingType, x:Int, y:Int, rotation:Rotation) {
 		this.type = type;
