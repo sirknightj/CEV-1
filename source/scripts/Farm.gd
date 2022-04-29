@@ -6,4 +6,5 @@ func _ready():
 	matrix = [true,  true,  true,  true,  false, false, false, false, false, false,
 			  true,  true,  true,  false, false, false, false, false, false, false,
 			  false, false, false, false, false, false, false, false, false, false]
-	init_shape()
+	print(matrix)
+	# init_shape()
