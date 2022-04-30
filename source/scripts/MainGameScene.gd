@@ -29,6 +29,10 @@ var science : int          # the amount of science we have on turn
 var science_income : int   # the amount of science we gain on the next turn
 var science_expense : int  # the amount of science we will expend on the next turn, nonnegative
 
+var people : int             # The number of people we have in our colony
+var people_fraction : float  # The "real" number of people we have = people + people_fraction. 0 <= people_fraction < 1
+var people_income : int      # the number of people we gain on the next turn
+
 # Grid Variables
 # A mutable grid_size x grid_size grid that buildings can be placed in.
 # We can represent a grid square as (m, n), where (0, 0) is the top-left square,
@@ -53,6 +57,16 @@ func _ready():
 	SideBar = get_node("Sidebar")
 	Grid = get_node("Grid")
 	load_buildings_json()
+	
+	# Set initial resources
+	food = 100
+	oxygen = 100
+	water = 55
+	metal = 60
+	electricity = 50
+	science = 0
+	people = 25
+	
 	print('Got here!')
 
 """
@@ -75,6 +89,19 @@ func load_buildings_json() -> void:
 """
 func on_next_turn():
 	print("MainGameScene.on_next_turn was called!")
+	turn += 1
+	
+	water += (water_income - water_expense)
+	food += (food_income - food_expense)
+	oxygen += (oxygen_income - oxygen_expense)
+	metal += (metal_income - metal_expense)
+	electricity += (electricity_income - electricity_expense)
+	science += (science_income - science_expense)
+	
+	people += people_income
+	print("Population: " + str(people + people_fraction))
+	calculate_people_next_turn()
+	recalculate_incomes()
 
 """
 	Place the building at the grid square (_x, _y).
@@ -84,6 +111,8 @@ func place_building(_x: int, _y: int) -> void:
 	var building = Building.instance()
 	
 	# Testing out a farm
+	# TODO: subtract / check if we can actually purchase
+	# TODO: check for collisions
 	var building_stats = buildings_dict["Farm"]
 	var shape = building_stats.shape
 	building.init_shape(shape, Color(0, 0, 0), width, 0, 0)
@@ -113,21 +142,102 @@ func getGridSquareVector(_x : int, _y : int) -> Vector2:
 	return Vector2(width * _x, height * _y)
 
 """
+	Calculates the number of people we will gain on the next turn
+"""
+func calculate_people_next_turn() -> int:
+	var result : float = people + people_fraction
+	if turn < 2:
+		result *= 0.05
+	elif turn < 4:
+		result *= 0.08
+	elif turn < 5:
+		result *= 0.25
+	elif turn < 10:
+		result *= 0.08
+	elif turn < 11:
+		result *= 0.15
+	elif turn < 15:
+		result *= 0.03
+	elif turn < 20:
+		result *= 0.01
+	elif turn < 21:
+		result *= 0.07
+	elif turn < 35:
+		result *= 0.01
+	elif turn < 36:
+		result *= 0.095
+	else:
+		result *= 0.025
+	
+	people_income = floor(result)
+	people_fraction = result - people_income
+	return people_income
+
+"""
 	# Calculate the total income we have
 """
 func recalculate_incomes() -> void:
 	var new_water_expense : int = 0
 	var new_water_income : int = 0
+	var new_food_expense : int = 0
+	var new_food_income : int = 0
+	var new_oxygen_expense : int = 0
+	var new_oxygen_income : int = 0
+	var new_metal_expense : int = 0
+	var new_metal_income : int = 0
+	var new_electricity_expense : int = 0
+	var new_electricity_income : int = 0
+	var new_science_expense : int = 0
+	var new_science_income : int = 0
 
 	for building in buildings:
-		print(building["water_effect"])
 		if building["water_effect"] < 0:
 			new_water_expense -= building["water_effect"]
 		else:
 			new_water_income += building["water_effect"]
+		if building["food_effect"] < 0:
+			new_food_expense -= building["food_effect"]
+		else:
+			new_food_income += building["food_effect"]
+		if building["oxygen_effect"] < 0:
+			new_oxygen_expense -= building["oxygen_effect"]
+		else:
+			new_oxygen_income += building["oxygen_effect"]
+		if building["metal_effect"] < 0:
+			new_metal_expense -= building["metal_effect"]
+		else:
+			new_metal_income += building["metal_effect"]
+		if building["electricity_effect"] < 0:
+			new_electricity_expense -= building["electricity_effect"]
+		else:
+			new_electricity_income += building["electricity_effect"]
+		if building["science_effect"] < 0:
+			new_science_expense -= building["science_effect"]
+		else:
+			new_science_income += building["science_effect"]
+	
+	new_food_expense += 2 * people
+	new_water_expense += people
+	new_oxygen_expense += people
 
 	water_expense = new_water_expense
 	water_income = new_water_income
+	
+	food_expense = new_food_expense
+	food_income = new_food_income
+
+	oxygen_expense = new_oxygen_expense
+	oxygen_income = new_oxygen_income
+
+	metal_expense = new_metal_expense
+	metal_income = new_metal_income
+
+	electricity_expense = new_electricity_expense
+	electricity_income = new_electricity_income
+
+	science_expense = new_science_expense
+	science_income = new_science_income
+	
 	SideBar.update_displays()
 
 """

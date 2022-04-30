@@ -40,7 +40,6 @@ func _ready():
 
 func _on_NextTurnButton_pressed() -> void:
 	print('Next Turn Button Pressed!')
-	Game.turn += 1
 	print(Game.turn)
 	# get_node("NextMonthButton").set_position(Vector2(260, 20))
 	update_turn_display()
@@ -78,6 +77,9 @@ func update_displays() -> void:
 	if show_water:
 		label_text += "Science:\n"
 		count_text += str(Game.science) + " (+" + str(Game.science_income) + ", -" + str(Game.science_expense) + ")\n"
+	
+	label_text += "Population:\n"
+	count_text += str(Game.people) + " (+" + str(Game.people_income) + ")\n"
 	
 	label_text.strip_edges()
 	count_text.strip_edges()
