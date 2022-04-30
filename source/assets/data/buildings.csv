@@ -1,4 +1,4 @@
-Name,ID,Shape,Food Cost,Water Cost,Oxygen Cost,Electricity Cost,Metal Cost,Science Cost,Food Effect,Water Effect,Oxygen Effect,Electricity Effect,Metal Effect,Science Effect
+Name,BuildingID,Shape,Food Cost,Water Cost,Oxygen Cost,Electricity Cost,Metal Cost,Science Cost,Food Effect,Water Effect,Oxygen Effect,Electricity Effect,Metal Effect,Science Effect
 City center,center," #
 ###
 ###",,,,,,,,,,,,+1

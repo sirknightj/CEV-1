@@ -1,7 +1,6 @@
 extends Node2D
 
-
-var turn # the current turn
+var turn       # the current turn
 var population # the current population
 var _turn_count_text # the text holder object that displays "Turn: 69"
 
@@ -21,15 +20,33 @@ var height : int  # the height per square
 var grid_size : int   # the number of squares the width of this grid is
 var buildings : Array # the buildings that we own on this grid
 
-var SideBar
+var SideBar # the sidebar object
 onready var Building = preload("res://Building.tscn")
+var buildings_json = "res://assets/data/buildings.json" # file path of buildings.json
+var buildings_dict : Dictionary = {} # building_name -> building
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	turn = 0
 	recalculate_grid_dims(15)
 	SideBar = get_node("Sidebar")
+	load_buildings_json()
 	print('Got here!')
+
+"""
+	Reads the building data from assets/data/buildings.json and loads it into
+	the buildings_dict, which maps building_name -> building
+"""
+func load_buildings_json() -> void:
+	var file = File.new()
+	assert (file.file_exists(buildings_json))
+	file.open(buildings_json, File.READ)
+	var data = parse_json(file.get_as_text())
+	for building in data:
+		assert (not building.name == null)
+		buildings_dict[building.name] = building
+	print("Loaded the buildings: " + str(buildings_dict.keys()))
+	file.close()
 
 """
 	Handles the logic for the next turn
