@@ -44,18 +44,17 @@ var grid_size : int   # the number of squares the width of this grid is
 var buildings : Array # the buildings that we own on this grid
 
 var SideBar : Control # the sidebar object
-var Grid : Sprite # the grid object
 
-onready var Building = preload("res://Building.tscn")
+onready var Building = preload("res://scenes/Building.tscn")
 var buildings_json = "res://assets/data/buildings.json" # file path of buildings.json
 var buildings_dict : Dictionary = {} # building_name -> building
+
+var GRID_SIZE : float = 32
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	turn = 0
-	recalculate_grid_dims(15)
 	SideBar = get_node("Sidebar")
-	Grid = get_node("Grid")
 	load_buildings_json()
 	
 	# Set initial resources
@@ -66,8 +65,6 @@ func _ready():
 	electricity = 50
 	science = 0
 	people = 25
-	
-	print('Got here!')
 
 """
 	Reads the building data from assets/data/buildings.json and loads it into
@@ -108,38 +105,18 @@ func on_next_turn():
 """
 func place_building(_x: int, _y: int) -> void:
 	# TODO: load the buildings dynamically
-	var building = Building.instance()
 	
 	# Testing out a farm
 	# TODO: subtract / check if we can actually purchase
 	# TODO: check for collisions
-	var building_stats = buildings_dict["Farm"]
+	var key = buildings_dict.keys()[randi() % buildings_dict.size()]
+	var building_stats = buildings_dict[key]
 	var shape = building_stats.shape
-	building.init_shape(shape, Color(0, 0, 0), width, 0, 0)
-	# building.move_building(0, 6)
-	# building.rotate_building(90)
-	get_parent().add_child(building)
-	buildings.push_back(building_stats)
-	recalculate_incomes()
-	# $Grid.visible = false
-
-"""
-	Updates self.width and self.height given a new grid_size
-"""
-func recalculate_grid_dims(_grid_size : int) -> void:
-	grid_size = _grid_size
-	width = $Grid.get_transform()[0][0] / grid_size
-	height = $Grid.get_transform()[1][1] / grid_size
-	print("Each grid square is " + str(width) + "x" + str(height))
-	# TODO: update positions of the buildings that already are on the grid
-
-"""
-	Returns a Vector2 representing the position of the grid square (_x, _y)
-"""
-func getGridSquareVector(_x : int, _y : int) -> Vector2:
-	assert(0 <= _x and _x < grid_size and 0 <= _y and _y < grid_size)
-	# TODO: check that the grid square is available
-	return Vector2(width * _x, height * _y)
+	var building = Building.instance()
+	building.shape = shape
+	building.size = GRID_SIZE
+	add_child(building)
+	building.set_position(Vector2(_x, _y))
 
 """
 	Calculates the number of people we will gain on the next turn

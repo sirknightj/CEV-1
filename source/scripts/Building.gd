@@ -1,119 +1,93 @@
 extends Node2D
-class_name Building
 
-# TODO: Restructure the code to make this load from the csv file?
+enum MouseState {
+	NONE,
+	HOVER,
+	DRAGGING
+}
 
-# TODO: Add the building properties
-var electricity_cost = 5
-var water_effects = 69
+var mouse_state : int = MouseState.NONE
+var mouse_enters : int = 0
 
-# The height/width of each square of this buildnig
-var size
-
-# Coordinates of the top-left corner of this building
-var posx : int
-var posy : int
-
-var color : Color
-
-# A 2D boolean array representing a grid of the tiles this
-# building takes up. true = occupied
-var matrix : Array
+var squares : Array
+export(Array) var shape
+export(float) var size
+var square_scene = preload("res://scenes/GridSquare.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
-	
+	init_shape()
 
-"""
-	Hides/unhides the blocks that make up this building
-	_matrix : a 2d boolean array representing the tiles this building will occupy
-			  true = the space is occupied. false = space is empty.
-	_color : the color that the squares should be colored
-	_size : the height/width each square of this building should be
-	_gridx : the x of the (x, y) representing the top-left corner of this building
-	_gridy : the y of the (x, y) representing the top-left corner of this building
-"""
-func init_shape(_matrix : Array = [], _color : Color = Color(0, 0, 0), _size : int = 10, _gridx : int = 0, _gridy : int = 0) -> void:
-	matrix = _matrix
-	color = _color
-	size = _size
-	assert(matrix.size() > 0)
+func init_shape():
+	assert(shape.size() > 0)
 
 	var x : int = 0
-	for _x in _matrix:
+	for _x in shape:
 		var y : int = 0
 		for _y in _x:
 			if _y:
-				var grid_square : ColorRect = ColorRect.new()
-				grid_square.color = color
-				grid_square.set_position(Vector2(y * size, x * size)) # the position relative to the top-left corner of this building
-				grid_square.rect_size = Vector2(size, size)
-				add_child(grid_square)
-			y += 1
-		x += 1
-	posx = _gridx
-	posy = _gridy
-	set_position(getGridSquareVector(posx, posy))
-
-"""
-	Rotates this building by some degrees. The top-left corner of the building does not change.
-"""
-func rotate_building(degrees : int) -> void:
-	assert(degrees % 90 == 0)
-	# The number of clockwise rotations we need to perform
-	var rotations = degrees / 90
-	if rotations < 0:
-		rotations += 4
-	
-	for k in range(rotations):
-		# Rotate clockwise once
-		var new_matrix : Array = []
-		for i in range(len(matrix[0])):
-			var row = []
-			for j in range(len(matrix)):
-				row.append(matrix[len(matrix) - j - 1][i])
-			new_matrix.append(row)
-		matrix = new_matrix
-	
-	# Now, we delete and recreate the children
-	for child in get_children():
-		remove_child(child)
-
-	var x : int = 0
-	for _x in matrix:
-		var y : int = 0
-		for _y in _x:
-			if _y:
-				print(str(x) + " " + str(y))
-				var grid_square : ColorRect = ColorRect.new()
-				grid_square.color = color
-				grid_square.set_position(Vector2(y * size, x * size)) # the position relative to the top-left corner of this building
-				grid_square.rect_size = Vector2(size, size)
-				add_child(grid_square)
+				add_child(create_grid_square(x, y))
 			y += 1
 		x += 1
 
 """
-	Changes size of the squares this building is made of.
+	x : The x of the (x, y) representing the top-left corner of this building
+	y : The y of the (x, y) representing the top-left corner of this building
 """
-func resize_building(box_size : int) -> void:
-	for child in get_children():
-		child.set_position(child.get_position() / size * box_size)
-		child.rect_size = Vector2(box_size, box_size)
-	size = box_size
+func create_grid_square(x : int, y : int):
+	var grid_square : Area2D = square_scene.instance()
+	# the position relative to the top-left corner of this building
+	grid_square.set_position(Vector2(y * size, x * size))
+	grid_square.get_node("Shape/Sprite").scale = Vector2(size / 64, size / 64)
+	grid_square.get_node("Shape").shape.extents = Vector2(size / 2, size / 2)
+	grid_square.connect("mouse_entered", self, "_on_GridSquare_mouse_entered")
+	grid_square.connect("mouse_exited", self, "_on_GridSquare_mouse_exited")
+	return grid_square
 
-"""
-	Moves this building to a different (x, y). The (x, y) represent the
-	new top-left position of this building on the grid.
-"""
-func move_building(x : int, y : int) -> void:
-	posx = x
-	posy = y
-	set_position(getGridSquareVector(posx, posy))
+func _process(delta):
+	if (mouse_state == MouseState.HOVER):
+		set_modulate(Color.aqua)
+	elif (mouse_state == MouseState.DRAGGING):
+		set_modulate(Color.chartreuse)
+	else:
+		set_modulate(Color.white)
 
-"""
-	Returns a Vector2 representing the position of the grid square (_x, _y)
-"""
-func getGridSquareVector(_x : int, _y : int) -> Vector2:
-	return Vector2(size * _x, size * _y)
+func _unhandled_input(event):
+	if (event is InputEventMouseButton
+			&& event.button_index == BUTTON_LEFT):
+		if (event.pressed && mouse_state == MouseState.HOVER):
+			mouse_state = MouseState.DRAGGING
+		elif (!event.pressed && mouse_state == MouseState.DRAGGING):
+			mouse_state = MouseState.HOVER
+			snap()
+
+	if (event is InputEventMouseMotion
+			&& mouse_state == MouseState.DRAGGING):
+		global_position = global_position + event.relative
+
+	if (event.is_action_pressed("building_rotate")
+			&& mouse_state == MouseState.DRAGGING):
+		var relative = get_global_mouse_position() - global_position
+		var rotated = relative.rotated(PI/2)
+		var diff = relative - rotated
+		rotation += PI/2
+		global_position += diff
+
+func building_mouse_entered():
+	mouse_state = MouseState.HOVER
+
+func building_mouse_exited():
+	mouse_state = MouseState.NONE
+
+func _on_GridSquare_mouse_entered():
+	mouse_enters += 1
+	if (mouse_enters == 1):
+		building_mouse_entered()
+
+func _on_GridSquare_mouse_exited():
+	mouse_enters -= 1
+	if (mouse_enters == 0):
+		building_mouse_exited()
+
+func snap():
+	global_position = global_position.snapped(Vector2(size, size))

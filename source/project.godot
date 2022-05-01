@@ -8,20 +8,10 @@
 
 config_version=4
 
-_global_script_classes=[ {
-"base": "Node2D",
-"class": "Building",
-"language": "GDScript",
-"path": "res://scripts/Building.gd"
-} ]
-_global_script_class_icons={
-"Building": ""
-}
-
 [application]
 
 config/name="CEV-1"
-run/main_scene="res://MainGameScene.tscn"
+run/main_scene="res://scenes/MainGameScene.tscn"
 config/icon="res://icon.png"
 
 [display]
@@ -29,6 +19,14 @@ config/icon="res://icon.png"
 window/size/width=1280
 window/size/height=720
 window/size/resizable=false
+
+[input]
+
+building_rotate={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":82,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
 
 [physics]
 
