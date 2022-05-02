@@ -1,6 +1,8 @@
 extends Node2D
 class_name Game
 
+signal next_turn
+
 class BuildingStats:
 	var shape : Array
 	var name : String

@@ -32,10 +32,10 @@ text = "Month 69"
 valign = 1
 
 [node name="ResourceLabel" type="Label" parent="."]
-margin_left = 384.0
-margin_top = 448.0
-margin_right = 451.0
-margin_bottom = 547.0
+margin_left = 197.0
+margin_top = 461.0
+margin_right = 264.0
+margin_bottom = 560.0
 text = "Food:
 Water:
 Electricity:
@@ -43,10 +43,10 @@ Metal:
 Science:"
 
 [node name="ResourceCounts" type="Label" parent="."]
-margin_left = 464.0
-margin_top = 448.0
-margin_right = 516.0
-margin_bottom = 530.0
+margin_left = 277.0
+margin_top = 461.0
+margin_right = 329.0
+margin_bottom = 543.0
 text = "80 (+69)
 80 (+69)
 80 (+69)
