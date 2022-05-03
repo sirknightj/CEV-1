@@ -37,6 +37,7 @@ enum MouseState {
 	DRAGGING
 }
 
+var _last_mouse_pos : Vector2
 var _mouse_state : int = MouseState.NONE
 var _mouse_enters : int = 0
 var _overlapping_areas : int = 0
@@ -74,6 +75,7 @@ func _ready():
 	if (building_id > 0 && building_id < GameData.BuildingType.size()):
 		set_name("AUTOGEN_" + GameData.BuildingType.keys()[building_id])
 	_size = GameData.SQUARE_SIZE
+	_last_mouse_pos = get_global_mouse_position()
 	_global_pos_next = global_position
 	_global_rot_next = 0
 	_shadow = get_node("Shadow")
@@ -220,23 +222,27 @@ func _unhandled_input(event : InputEvent):
 	if (locked):
 		return
 
-	if (event is InputEventMouseButton
-			&& event.button_index == BUTTON_LEFT):
-		if (event.pressed && _mouse_state == MouseState.HOVER):
-			print(get_adjacent_buildings())
-			_mouse_state = MouseState.DRAGGING
-		elif (!event.pressed && _mouse_state == MouseState.DRAGGING):
-			_mouse_state = MouseState.HOVER
-			_global_pos_next = _shadow.global_position
-			_global_rot_next = _shadow.rotation
+	if (event.is_action_pressed("building_grab")
+			&& _mouse_state == MouseState.HOVER):
+		print("Grab ", get_name())
+		print("Adjacents: ", get_adjacent_buildings())
+		_last_mouse_pos = get_global_mouse_position()
+		_mouse_state = MouseState.DRAGGING
 
-	if (event is InputEventMouseMotion
+	if (event.is_action_released("building_grab")
 			&& _mouse_state == MouseState.DRAGGING):
-		_global_pos_next = _global_pos_next + event.relative
+		_mouse_state = MouseState.HOVER
+		_global_pos_next = _shadow.global_position
+		_global_rot_next = _shadow.rotation
 
 	if (event.is_action_pressed("building_rotate")
 			&& _mouse_state == MouseState.DRAGGING):
 		rotate_around(get_global_mouse_position(), PI/2)
+
+	if (event is InputEventMouseMotion
+			&& _mouse_state == MouseState.DRAGGING):
+		_global_pos_next += (get_global_mouse_position() - _last_mouse_pos)
+		_last_mouse_pos = get_global_mouse_position()
 
 func _on_MainSquare_mouse_entered():
 	_mouse_enters += 1
