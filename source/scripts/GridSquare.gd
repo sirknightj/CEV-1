@@ -16,3 +16,13 @@ func set_collision_box_size(size : float):
 
 func set_sprite_size(size : float):
 	sprite.scale = Vector2(size / 64, size / 64)
+
+func get_adjacent_buildings():
+	var buildings : Dictionary = {}
+	for area in get_overlapping_areas():
+		var parent = area.get_parent()
+		if (parent != get_parent()
+				&& (is_equal_approx(area.global_position.x, global_position.x)
+					|| is_equal_approx(area.global_position.y, global_position.y))):
+			buildings[area.get_parent()] = true
+	return buildings.keys()

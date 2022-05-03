@@ -59,6 +59,7 @@ export(bool) var locked = false
 export(Array) var shape
 export(Dictionary) var building_effects
 export(Dictionary) var building_cost
+export(int) var building_id = -1
 
 func init_shadow():
 	remove_child(_shadow)
@@ -70,6 +71,8 @@ func _ready():
 	assert(building_effects != null)
 	assert(building_cost != null)
 
+	if (building_id > 0 && building_id < GameData.BuildingType.size()):
+		set_name("AUTOGEN_" + GameData.BuildingType.keys()[building_id])
 	_size = GameData.SQUARE_SIZE
 	_global_pos_next = global_position
 	_global_rot_next = 0
@@ -110,6 +113,8 @@ func create_grid_square(x : int, y : int, parent : Node):
 func setup_main_square(grid_square : GridSquare):
 	grid_square.connect("mouse_entered", self, "_on_MainSquare_mouse_entered")
 	grid_square.connect("mouse_exited", self, "_on_MainSquare_mouse_exited")
+	grid_square.collision_layer = 4
+	grid_square.collision_mask = 4
 	grid_square.connect("area_entered", self, "_on_MainSquare_area_entered")
 	grid_square.connect("area_exited", self, "_on_MainSquare_area_exited")
 	grid_square.set_collision_box_size(_size)
@@ -171,6 +176,16 @@ func get_effect(resource_type : int) -> float:
 		return 0.0
 	return building_effects[resource_type]
 
+func get_adjacent_buildings() -> Array:
+	var buildings : Dictionary = {}
+	for grid_square in get_children():
+		if (!(grid_square is GridSquare)):
+			continue
+		var adjacents : Array = grid_square.get_adjacent_buildings()
+		for adjacent in adjacents:
+			buildings[adjacent] = true
+	return buildings.keys()
+
 func _update_shadow():
 	_shadow.global_position = snapped(_ghost.global_position)
 	_shadow.rotation = rotation
@@ -208,6 +223,7 @@ func _unhandled_input(event : InputEvent):
 	if (event is InputEventMouseButton
 			&& event.button_index == BUTTON_LEFT):
 		if (event.pressed && _mouse_state == MouseState.HOVER):
+			print(get_adjacent_buildings())
 			_mouse_state = MouseState.DRAGGING
 		elif (!event.pressed && _mouse_state == MouseState.DRAGGING):
 			_mouse_state = MouseState.HOVER
