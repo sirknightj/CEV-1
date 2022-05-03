@@ -104,6 +104,15 @@ func update_resources() -> void:
 		for resource in GameData.ResourceType.values():
 			resources.add_effect(resource, building.get_effect(resource))
 
+func aggregate_resources() -> Dictionary:
+	var dict : Dictionary = {}
+	for building in get_tree().get_nodes_in_group("buildings"):
+		for resource in GameData.ResourceType.values():
+			if not dict.has(resource):
+				dict[resource] = {}
+			dict[resource][building.building_id] = building.get_effect(resource)
+	return dict
+
 func _on_Building_ready():
 	update_resources()
 	sidebar.update_displays()
