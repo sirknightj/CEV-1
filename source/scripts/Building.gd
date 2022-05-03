@@ -117,8 +117,6 @@ func setup_main_square(grid_square : GridSquare):
 	grid_square.connect("mouse_exited", self, "_on_MainSquare_mouse_exited")
 	grid_square.collision_layer = 4
 	grid_square.collision_mask = 4
-	grid_square.connect("area_entered", self, "_on_MainSquare_area_entered")
-	grid_square.connect("area_exited", self, "_on_MainSquare_area_exited")
 	# Needs to be ever so slightly larger than the actual grid snap size so
 	# that adjacent buildings can be detected
 	grid_square.set_collision_box_size(_size + 1)
@@ -255,12 +253,6 @@ func _on_MainSquare_mouse_exited():
 	_mouse_enters -= 1
 	if (_mouse_enters == 0):
 		building_mouse_exited()
-
-func _on_MainSquare_area_entered(area : Area2D):
-	pass
-
-func _on_MainSquare_area_exited(area : Area2D):
-	pass
 
 func _on_GhostSquare_area_entered(area : Area2D):
 	_overlapping_areas += 1
