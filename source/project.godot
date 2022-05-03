@@ -14,14 +14,38 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/Building.gd"
 }, {
+"base": "Node2D",
+"class": "Game",
+"language": "GDScript",
+"path": "res://scripts/MainGameScene.gd"
+}, {
+"base": "Object",
+"class": "GameData",
+"language": "GDScript",
+"path": "res://scripts/GameData.gd"
+}, {
+"base": "Object",
+"class": "GameObjs",
+"language": "GDScript",
+"path": "res://scripts/GameObjs.gd"
+}, {
 "base": "Area2D",
 "class": "GridSquare",
 "language": "GDScript",
 "path": "res://scripts/GridSquare.gd"
+}, {
+"base": "Control",
+"class": "SidebarX",
+"language": "GDScript",
+"path": "res://scripts/Sidebar.gd"
 } ]
 _global_script_class_icons={
 "Building": "",
-"GridSquare": ""
+"Game": "",
+"GameData": "",
+"GameObjs": "",
+"GridSquare": "",
+"SidebarX": ""
 }
 
 [application]
