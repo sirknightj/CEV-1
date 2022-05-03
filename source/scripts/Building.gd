@@ -119,7 +119,9 @@ func setup_main_square(grid_square : GridSquare):
 	grid_square.collision_mask = 4
 	grid_square.connect("area_entered", self, "_on_MainSquare_area_entered")
 	grid_square.connect("area_exited", self, "_on_MainSquare_area_exited")
-	grid_square.set_collision_box_size(_size)
+	# Needs to be ever so slightly larger than the actual grid snap size so
+	# that adjacent buildings can be detected
+	grid_square.set_collision_box_size(_size + 1)
 	return grid_square
 
 """
