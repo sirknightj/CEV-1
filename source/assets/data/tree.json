@@ -12,8 +12,8 @@
 		"science_cost": 0,
 		"starting": false,
 		"unlocks": "Aeroponics farm",
-		"x": 0,
-		"y": 0
+		"x": 4.9,
+		"y": 7.7
 	},
 	{
 		"name": "Astrobiology",
@@ -29,8 +29,8 @@
 		"science_cost": 0,
 		"starting": false,
 		"unlocks": "",
-		"x": 0,
-		"y": 1
+		"x": 4.9,
+		"y": 4.9
 	},
 	{
 		"name": "Automated mines",
@@ -45,8 +45,8 @@
 		"science_cost": -10,
 		"starting": false,
 		"unlocks": "Automated mine",
-		"x": 0,
-		"y": 2
+		"x": 9.1,
+		"y": 4.9
 	},
 	{
 		"name": "Colonization",
@@ -59,13 +59,13 @@
 		"science_cost": 0,
 		"starting": true,
 		"unlocks": "",
-		"x": 0,
-		"y": 3
+		"x": 3.5,
+		"y": 3.5
 	},
 	{
 		"name": "Cryogenics",
 		"type": "Science",
-		"description": "Freeze drying, combined with Mars' low ambient pressure, enables long-term preservation of food. With better preserved food, colonists decrease their food waste.",
+		"description": "Freezing drying, combined with Mars' low ambient pressure, enables long-term preservation of food. With better preserved food, colonists decrease their food waste.",
 		"prereqs": [
 			"Genetic modification"
 		],
@@ -75,8 +75,8 @@
 		"science_cost": -400,
 		"starting": false,
 		"unlocks": "",
-		"x": 0,
-		"y": 4
+		"x": 7.7,
+		"y": 7.7
 	},
 	{
 		"name": "Cryonics",
@@ -92,8 +92,8 @@
 		"science_cost": -1000,
 		"starting": false,
 		"unlocks": "Cryonic chamber",
-		"x": 0,
-		"y": 0
+		"x": 9.1,
+		"y": 9.1
 	},
 	{
 		"name": "Ecopoiesis",
@@ -109,8 +109,8 @@
 		"science_cost": -50,
 		"starting": false,
 		"unlocks": "",
-		"x": 1,
-		"y": 1
+		"x": 3.5,
+		"y": 4.9
 	},
 	{
 		"name": "Electrolysis",
@@ -125,8 +125,8 @@
 		"science_cost": 0,
 		"starting": true,
 		"unlocks": "Oxygenerator",
-		"x": 1,
-		"y": 2
+		"x": 2.1,
+		"y": 2.1
 	},
 	{
 		"name": "Fabrication",
@@ -141,8 +141,8 @@
 		"science_cost": 0,
 		"starting": true,
 		"unlocks": "Mine",
-		"x": 1,
-		"y": 3
+		"x": 9.1,
+		"y": 3.5
 	},
 	{
 		"name": "Filtration",
@@ -157,8 +157,8 @@
 		"science_cost": 0,
 		"starting": false,
 		"unlocks": "Water recycler",
-		"x": 1,
-		"y": 4
+		"x": 7.7,
+		"y": 6.3
 	},
 	{
 		"name": "Genetic modification",
@@ -173,8 +173,8 @@
 		"science_cost": 0,
 		"starting": false,
 		"unlocks": "",
-		"x": 1,
-		"y": 0
+		"x": 6.3,
+		"y": 6.3
 	},
 	{
 		"name": "Higher education",
@@ -187,8 +187,8 @@
 		"science_cost": 0,
 		"starting": true,
 		"unlocks": "University",
-		"x": 2,
-		"y": 1
+		"x": 4.9,
+		"y": 2.1
 	},
 	{
 		"name": "Hydroponics",
@@ -203,8 +203,8 @@
 		"science_cost": 0,
 		"starting": false,
 		"unlocks": "Hydroponics farm",
-		"x": 2,
-		"y": 2
+		"x": 4.9,
+		"y": 6.3
 	},
 	{
 		"name": "Ice mining",
@@ -219,8 +219,8 @@
 		"science_cost": 0,
 		"starting": false,
 		"unlocks": "Ice mine",
-		"x": 2,
-		"y": 3
+		"x": 9.1,
+		"y": 6.3
 	},
 	{
 		"name": "Irrigation",
@@ -235,8 +235,8 @@
 		"science_cost": -10,
 		"starting": false,
 		"unlocks": "",
-		"x": 2,
-		"y": 4
+		"x": 7.7,
+		"y": 4.9
 	},
 	{
 		"name": "MOXIE",
@@ -252,8 +252,8 @@
 		"science_cost": 0,
 		"starting": false,
 		"unlocks": "MOXIE",
-		"x": 2,
-		"y": 0
+		"x": 2.1,
+		"y": 3.5
 	},
 	{
 		"name": "Pantropy",
@@ -268,8 +268,8 @@
 		"science_cost": -400,
 		"starting": false,
 		"unlocks": "",
-		"x": 2,
-		"y": 1
+		"x": 6.3,
+		"y": 7.7
 	},
 	{
 		"name": "Photolysis",
@@ -284,8 +284,8 @@
 		"science_cost": 0,
 		"starting": false,
 		"unlocks": "Photolytic generator",
-		"x": 3,
-		"y": 2
+		"x": 2.1,
+		"y": 4.9
 	},
 	{
 		"name": "Planetary engineering",
@@ -300,8 +300,8 @@
 		"science_cost": -500,
 		"starting": false,
 		"unlocks": "",
-		"x": 3,
-		"y": 3
+		"x": 3.5,
+		"y": 7.7
 	},
 	{
 		"name": "Power of the core",
@@ -316,8 +316,8 @@
 		"science_cost": -40,
 		"starting": false,
 		"unlocks": "Geothermal generator",
-		"x": 3,
-		"y": 4
+		"x": 0.7,
+		"y": 4.9
 	},
 	{
 		"name": "Power of the sun",
@@ -330,8 +330,8 @@
 		"science_cost": 0,
 		"starting": true,
 		"unlocks": "Solar panels",
-		"x": 3,
-		"y": 0
+		"x": 0.7,
+		"y": 0.7
 	},
 	{
 		"name": "Power of the wind",
@@ -346,8 +346,8 @@
 		"science_cost": -30,
 		"starting": false,
 		"unlocks": "Wind turbine",
-		"x": 3,
-		"y": 1
+		"x": 0.7,
+		"y": 3.5
 	},
 	{
 		"name": "Rodwell",
@@ -360,8 +360,8 @@
 		"science_cost": 0,
 		"starting": true,
 		"unlocks": "Well",
-		"x": 4,
-		"y": 2
+		"x": 9.1,
+		"y": 2.1
 	},
 	{
 		"name": "Solar wires",
@@ -376,8 +376,8 @@
 		"science_cost": -10,
 		"starting": false,
 		"unlocks": "",
-		"x": 4,
-		"y": 3
+		"x": 0.7,
+		"y": 2.1
 	},
 	{
 		"name": "Space research",
@@ -392,8 +392,8 @@
 		"science_cost": -100,
 		"starting": false,
 		"unlocks": "Observatory",
-		"x": 4,
-		"y": 4
+		"x": 4.9,
+		"y": 3.5
 	},
 	{
 		"name": "Terraforming",
@@ -409,8 +409,8 @@
 		"science_cost": -200,
 		"starting": false,
 		"unlocks": "",
-		"x": 4,
-		"y": 0
+		"x": 3.5,
+		"y": 6.3
 	},
 	{
 		"name": "Vivarium",
@@ -425,7 +425,7 @@
 		"science_cost": 0,
 		"starting": true,
 		"unlocks": "Farm",
-		"x": 4,
-		"y": 1
+		"x": 7.7,
+		"y": 3.5
 	}
 ]
