@@ -23,9 +23,6 @@ func _ready():
 		show_resources[resource] = true
 
 func _on_NextTurnButton_pressed() -> void:
-	print('Next Turn Button Pressed!')
-	print(game.turn)
-	# get_node("NextMonthButton").set_position(Vector2(260, 20))
 	update_turn_display()
 	game.on_next_turn()
 	game.place_building(0, 0)
