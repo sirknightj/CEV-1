@@ -27,6 +27,8 @@ var _initial_reserves = {
 
 # The sidebar object
 var sidebar : Control
+# The graph object
+var graph : Node2D
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 # File path of buildings.json
@@ -43,6 +45,7 @@ func _init():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	sidebar = get_node("Sidebar")
+	graph = get_node("Graph")
 	resources = GameObjs.Resources.new()
 	resources.set_reserves(_initial_reserves)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
@@ -83,6 +86,7 @@ func on_next_turn():
 	turn += 1
 	emit_signal("next_turn")
 	sidebar.update_displays()
+	graph.update_graph(aggregate_resources())
 
 """
 	Place the building at the grid square (_x, _y).
