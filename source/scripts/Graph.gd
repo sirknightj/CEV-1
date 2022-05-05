@@ -28,7 +28,15 @@ func _ready():
 	bg.rect_size = Vector2(WIDTH, HEIGHT)
 	add_child(bg)
 
+
 func update_graph(resourceDict : Dictionary) -> void:
+	for child in get_children():
+		remove_child(child)
+
+	var bg : ColorRect = ColorRect.new()
+	bg.rect_size = Vector2(WIDTH, HEIGHT)
+	add_child(bg)
+	
 	print(resourceDict)
 	print(resourceDict.keys().size())
 	var sums : Dictionary = {}
