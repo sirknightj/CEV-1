@@ -1,33 +1,25 @@
 extends Node2D
 
+const HEIGHT : float = 200.0
+const WIDTH : float = 500.0 # the width of this graph
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+const BIG_SPACING : float = 10.0  # the space between the different resource bars
+const SMALL_SPACING : float = 5.0 # the space between the income/usage bars
 
-var HEIGHT : float # the height of this graph
-var WIDTH : float # the width of this graph
+const LINE_THICKNESS : float = 2.0 # the thickness of each line
+const BOTTOM_SPACING : float = 20.0 # the spacing where the bar labels will go
+const TOP_SPACING : float = 20.0 # the spacing between the highest bar and the top of the graph
 
-var BIG_SPACING : float # the space between the different resource bars
-var SMALL_SPACING : float # the space between the income/usage bars
-
-var LINE_THICKNESS : float # the thickness of each line
-var BOTTOM_SPACING : float # the spacing where the bar labels will go
-var TOP_SPACING : float # the spacing between the highest bar and the top of the graph
+const LABEL_TEXT_COLOR : Color = Color("#000001") # the color of graph text labels
+const LINE_COLOR : Color = Color("#000000") # the color of the lines in the graph
+const INCOME_BAR_COLOR : Color = Color("#00FF00") # the color of the income bar
+const EXPENSE_BAR_COLOR : Color = Color("#FF0000") # the color of the expense bar
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	HEIGHT = 200
-	WIDTH = 500
-	BIG_SPACING = 10
-	SMALL_SPACING = 5
-	LINE_THICKNESS = 2
-	BOTTOM_SPACING = 20
-	TOP_SPACING = 20
 	var bg : ColorRect = ColorRect.new()
 	bg.rect_size = Vector2(WIDTH, HEIGHT)
 	add_child(bg)
-
 
 func update_graph(resourceDict : Dictionary) -> void:
 	for child in get_children():
@@ -70,7 +62,7 @@ func update_graph(resourceDict : Dictionary) -> void:
 		var label_text : String = str(label_range * i) 
 		var label : Label = Label.new()
 		label.text = label_text
-		label.add_color_override("font_color", Color("#000001"))
+		label.add_color_override("font_color", LABEL_TEXT_COLOR)
 		label.set_position(Vector2(0, HEIGHT - ((HEIGHT - BOTTOM_SPACING - TOP_SPACING) / NUM_LABELS) * i - label.get_line_height() - BOTTOM_SPACING))
 		add_child(label)
 		
@@ -82,7 +74,7 @@ func update_graph(resourceDict : Dictionary) -> void:
 		line.add_point(Vector2(WIDTH - SMALL_SPACING, HEIGHT - ((HEIGHT - BOTTOM_SPACING - TOP_SPACING) / NUM_LABELS) * i - label.get_line_height() / 2 - BOTTOM_SPACING))
 		offset = label.get_line_height() / 2
 		line.width = LINE_THICKNESS
-		line.default_color = Color("#000000")
+		line.default_color = LINE_COLOR
 		add_child(line)
 		
 		if label_width > largest_width:
@@ -105,40 +97,21 @@ func update_graph(resourceDict : Dictionary) -> void:
 		var income_bar : ColorRect = ColorRect.new()
 		income_bar.rect_size = Vector2(BAR_WIDTH, income_height)
 		income_bar.set_position(Vector2(BIG_SPACING * (i + 1) + (BAR_WIDTH * 2 + SMALL_SPACING) * i + largest_width, bar_range - income_height + TOP_SPACING))
-		income_bar.color = Color("#00FF00")
+		income_bar.color = INCOME_BAR_COLOR
 		add_child(income_bar)
 		
 		var spending_bar : ColorRect = ColorRect.new()
 		spending_bar.rect_size = Vector2(BAR_WIDTH, spending_height)
 		spending_bar.set_position(Vector2(BIG_SPACING * (i + 1) + (BAR_WIDTH * 2 + SMALL_SPACING) * i + BAR_WIDTH + SMALL_SPACING + largest_width, bar_range - spending_height + TOP_SPACING))
-		spending_bar.color = Color("#FF0000")
+		spending_bar.color = EXPENSE_BAR_COLOR
 		add_child(spending_bar)
 		
 		var label : Label = Label.new()
-		label.add_color_override("font_color", Color("#000001"))
+		label.add_color_override("font_color", LABEL_TEXT_COLOR)
 		
-		if i == 0:
-			label.text = "Food"
-		elif i == 1:
-			label.text = "Water"
-		elif i == 2:
-			label.text = "Oxygen"
-		elif i == 3:
-			label.text = "Metal"
-		elif i == 4:
-			label.text = "Electricity"
-		elif i == 5:
-			label.text = "Science"
-		elif i == 6:
-			label.text = "People"
-		else:
-			assert(false)
+		label.text = GameData.ResourceType.keys()[i].capitalize()
 		
 		var font = label.get_font("font")
 		var label_width : float = font.get_string_size(label.text).x
 		label.set_position(Vector2(BIG_SPACING * (i + 1) + (BAR_WIDTH * 2 + SMALL_SPACING) * i + largest_width + BAR_WIDTH + SMALL_SPACING / 2 - label_width / 2, bar_range + BOTTOM_SPACING / 2 + TOP_SPACING))
 		add_child(label)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
