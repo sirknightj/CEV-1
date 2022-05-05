@@ -78,6 +78,13 @@ func load_buildings_json() -> void:
 	file.close()
 
 """
+	Update visualizations
+"""
+func update_stats():
+	sidebar.update_displays()
+	graph.update_graph(aggregate_resources())
+
+"""
 	Handles the logic for the next turn
 """
 func on_next_turn():
@@ -85,8 +92,7 @@ func on_next_turn():
 	resources.step()
 	turn += 1
 	emit_signal("next_turn")
-	sidebar.update_displays()
-	graph.update_graph(aggregate_resources())
+	update_stats()
 
 """
 	Place the building at the grid square (_x, _y).
@@ -120,6 +126,7 @@ func aggregate_resources() -> Dictionary:
 func _on_Building_ready():
 	update_resources()
 	sidebar.update_displays()
+	update_stats()
 
 func _on_SceneTree_node_added(_node):
 	if (!(_node is Building)):
