@@ -16,7 +16,7 @@ class BuildingStats:
 # The sidebar object
 var sidebar : Control
 # The graph object
-var graph : Node2D
+var graph : Control
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 # File path of buildings.json
@@ -32,8 +32,8 @@ func _init():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	sidebar = get_node("Sidebar")
-	graph = get_node("Graph")
+	sidebar = $Sidebar
+	graph = $Sidebar/Graph
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 
 """
@@ -68,7 +68,7 @@ func load_buildings_json() -> void:
 """
 func update_stats():
 	sidebar.update_displays()
-	graph.update_graph(aggregate_resources())
+	graph.update_graph(GameStats.resources, aggregate_resources())
 
 """
 	Handles the logic for the next turn

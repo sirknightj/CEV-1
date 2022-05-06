@@ -1,117 +1,125 @@
-extends Node2D
+extends Control
 
-const HEIGHT : float = 200.0
-const WIDTH : float = 500.0 # the width of this graph
+const MAX_BAR_HEIGHT = 190
 
-const BIG_SPACING : float = 10.0  # the space between the different resource bars
-const SMALL_SPACING : float = 5.0 # the space between the income/usage bars
+const RESOURCE_TYPE_TO_STRING: Dictionary = {
+	GameData.ResourceType.WATER: "Water",
+	GameData.ResourceType.FOOD: "Food",
+	GameData.ResourceType.OXYGEN: "Oxygen",
+	GameData.ResourceType.ELECTRICITY: "Energy",
+	GameData.ResourceType.METAL: "Metal",
+}
 
-const LINE_THICKNESS : float = 2.0 # the thickness of each line
-const BOTTOM_SPACING : float = 20.0 # the spacing where the bar labels will go
-const TOP_SPACING : float = 20.0 # the spacing between the highest bar and the top of the graph
-
-const LABEL_TEXT_COLOR : Color = Color("#000001") # the color of graph text labels
-const LINE_COLOR : Color = Color("#000000") # the color of the lines in the graph
-const INCOME_BAR_COLOR : Color = Color("#00FF00") # the color of the income bar
-const EXPENSE_BAR_COLOR : Color = Color("#FF0000") # the color of the expense bar
+var resource_dict : Dictionary
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	var bg : ColorRect = ColorRect.new()
-	bg.rect_size = Vector2(WIDTH, HEIGHT)
-	add_child(bg)
+func _ready() -> void:
+	for type in RESOURCE_TYPE_TO_STRING.keys():
+		_set_color(type)
+	_on_hover_off()
 
-func update_graph(resourceDict : Dictionary) -> void:
-	for child in get_children():
-		remove_child(child)
+func _set_color(type: int) -> void:
+	assert(GameData.is_resource_type(type))
+	var node_name = RESOURCE_TYPE_TO_STRING.get(type)
+	var color = GameData.COLORS.get(type)
+	var node = get_node("HBoxContainer/" + node_name)
+	node.get_node("Bar").color = color
+	node.get_node("ResourceName").text = node_name
+	node.get_node("ResourceStore").add_color_override("font_color", color)
+	
+	node.get_node("BackgroundHoverBar").connect("mouse_entered", self, "_on_hover_on", [type])
+	node.get_node("BackgroundHoverBar").connect("mouse_exited", self, "_on_hover_off")
 
-	var bg : ColorRect = ColorRect.new()
-	bg.rect_size = Vector2(WIDTH, HEIGHT)
-	add_child(bg)
-	
-	print(resourceDict)
-	print(resourceDict.keys().size())
-	var sums : Dictionary = {}
-	var neg_sums : Dictionary = {}
-	for resource in resourceDict:
-		if not sums.has(resource):
-			sums[resource] = 0
-		if not neg_sums.has(resource):
-			neg_sums[resource] = 0
-		for building in resourceDict[resource]:
-			if resourceDict[resource][building] > 0:
-				sums[resource] += resourceDict[resource][building]
-			else:
-				neg_sums[resource] -= resourceDict[resource][building]
-	
-	var highest_sum : float = 0
-	for resource in sums:
-		if sums[resource] > highest_sum:
-			highest_sum = sums[resource]
-		if neg_sums[resource] > highest_sum:
-			highest_sum = neg_sums[resource]
+class BuildingEffectsSorter:
+	static func sort_descending(a, b):
+		return a[0] > b[0]
 
-	# The width of the longest label
-	var largest_width : int = 0
-	# Draw the y-axis
-	# The number of labels to have
-	var NUM_LABELS : int = 5
-	var offset : int = 0
-	for i in range(NUM_LABELS):
-		var label_range = highest_sum / NUM_LABELS
-		var label_text : String = str(label_range * i) 
-		var label : Label = Label.new()
-		label.text = label_text
-		label.add_color_override("font_color", LABEL_TEXT_COLOR)
-		label.set_position(Vector2(0, HEIGHT - ((HEIGHT - BOTTOM_SPACING - TOP_SPACING) / NUM_LABELS) * i - label.get_line_height() - BOTTOM_SPACING))
-		add_child(label)
-		
-		var font = label.get_font("font")
-		var label_width : float = font.get_string_size(label_text).x
-		
-		var line : Line2D = Line2D.new()
-		line.add_point(Vector2(label_width + SMALL_SPACING, HEIGHT - ((HEIGHT - BOTTOM_SPACING - TOP_SPACING) / NUM_LABELS) * i - label.get_line_height() / 2 - BOTTOM_SPACING))
-		line.add_point(Vector2(WIDTH - SMALL_SPACING, HEIGHT - ((HEIGHT - BOTTOM_SPACING - TOP_SPACING) / NUM_LABELS) * i - label.get_line_height() / 2 - BOTTOM_SPACING))
-		offset = label.get_line_height() / 2
-		line.width = LINE_THICKNESS
-		line.default_color = LINE_COLOR
-		add_child(line)
-		
-		if label_width > largest_width:
-			largest_width = label_width
+"""
+	Sets the hover tooltips
+"""
+func _on_hover_on(type: int) -> void:
+	assert(GameData.is_resource_type(type))
+	if not resource_dict:
+		return
+	var node_name = RESOURCE_TYPE_TO_STRING.get(type)	
+
+	var production_texts = []
+	var consumption_texts = []
 	
-	print("The longest label has width = " + str(largest_width))
+	var total_production = 0
+	var total_consumption = 0
 	
-	var bars : int = resourceDict.keys().size()
-	var BAR_WIDTH : float = (WIDTH - (bars + 1) * BIG_SPACING - bars * SMALL_SPACING - largest_width) / bars / 2
+	# sort by absolute value decreasing
+	for building in resource_dict[type]:
+		var val = resource_dict[type][building]
+		building = "BID#" + str(building) # TODO: map to building name
+		if val > 0:
+			total_production += val
+			production_texts.append([val, "\n" + building + ": " + str(val)])
+		elif val < 0:
+			total_consumption += -val
+			consumption_texts.append([-val, "\n" + building + ": " + str(val)])
+
+	var production_text = "Production: " + str(total_production)
+	production_texts.sort_custom(BuildingEffectsSorter, "sort_descending")
+	for t in production_texts:
+		production_text += t[1]
+	var consumption_text = "Consumption: " + str(total_consumption)
+	consumption_texts.sort_custom(BuildingEffectsSorter, "sort_descending")
+	for t in consumption_texts:
+		consumption_text += t[1]
+
+	$ProductionRect/ProductionLabel.text = production_text
+	$ConsumptionRect/ConsumptionLabel.text = consumption_text	
+	$ProductionRect.show()
+	$ConsumptionRect.show()
 	
-	print(BAR_WIDTH * bars * 2 + (1 + BIG_SPACING) * bars + bars * SMALL_SPACING)
-	print("Each bar has width = " + str(BAR_WIDTH))
+	$ProductionRect.rect_size.y = $ProductionRect/ProductionLabel.rect_size.y + 20
+	$ProductionRect.rect_size.x = $ProductionRect/ProductionLabel.rect_size.x + 20
+	$ConsumptionRect.rect_size.y = $ConsumptionRect/ConsumptionLabel.rect_size.y + 20
+	$ConsumptionRect.rect_size.x = $ConsumptionRect/ConsumptionLabel.rect_size.x + 20
 	
-	# Draw the bars
-	for i in range(bars):
-		var bar_range : float = HEIGHT - offset - LINE_THICKNESS / 2 - BOTTOM_SPACING - TOP_SPACING # The height of our tallest bar
-		var income_height : float = sums[i] / highest_sum * bar_range # The height of the income bar
-		var spending_height : float = neg_sums[i] / highest_sum * bar_range # The height of our spending bar
+	# TODO: move the rectangles to the appropriate position next to the bar
+
+func _on_hover_off() -> void:
+	$ProductionRect.hide()
+	$ConsumptionRect.hide()
+
+func _to_str(number: float, include_plus: bool) -> String:
+	var prefix = "+" if number >= 0 and include_plus else ""
+	return prefix + str(round(number))
+
+func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary) -> void:
+	resource_dict = new_resource_dict
+	for type in RESOURCE_TYPE_TO_STRING.keys():
+		var node_name = RESOURCE_TYPE_TO_STRING.get(type)
+		var graph_bar = get_node("HBoxContainer/" + node_name)
+
+		# set text
+		var production = resources.get_income(type)
+		var consumption = resources.get_expense(type)
+		var reserve = resources.get_reserve(type)
+		graph_bar.get_node("ResourceStore").text = _to_str(reserve, false)
+		graph_bar.get_node("ResourceDiff").text = _to_str(production - consumption, true)
 		
-		var income_bar : ColorRect = ColorRect.new()
-		income_bar.rect_size = Vector2(BAR_WIDTH, income_height)
-		income_bar.set_position(Vector2(BIG_SPACING * (i + 1) + (BAR_WIDTH * 2 + SMALL_SPACING) * i + largest_width, bar_range - income_height + TOP_SPACING))
-		income_bar.color = INCOME_BAR_COLOR
-		add_child(income_bar)
+		# resize bar
+		var bar_ratio = production / max(consumption, 1)
+		bar_ratio = min(1, bar_ratio)
+		graph_bar.get_node("Bar").rect_size.y = MAX_BAR_HEIGHT * bar_ratio
+		graph_bar.get_node("Bar").rect_position.y = MAX_BAR_HEIGHT * (1 - bar_ratio)
 		
-		var spending_bar : ColorRect = ColorRect.new()
-		spending_bar.rect_size = Vector2(BAR_WIDTH, spending_height)
-		spending_bar.set_position(Vector2(BIG_SPACING * (i + 1) + (BAR_WIDTH * 2 + SMALL_SPACING) * i + BAR_WIDTH + SMALL_SPACING + largest_width, bar_range - spending_height + TOP_SPACING))
-		spending_bar.color = EXPENSE_BAR_COLOR
-		add_child(spending_bar)
-		
-		var label : Label = Label.new()
-		label.add_color_override("font_color", LABEL_TEXT_COLOR)
-		
-		label.text = GameData.ResourceType.keys()[i].capitalize()
-		
-		var font = label.get_font("font")
-		var label_width : float = font.get_string_size(label.text).x
-		label.set_position(Vector2(BIG_SPACING * (i + 1) + (BAR_WIDTH * 2 + SMALL_SPACING) * i + largest_width + BAR_WIDTH + SMALL_SPACING / 2 - label_width / 2, bar_range + BOTTOM_SPACING / 2 + TOP_SPACING))
-		add_child(label)
+		# move reference line and diff label
+		var reference_y = 0
+		if production > consumption:
+			reference_y = MAX_BAR_HEIGHT * (1 - consumption / production)
+		graph_bar.get_node("ReferenceLine").rect_position.y = reference_y
+		graph_bar.get_node("ResourceDiff").rect_position.y = reference_y + (10 if reference_y < 10 else -20)
+
+	# set science and people labels
+	$ScienceStore.text = _to_str(resources.get_reserve(GameData.ResourceType.SCIENCE), false)
+	$ScienceDiff.text = _to_str(resources.get_income(GameData.ResourceType.SCIENCE), true) + " / mo"
+	$ColonistsStore.text = _to_str(resources.get_reserve(GameData.ResourceType.PEOPLE), false)
+	$ColonistsDiff.text = _to_str(resources.get_income(GameData.ResourceType.PEOPLE), true) + " / mo"
+	# TODO: set dead colonists correctly:
+	var dead = 0
+	$ColonistsDead.text = _to_str(dead, false) + " dead"

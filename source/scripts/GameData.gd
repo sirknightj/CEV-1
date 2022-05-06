@@ -81,3 +81,18 @@ static func is_building_type(type : int) -> bool:
 
 static func GET_SQUARE_SIZE() -> float:
 	return 32.0
+
+
+
+"""
+	Colors
+"""
+const COLORS : Dictionary = {
+	ResourceType.WATER: Color("#0070c0"),
+	ResourceType.FOOD: Color("#00b050"),
+	ResourceType.OXYGEN: Color("#ff3300"),
+	ResourceType.ELECTRICITY: Color("#ffcc00"),
+	ResourceType.METAL: Color("#ff9933"),
+	ResourceType.SCIENCE: Color("#cc66ff"),
+	ResourceType.PEOPLE: Color("#bdd7ee"),
+}
