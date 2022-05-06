@@ -151,11 +151,11 @@ func recalculate_available() -> void:
 #	pass
 
 func set_sidebar(name: String) -> void:
-	var upgrade = tree_dict.get(name)
-	var desc = upgrade.description
+	var upgrade : Upgrade = tree_dict.get(name)
+	var desc : String = upgrade.description
 	if not desc:
 		desc = "TODO"
-	var effects = upgrade.effects
+	var effects : String = upgrade.effects
 	if upgrade.unlocks:
 		if effects:
 			effects += "\n"
@@ -163,7 +163,7 @@ func set_sidebar(name: String) -> void:
 
 	$SelectedUpgrade/Name.text = name
 	$SelectedUpgrade/Cost.text = "Cost: " + str(upgrade.science_cost) + " science"
-	var can_afford = true  # TODO: set this correctly: game.resources.get_reserve(science) >= upgrade.science_cost
+	var can_afford : bool = GameStats.resources.get_reserve(GameData.ResourceType.SCIENCE) >= upgrade.science_cost
 	if not upgrade.unlocked and upgrade.available and can_afford:
 		$SelectedUpgrade/BuyButton.show()
 	else:
@@ -228,10 +228,10 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	var is_left_click = event is InputEventMouseButton and event.button_index == 1 and not event.pressed
 	if not is_left_click:
 		return
-	var upgrade = tree_dict.get(selected_upgrade)
+	var upgrade : Upgrade = tree_dict.get(selected_upgrade)
 	
-	# TODO: subtract science from player's resources
-	
+	GameStats.resources.consume(GameData.ResourceType.SCIENCE, upgrade.science_cost)
+	print(GameStats.resources.to_string())
 	upgrade.unlock()
 	print("Unlocked ", upgrade.name)
 	set_sidebar(upgrade.name)
