@@ -25,7 +25,6 @@ func _draw():
 	var points : PoolVector2Array = PoolVector2Array()
 	for x in range(-mid, mid + 2):
 		for y in range(-mid, mid + 2):
-			print(x, " ", y)
 			# Horizontal line
 			points.append(Vector2(GameData.SQUARE_SIZE * -mid, y * GameData.SQUARE_SIZE))
 			points.append(Vector2(GameData.SQUARE_SIZE * (mid + 1), y * GameData.SQUARE_SIZE))
