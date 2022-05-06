@@ -63,7 +63,9 @@ func aggregate_resources() -> Dictionary:
 		for resource in GameData.ResourceType.values():
 			if not dict.has(resource):
 				dict[resource] = {}
-			dict[resource][building.building_id] = building.get_effect(resource)
+			if not dict[resource].has(building.building_id):
+				dict[resource][building.building_id] = 0
+			dict[resource][building.building_id] += building.get_effect(resource)
 	return dict
 
 func _on_Building_ready():
