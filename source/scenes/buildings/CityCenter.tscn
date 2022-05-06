@@ -8,4 +8,8 @@
 script = ExtResource( 1 )
 locked = true
 shape = [ [ false, true, false ], [ true, true, true ], [ true, true, true ] ]
+building_effects = {
+}
+building_cost = {
+}
 texture = ExtResource( 3 )

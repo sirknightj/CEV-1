@@ -32,8 +32,8 @@ func _init():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	sidebar = get_node("Sidebar")
-	graph = get_node("Graph")
+	sidebar = get_node("UILayer/Sidebar")
+	graph = get_node("UILayer/Sidebar/Graph")
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 
 """
@@ -93,7 +93,7 @@ func place_building(_x: int, _y: int) -> void:
 	building.building_id = key
 	building.texture = GameData.BUILDING_TO_TEXTURE[key]
 	add_child(building)
-	building.set_position(building.snapped(Vector2(_x, _y)))
+	building.set_next_pos(building.snapped(Vector2(_x, _y)))
 
 func update_resources() -> void:
 	GameStats.resources.reset_income_expense()

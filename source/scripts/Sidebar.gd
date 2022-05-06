@@ -1,6 +1,8 @@
 extends Control
 class_name SidebarX
 
+onready var grid : Node2D = $"../../Grid"
+
 var game : Game # The node representing the game
 var Turn_Count_Text # The node holding the turn count text
 var Resource_Label_Text  # The text displayed next to each resource count
@@ -10,7 +12,7 @@ var show_resources : Dictionary = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	game = get_parent()
+	game = get_parent().get_parent()
 	Turn_Count_Text = get_node("TurnCount")
 	Resource_Label_Text = get_node("ResourceLabel")
 	Resource_Amount_Text = get_node("ResourceCounts")
@@ -22,7 +24,9 @@ func _ready():
 func _on_NextTurnButton_pressed() -> void:
 	update_turn_display()
 	game.on_next_turn()
-	game.place_building(0, 0)
+	game.place_building(-GameStats.grid_size / 2 * GameData.SQUARE_SIZE, -GameStats.grid_size / 2 * GameData.SQUARE_SIZE)
+	if game.turn % 5 == 0:
+		grid.set_grid_size(GameStats.grid_size + 6)
 
 """
 	Updates the text displaying the turn count

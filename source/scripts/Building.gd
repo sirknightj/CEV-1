@@ -167,6 +167,11 @@ func building_mouse_exited():
 	if (_mouse_state == MouseState.HOVER):
 		_mouse_state = MouseState.NONE
 
+func set_next_pos(pos : Vector2):
+	_global_pos_next = pos
+	global_position = pos
+	_shadow.global_position = pos
+
 """
 	Rotate around a given point, such that the relative point on the building
 	is at the same global position before and after the rotation
@@ -214,9 +219,10 @@ func _update_ghost() -> void:
 	_ghost.global_position = snapped(global_position)
 
 func _is_in_grid_range() -> bool:
-	for child in get_children():
-		var _position : Vector2 = snapped(child.global_position) / _size
-		if _position.x < 0 or _position.x > GameStats.grid_size or _position.y < 0 or _position.y > GameStats.grid_size:
+	for child in _ghost.get_children():
+		var _position : Vector2 = child.global_position / _size
+		var edge = GameStats.grid_size / 2 + 0.1
+		if _position.x < -edge or _position.x > edge + 1 or _position.y < -edge or _position.y > edge + 1:
 			return false
 	return true
 
