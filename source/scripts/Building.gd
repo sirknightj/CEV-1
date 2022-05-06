@@ -1,7 +1,16 @@
 extends Node2D
 class_name Building
 
-var _size : float
+const HOVER_MODULATE : Color = Color.white
+const DRAGGING_MODULATE : Color = Color.white
+const REGULAR_MODULATE : Color = Color.white
+
+const DRAGGING_Z_INDEX : int = 10
+const REGULAR_Z_INDEX : int = 1
+
+const SPRITE_BASE_SIZE : int = 1
+
+const _size : float = GameData.SQUARE_SIZE
 
 """
 	Buildings keep track of all of their own state, including resources, whether
@@ -34,7 +43,8 @@ var _ghost : Node2D
 enum MouseState {
 	NONE,
 	HOVER,
-	DRAGGING
+	DRAGGING,
+	HOLDING
 }
 
 var _last_mouse_pos : Vector2
@@ -61,6 +71,8 @@ export(Array) var shape
 export(Dictionary) var building_effects
 export(Dictionary) var building_cost
 export(int) var building_id = -1
+export(Color) var color
+export(Texture) var texture
 
 func init_shadow():
 	remove_child(_shadow)
@@ -71,16 +83,23 @@ func _ready():
 	assert(shape != null)
 	assert(building_effects != null)
 	assert(building_cost != null)
+	assert(color != null)
+	assert(texture != null)
 
 	if (building_id > 0 && building_id < GameData.BuildingType.size()):
 		set_name("AUTOGEN_" + GameData.BuildingType.keys()[building_id])
-	_size = GameData.SQUARE_SIZE
 	_last_mouse_pos = get_global_mouse_position()
 	_global_pos_next = global_position
 	_global_rot_next = 0
 	_shadow = get_node("Shadow")
 	_ghost = get_node("Ghost")
 	call_deferred("init_shadow")
+
+	var scale = Vector2(_size / SPRITE_BASE_SIZE, _size / SPRITE_BASE_SIZE)
+	$Sprite.texture = texture
+	$Sprite.scale = scale
+	_shadow.get_node("Sprite").texture = texture
+	_shadow.get_node("Sprite").scale = scale
 
 	init_shape()
 	add_to_group("buildings")
@@ -105,7 +124,6 @@ func create_grid_square(x : int, y : int, parent : Node):
 	var grid_square : GridSquare = square_scene.instance()
 	parent.add_child(grid_square)
 	grid_square.set_position(Vector2(y * _size + _size / 2, x * _size + _size / 2))
-	grid_square.set_sprite_size(_size)
 	return grid_square
 
 """
@@ -200,11 +218,13 @@ func _process(_delta):
 		return
 
 	if (_mouse_state == MouseState.HOVER):
-		set_modulate(Color.aqua)
+		set_modulate(HOVER_MODULATE)
 	elif (_mouse_state == MouseState.DRAGGING):
-		set_modulate(Color.chartreuse)
+		set_modulate(DRAGGING_MODULATE)
+		set_z_index(DRAGGING_Z_INDEX)
 	else:
-		set_modulate(Color.white)
+		set_modulate(REGULAR_MODULATE)
+		set_z_index(REGULAR_Z_INDEX)
 
 	if (_mouse_state == MouseState.DRAGGING):
 		_shadow.visible = true
@@ -222,18 +242,22 @@ func _unhandled_input(event : InputEvent):
 	if (locked):
 		return
 
-	if (event.is_action_pressed("building_grab")
-			&& _mouse_state == MouseState.HOVER):
-		print("Grab ", get_name())
-		print("Adjacents: ", get_adjacent_buildings())
-		_last_mouse_pos = get_global_mouse_position()
-		_mouse_state = MouseState.DRAGGING
+	if (event.is_action_pressed("building_grab")):
+		if (_mouse_state == MouseState.HOVER):
+			print("Grab ", get_name())
+			print("Adjacents: ", get_adjacent_buildings())
+			_last_mouse_pos = get_global_mouse_position()
+			_mouse_state = MouseState.DRAGGING
+		else:
+			_mouse_state = MouseState.HOLDING
 
-	if (event.is_action_released("building_grab")
-			&& _mouse_state == MouseState.DRAGGING):
-		_mouse_state = MouseState.HOVER
-		_global_pos_next = _shadow.global_position
-		_global_rot_next = _shadow.rotation
+	if (event.is_action_released("building_grab")):
+		if (_mouse_state == MouseState.DRAGGING):
+			_mouse_state = MouseState.HOVER
+			_global_pos_next = _shadow.global_position
+			_global_rot_next = _shadow.rotation
+		else:
+			_mouse_state = MouseState.NONE
 
 	if (event.is_action_pressed("building_rotate")
 			&& _mouse_state == MouseState.DRAGGING):

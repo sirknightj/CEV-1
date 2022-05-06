@@ -105,6 +105,7 @@ func place_building(_x: int, _y: int) -> void:
 	building.building_effects = building_stats.effects
 	building.building_cost = building_stats.cost
 	building.building_id = key
+	building.texture = GameData.BUILDING_TO_TEXTURE[key]
 	add_child(building)
 	building.set_position(building.snapped(Vector2(_x, _y)))
 

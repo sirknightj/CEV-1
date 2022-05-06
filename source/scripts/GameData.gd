@@ -39,6 +39,54 @@ enum ResourceType {
 }
 
 """
+	A map of buildings to the color they should be
+"""
+const BUILDING_TO_COLOR : Dictionary = {
+	BuildingType.CENTER: Color.black,
+	BuildingType.ELEC1: Color.yellow,
+	BuildingType.ELEC2: Color.yellow,
+	BuildingType.ELEC3: Color.yellow,
+	BuildingType.END1: Color.darkcyan,
+	BuildingType.FOOD1: Color.green,
+	BuildingType.FOOD2: Color.green,
+	BuildingType.FOOD3: Color.green,
+	BuildingType.METAL1: Color.red,
+	BuildingType.METAL2: Color.red,
+	BuildingType.OXY1: Color.pink,
+	BuildingType.OXY2: Color.pink,
+	BuildingType.OXY3: Color.pink,
+	BuildingType.SCI1: Color.purple,
+	BuildingType.SCI2: Color.purple,
+	BuildingType.WATER1: Color.blue,
+	BuildingType.WATER2: Color.blue,
+	BuildingType.WATER3: Color.blue
+}
+
+"""
+	A map of buildings to their texture file
+"""
+const BUILDING_TO_TEXTURE : Dictionary = {
+	BuildingType.CENTER: preload("res://assets/images/center.png"),
+	BuildingType.ELEC1: preload("res://assets/images/elec1.png"),
+	BuildingType.ELEC2: preload("res://assets/images/elec2.png"),
+	BuildingType.ELEC3: preload("res://assets/images/elec3.png"),
+	BuildingType.END1: preload("res://assets/images/end1.png"),
+	BuildingType.FOOD1: preload("res://assets/images/food1.png"),
+	BuildingType.FOOD2: preload("res://assets/images/food2.png"),
+	BuildingType.FOOD3: preload("res://assets/images/food3.png"),
+	BuildingType.METAL1: preload("res://assets/images/metal1.png"),
+	BuildingType.METAL2: preload("res://assets/images/metal2.png"),
+	BuildingType.OXY1: preload("res://assets/images/oxy1.png"),
+	BuildingType.OXY2: preload("res://assets/images/oxy2.png"),
+	BuildingType.OXY3: preload("res://assets/images/oxy3.png"),
+	BuildingType.SCI1: preload("res://assets/images/sci1.png"),
+	BuildingType.SCI2: preload("res://assets/images/sci2.png"),
+	BuildingType.WATER1: preload("res://assets/images/water1.png"),
+	BuildingType.WATER2: preload("res://assets/images/water2.png"),
+	BuildingType.WATER3: preload("res://assets/images/water3.png")
+}
+
+"""
 	The size of each square on the grid
 """
 const SQUARE_SIZE : float = 32.0

@@ -9,5 +9,11 @@ script = ExtResource( 1 )
 visible = false
 modulate = Color( 1, 1, 1, 0.27451 )
 
+[node name="Sprite" type="Sprite" parent="Shadow"]
+centered = false
+
 [node name="Ghost" type="Node2D" parent="."]
 visible = false
+
+[node name="Sprite" type="Sprite" parent="."]
+centered = false
