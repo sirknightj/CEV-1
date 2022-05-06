@@ -6,6 +6,8 @@ extends Node
 
 var resources : GameObjs.Resources
 
+var grid_size : int # the number of squares the grid is at the moment
+
 var _initial_reserves = {
 	GameData.ResourceType.FOOD: 100.0,
 	GameData.ResourceType.OXYGEN: 100.0,
@@ -20,6 +22,7 @@ var _initial_reserves = {
 # Note that this is loaded before every other node, as it is global.
 # Note: Since this is a singleton, this will only be called once.
 func _ready():
+	grid_size = 15
 	resources = GameObjs.Resources.new()
 	resources.set_reserves(_initial_reserves)
 

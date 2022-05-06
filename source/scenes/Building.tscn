@@ -3,11 +3,18 @@
 [ext_resource path="res://scripts/Building.gd" type="Script" id=1]
 
 [node name="Building" type="Node2D"]
+z_index = 5
 script = ExtResource( 1 )
 
 [node name="Shadow" type="Node2D" parent="."]
 visible = false
 modulate = Color( 1, 1, 1, 0.27451 )
 
+[node name="Sprite" type="Sprite" parent="Shadow"]
+centered = false
+
 [node name="Ghost" type="Node2D" parent="."]
 visible = false
+
+[node name="Sprite" type="Sprite" parent="."]
+centered = false

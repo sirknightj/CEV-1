@@ -47,31 +47,6 @@ custom_fonts/font = SubResource( 1 )
 text = "Month 0"
 valign = 1
 
-[node name="ResourceLabel" type="Label" parent="."]
-margin_left = 47.0
-margin_top = 526.0
-margin_right = 196.0
-margin_bottom = 703.0
-theme = ExtResource( 5 )
-text = "Food:
-Water:
-Electricity:
-Metal:
-Science:"
-align = 2
-
-[node name="ResourceCounts" type="Label" parent="."]
-margin_left = 217.0
-margin_top = 526.0
-margin_right = 333.0
-margin_bottom = 703.0
-theme = ExtResource( 5 )
-text = "80 (+69)
-80 (+69)
-80 (+69)
-80 (+69)
-80 (+69)"
-
 [node name="Graph" parent="." instance=ExtResource( 6 )]
 margin_top = 78.0
 margin_bottom = 338.0

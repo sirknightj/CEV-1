@@ -151,10 +151,11 @@ align = 1
 valign = 1
 
 [node name="ProductionRect" type="ColorRect" parent="."]
-margin_left = 204.0
-margin_top = 263.0
-margin_right = 362.0
-margin_bottom = 355.0
+margin_left = 162.0
+margin_top = 65.0
+margin_right = 320.0
+margin_bottom = 157.0
+mouse_filter = 2
 color = Color( 0.34902, 0.34902, 0.34902, 1 )
 
 [node name="ProductionLabel" type="Label" parent="ProductionRect"]
@@ -166,10 +167,11 @@ custom_fonts/font = SubResource( 3 )
 text = "Production"
 
 [node name="ConsumptionRect" type="ColorRect" parent="."]
-margin_left = 368.0
-margin_top = 263.0
-margin_right = 526.0
-margin_bottom = 355.0
+margin_left = 326.0
+margin_top = 65.0
+margin_right = 484.0
+margin_bottom = 157.0
+mouse_filter = 2
 color = Color( 0.34902, 0.34902, 0.34902, 1 )
 
 [node name="ConsumptionLabel" type="Label" parent="ConsumptionRect"]

@@ -2,8 +2,13 @@ extends Building
 
 var game : Game
 
+func center():
+	var middle = -1.5 * GameData.SQUARE_SIZE
+	.set_next_pos(.snapped(Vector2(middle, middle)))
+
 func _ready():
 	game = get_parent()
+	center()
 
 func _people():
 	return GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)

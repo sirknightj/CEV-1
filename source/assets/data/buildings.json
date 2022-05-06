@@ -1,1 +1,391 @@
-[{"name": "City center", "id": "center", "shape": [[false, true, false], [true, true, true], [true, true, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 0, "science_cost": 0, "food_effect": 0, "water_effect": 0, "oxygen_effect": 0, "electricity_effect": 0, "metal_effect": 0, "science_effect": 1}, {"name": "Solar panels", "id": "elec1", "shape": [[true, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 8, "science_cost": 0, "food_effect": 0, "water_effect": 0, "oxygen_effect": 0, "electricity_effect": 5, "metal_effect": 0, "science_effect": 0}, {"name": "Wind turbine", "id": "elec2", "shape": [[false, true, false], [true, true, true], [false, true, false], [false, false, false]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 16, "science_cost": 0, "food_effect": 0, "water_effect": 0, "oxygen_effect": 0, "electricity_effect": 13, "metal_effect": 0, "science_effect": 0}, {"name": "Geothermal generator", "id": "elec3", "shape": [[true, true, true, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 100, "metal_cost": 60, "science_cost": 0, "food_effect": 0, "water_effect": 0, "oxygen_effect": 0, "electricity_effect": 100, "metal_effect": 0, "science_effect": 0}, {"name": "Cryonic chamber", "id": "end1", "shape": [[true, false, true, false, true, false, true], [true, true, true, true, true, true, true], [true, false, true, false, true, false, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 400, "science_cost": 0, "food_effect": 0, "water_effect": -50, "oxygen_effect": 0, "electricity_effect": 100, "metal_effect": -20, "science_effect": -2}, {"name": "Farm", "id": "food1", "shape": [[true, true, true, true], [true, true, true, false]], "food_cost": 20, "water_cost": 0, "oxygen_cost": 20, "electricity_cost": 0, "metal_cost": 20, "science_cost": 0, "food_effect": 25, "water_effect": -2, "oxygen_effect": 3, "electricity_effect": 0, "metal_effect": 0, "science_effect": 0}, {"name": "Hydroponics farm", "id": "food2", "shape": [[false, true, false, false], [true, true, true, true], [true, true, true, true]], "food_cost": 40, "water_cost": 0, "oxygen_cost": 40, "electricity_cost": 0, "metal_cost": 40, "science_cost": 0, "food_effect": 45, "water_effect": -12, "oxygen_effect": 8, "electricity_effect": -10, "metal_effect": 0, "science_effect": 0}, {"name": "Aeroponics farm", "id": "food3", "shape": [[true, true, false], [true, true, true]], "food_cost": 80, "water_cost": 0, "oxygen_cost": 80, "electricity_cost": 0, "metal_cost": 80, "science_cost": 0, "food_effect": 105, "water_effect": -30, "oxygen_effect": -40, "electricity_effect": -80, "metal_effect": 0, "science_effect": 0}, {"name": "Mine", "id": "metal1", "shape": [[true, true, true, false, false, false], [false, true, true, true, true, true], [true, true, true, false, true, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 250, "electricity_cost": 0, "metal_cost": 60, "science_cost": 0, "food_effect": 0, "water_effect": 0, "oxygen_effect": 0, "electricity_effect": -10, "metal_effect": 10, "science_effect": 0}, {"name": "Automated mine", "id": "metal2", "shape": [[true, true, true, true, true, true, true], [true, true, true, true, false, true, true], [true, true, true, false, false, true, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 400, "electricity_cost": 120, "metal_cost": 140, "science_cost": 0, "food_effect": 0, "water_effect": 0, "oxygen_effect": 0, "electricity_effect": -80, "metal_effect": 60, "science_effect": 0}, {"name": "Oxygenerator", "id": "oxy1", "shape": [[true, false, false], [true, true, true], [false, false, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 80, "science_cost": 0, "food_effect": 0, "water_effect": -4, "oxygen_effect": 40, "electricity_effect": -4, "metal_effect": 0, "science_effect": 0}, {"name": "MOXIE", "id": "oxy2", "shape": [[true, false, false, false], [true, true, true, true], [false, false, false, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 175, "science_cost": 0, "food_effect": 0, "water_effect": -10, "oxygen_effect": 90, "electricity_effect": -14, "metal_effect": 0, "science_effect": 0}, {"name": "Photolytic generator", "id": "oxy3", "shape": [[true, false, false, false, false], [true, true, true, true, true], [false, false, false, false, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 500, "science_cost": 0, "food_effect": 0, "water_effect": -20, "oxygen_effect": 170, "electricity_effect": -120, "metal_effect": 0, "science_effect": 0}, {"name": "University", "id": "sci1", "shape": [[true, true, true, true, true, false], [true, false, true, true, false, false], [true, true, true, true, true, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 100, "electricity_cost": 0, "metal_cost": 100, "science_cost": 0, "food_effect": 0, "water_effect": 0, "oxygen_effect": 0, "electricity_effect": -10, "metal_effect": 0, "science_effect": 15}, {"name": "Observatory", "id": "sci2", "shape": [[true, true, true, true, true, true, true, true, true, true], [true, true, false, true, true, false, true, true, true, false], [true, true, true, true, true, true, true, true, false, false]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 500, "electricity_cost": 0, "metal_cost": 600, "science_cost": 0, "food_effect": 0, "water_effect": -20, "oxygen_effect": 0, "electricity_effect": -20, "metal_effect": -10, "science_effect": 200}, {"name": "Well", "id": "water1", "shape": [[true, false, true], [true, true, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 6, "science_cost": 0, "food_effect": 0, "water_effect": 10, "oxygen_effect": 0, "electricity_effect": 0, "metal_effect": 0, "science_effect": 0}, {"name": "Water recycler", "id": "water2", "shape": [[true, true, true, true, true], [true, false, false, false, true], [true, true, true, true, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 30, "science_cost": 0, "food_effect": 0, "water_effect": 25, "oxygen_effect": 0, "electricity_effect": -10, "metal_effect": 0, "science_effect": 0}, {"name": "Ice mine", "id": "water3", "shape": [[true, true, true, true, true, true], [true, true, false, false, true, true]], "food_cost": 0, "water_cost": 0, "oxygen_cost": 0, "electricity_cost": 0, "metal_cost": 100, "science_cost": 0, "food_effect": -15, "water_effect": 60, "oxygen_effect": -10, "electricity_effect": 0, "metal_effect": 0, "science_effect": 0}]
+[
+    {
+        "name": "City center",
+        "id": "center",
+        "shape":
+        [
+            [false,true,false],
+            [true,true,true],
+            [true,true,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 0,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": 0,
+        "oxygen_effect": 0,
+        "electricity_effect": 0,
+        "metal_effect": 0,
+        "science_effect": 1
+    },
+    {
+        "name": "Solar panels",
+        "id": "elec1",
+        "shape":
+        [
+            [true,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 8,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": 0,
+        "oxygen_effect": 0,
+        "electricity_effect": 5,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "Wind turbine",
+        "id": "elec2",
+        "shape":
+        [
+            [false,true,false],
+            [true,true,true],
+            [false,true,false],
+            [false,false,false]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 16,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": 0,
+        "oxygen_effect": 0,
+        "electricity_effect": 13,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "Geothermal generator",
+        "id": "elec3",
+        "shape":
+        [
+            [true,true,true,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 100,
+        "metal_cost": 60,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": 0,
+        "oxygen_effect": 0,
+        "electricity_effect": 100,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "Cryonic chamber",
+        "id": "end1",
+        "shape":
+        [
+            [true,false,true,false,true,false,true],
+            [true,true,true,true,true,true,true],
+            [true,false,true,false,true,false,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 400,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": -50,
+        "oxygen_effect": 0,
+        "electricity_effect": 100,
+        "metal_effect": -20,
+        "science_effect": -2
+    },
+    {
+        "name": "Farm",
+        "id": "food1",
+        "shape":
+        [
+            [true,true,true,true],
+            [true,true,true,false]
+        ],
+        "food_cost": 20,
+        "water_cost": 0,
+        "oxygen_cost": 20,
+        "electricity_cost": 0,
+        "metal_cost": 20,
+        "science_cost": 0,
+        "food_effect": 25,
+        "water_effect": -2,
+        "oxygen_effect": 3,
+        "electricity_effect": 0,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "Hydroponics farm",
+        "id": "food2",
+        "shape":
+        [
+            [false,true,false,false],
+            [true,true,true,true],
+            [true,true,true,true]
+        ],
+        "food_cost": 40,
+        "water_cost": 0,
+        "oxygen_cost": 40,
+        "electricity_cost": 0,
+        "metal_cost": 40,
+        "science_cost": 0,
+        "food_effect": 45,
+        "water_effect": -12,
+        "oxygen_effect": 8,
+        "electricity_effect": -10,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "Aeroponics farm",
+        "id": "food3",
+        "shape":
+        [
+            [true,true,true],
+            [true,true,false]
+        ],
+        "food_cost": 80,
+        "water_cost": 0,
+        "oxygen_cost": 80,
+        "electricity_cost": 0,
+        "metal_cost": 80,
+        "science_cost": 0,
+        "food_effect": 105,
+        "water_effect": -30,
+        "oxygen_effect": -40,
+        "electricity_effect": -80,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "Mine",
+        "id": "metal1",
+        "shape":
+        [
+            [true,true,true,false,false,false],
+            [false,true,true,true,true,true],
+            [true,true,true,false,true,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 250,
+        "electricity_cost": 0,
+        "metal_cost": 60,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": 0,
+        "oxygen_effect": 0,
+        "electricity_effect": -10,
+        "metal_effect": 10,
+        "science_effect": 0
+    },
+    {
+        "name": "Automated mine",
+        "id": "metal2",
+        "shape":
+        [
+            [true,true,true,true,true,true,true],
+            [true,true,true,true,false,true,true],
+            [true,true,true,false,false,true,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 400,
+        "electricity_cost": 120,
+        "metal_cost": 140,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": 0,
+        "oxygen_effect": 0,
+        "electricity_effect": -80,
+        "metal_effect": 60,
+        "science_effect": 0
+    },
+    {
+        "name": "Oxygenerator",
+        "id": "oxy1",
+        "shape":
+        [
+            [true,false,false],
+            [true,true,true],
+            [false,false,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 80,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": -4,
+        "oxygen_effect": 40,
+        "electricity_effect": -4,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "MOXIE",
+        "id": "oxy2",
+        "shape":
+        [
+            [true,false,false,false],
+            [true,true,true,true],
+            [false,false,false,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 175,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": -10,
+        "oxygen_effect": 90,
+        "electricity_effect": -14,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "Photolytic generator",
+        "id": "oxy3",
+        "shape":
+        [
+            [true,false,false,false,false],
+            [true,true,true,true,true],
+            [false,false,false,false,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 500,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": -20,
+        "oxygen_effect": 170,
+        "electricity_effect": -120,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "University",
+        "id": "sci1",
+        "shape":
+        [
+            [true,true,true,true,true,false],
+            [true,false,true,true,false,false],
+            [true,true,true,true,true,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 100,
+        "electricity_cost": 0,
+        "metal_cost": 100,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": 0,
+        "oxygen_effect": 0,
+        "electricity_effect": -10,
+        "metal_effect": 0,
+        "science_effect": 15
+    },
+    {
+        "name": "Observatory",
+        "id": "sci2",
+        "shape":
+        [
+            [true,true,true,true,true,true,true,true,true,true],
+            [true,true,false,true,true,false,true,true,true,false],
+            [true,true,true,true,true,true,true,true,false,false]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 500,
+        "electricity_cost": 0,
+        "metal_cost": 600,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": -20,
+        "oxygen_effect": 0,
+        "electricity_effect": -20,
+        "metal_effect": -10,
+        "science_effect": 200
+    },
+    {
+        "name": "Well",
+        "id": "water1",
+        "shape":
+        [
+            [true,false,true],
+            [true,true,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 6,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": 10,
+        "oxygen_effect": 0,
+        "electricity_effect": 0,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "Water recycler",
+        "id": "water2",
+        "shape":
+        [
+            [true,true,true,true,true],
+            [true,false,false,false,true],
+            [true,true,true,true,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 30,
+        "science_cost": 0,
+        "food_effect": 0,
+        "water_effect": 25,
+        "oxygen_effect": 0,
+        "electricity_effect": -10,
+        "metal_effect": 0,
+        "science_effect": 0
+    },
+    {
+        "name": "Ice mine",
+        "id": "water3",
+        "shape":
+        [
+            [true,true,true,true,true,true],
+            [true,true,false,false,true,true]
+        ],
+        "food_cost": 0,
+        "water_cost": 0,
+        "oxygen_cost": 0,
+        "electricity_cost": 0,
+        "metal_cost": 100,
+        "science_cost": 0,
+        "food_effect": -15,
+        "water_effect": 60,
+        "oxygen_effect": -10,
+        "electricity_effect": 0,
+        "metal_effect": 0,
+        "science_effect": 0
+    }
+]
