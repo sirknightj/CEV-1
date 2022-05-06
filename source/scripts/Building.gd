@@ -3,7 +3,7 @@ class_name Building
 
 const HOVER_MODULATE : Color = Color.white
 const DRAGGING_MODULATE : Color = Color.white
-const REGULAR_MODULATE : Color = Color.white
+var REGULAR_MODULATE : Color = Color.white.darkened(0.2)
 
 const DRAGGING_Z_INDEX : int = 10
 const REGULAR_Z_INDEX : int = 1
