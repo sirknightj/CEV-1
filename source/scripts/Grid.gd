@@ -1,7 +1,6 @@
 extends Node2D
 
 var LINE_COLOR : Color = Color("#242424")
-const LINE_WIDTH : float = 2.0
 
 onready var _screen_size = get_viewport().get_visible_rect().size
 onready var sidebar = $"../UILayer/Sidebar"
@@ -33,4 +32,4 @@ func _draw():
 			# Vertical line
 			points.append(Vector2(x * GameData.SQUARE_SIZE, -mid * GameData.SQUARE_SIZE))
 			points.append(Vector2(x * GameData.SQUARE_SIZE, (mid + 1) * GameData.SQUARE_SIZE))
-	draw_multiline(points, LINE_COLOR, LINE_WIDTH)
+	draw_multiline(points, LINE_COLOR)
