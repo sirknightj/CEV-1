@@ -40,7 +40,7 @@ func on_next_turn():
 	Place the building at the grid square (_x, _y).
 """
 func place_building(_x: int, _y: int) -> void:
-	var key = GameStats.buildings_dict.keys()[randi() % GameStats.buildings_dict.size()]
+	var key = GameStats.buildings_dict.keys()[randi() % (GameStats.buildings_dict.size() - 1) + 1]
 	var building_stats = GameStats.buildings_dict[key]
 	var building = building_scene.instance()
 	building.shape = building_stats.shape

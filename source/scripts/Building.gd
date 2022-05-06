@@ -77,6 +77,7 @@ export(Texture) var texture
 func init_shadow():
 	remove_child(_shadow)
 	get_parent().add_child(_shadow)
+	_shadow.global_position = _global_pos_next
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -170,6 +171,7 @@ func building_mouse_exited():
 func set_next_pos(pos : Vector2):
 	_global_pos_next = pos
 	global_position = pos
+	_ghost.global_position = pos
 	_shadow.global_position = pos
 
 """
