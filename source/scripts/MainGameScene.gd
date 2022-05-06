@@ -18,6 +18,7 @@ func _ready():
 	sidebar = get_node("UILayer/Sidebar")
 	graph = get_node("UILayer/Sidebar/Graph")
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
+	update_stats()
 
 """
 	Update visualizations
