@@ -49,6 +49,10 @@ class Resources:
 		for type in reserves:
 			assert(GameData.is_resource_type(type))
 			resources[type].reserves = reserves[type]
+	
+	func consume(type : int, amount : float):
+		assert(amount > 0)
+		resources[type].reserves -= amount
 
 	func get_reserve(type : int) -> float:
 		assert(GameData.is_resource_type(type))
@@ -67,8 +71,18 @@ class Resources:
 		return get_income(type) - get_expense(type)
 
 		# Alias for step_n(1)
-	func step():
+	func step() -> void:
 		step_n(1)
+	
+	"""
+		Return a string representation of this for debugging purposes
+	"""
+	func to_string() -> String:
+		var ret_val : String = ""
+		for resource_type in GameData.ResourceType.values():
+			ret_val += str(GameData.ResourceType.keys()[resource_type].capitalize()) + ": "
+			ret_val += str(get_reserve(resource_type)) + " (+" + str(get_income(resource_type)) + ", -" + str(get_expense(resource_type)) + ")\n"
+		return ret_val.strip_edges()
 
 	"""
 		Increment and decrement reserves based on current income/expense for

@@ -1,9 +1,6 @@
 extends Control
 class_name SidebarX
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 var game : Game # The node representing the game
 var Turn_Count_Text # The node holding the turn count text
 var Resource_Label_Text  # The text displayed next to each resource count
@@ -40,11 +37,15 @@ func update_displays() -> void:
 	var label_text : String = ""
 	var count_text = ""
 
-	var resources : GameObjs.Resources = game.resources
+	var resources : GameObjs.Resources = GameStats.resources
 	for resource_type in GameData.ResourceType.values():
 		if show_resources[resource_type]:
 			label_text += str(GameData.ResourceType.keys()[resource_type].capitalize()) + ":\n"
-			count_text += str(resources.get_reserve(resource_type)) + " (+" + str(resources.get_income(resource_type)) + ", -" + str(resources.get_expense(resource_type)) + ")\n"
+			
+			if not resource_type == GameData.ResourceType.PEOPLE:
+				count_text += str(resources.get_reserve(resource_type)) + " (+" + str(resources.get_income(resource_type)) + ", -" + str(resources.get_expense(resource_type)) + ")\n"
+			else:
+				count_text += str(floor(resources.get_reserve(resource_type))) + " (+" + str(floor(resources.get_income(resource_type) + resources.get_reserve(resource_type) - floor(resources.get_reserve(resource_type)))) + ", -" + str(resources.get_expense(resource_type)) + ")\n"
 
 	label_text.strip_edges()
 	count_text.strip_edges()

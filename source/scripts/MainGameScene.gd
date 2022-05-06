@@ -13,18 +13,6 @@ class BuildingStats:
 		effects = {}
 		cost = {}
 
-var resources : GameObjs.Resources
-
-var _initial_reserves = {
-	GameData.ResourceType.FOOD: 100.0,
-	GameData.ResourceType.OXYGEN: 100.0,
-	GameData.ResourceType.WATER: 55.0,
-	GameData.ResourceType.METAL: 60.0,
-	GameData.ResourceType.ELECTRICITY: 50.0,
-	GameData.ResourceType.SCIENCE: 0.0,
-	GameData.ResourceType.PEOPLE: 25.0
-}
-
 # The sidebar object
 var sidebar : Control
 # The graph object
@@ -46,8 +34,6 @@ func _init():
 func _ready():
 	sidebar = get_node("Sidebar")
 	graph = get_node("Graph")
-	resources = GameObjs.Resources.new()
-	resources.set_reserves(_initial_reserves)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 
 """
@@ -89,7 +75,7 @@ func update_stats():
 """
 func on_next_turn():
 	update_resources()
-	resources.step()
+	GameStats.resources.step()
 	turn += 1
 	emit_signal("next_turn")
 	update_stats()
@@ -110,10 +96,10 @@ func place_building(_x: int, _y: int) -> void:
 	building.set_position(building.snapped(Vector2(_x, _y)))
 
 func update_resources() -> void:
-	resources.reset_income_expense()
+	GameStats.resources.reset_income_expense()
 	for building in get_tree().get_nodes_in_group("buildings"):
 		for resource in GameData.ResourceType.values():
-			resources.add_effect(resource, building.get_effect(resource))
+			GameStats.resources.add_effect(resource, building.get_effect(resource))
 
 func aggregate_resources() -> Dictionary:
 	var dict : Dictionary = {}
