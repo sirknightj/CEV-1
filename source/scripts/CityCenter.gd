@@ -6,7 +6,7 @@ func _ready():
 	game = get_parent()
 
 func _people():
-	return game.resources.get_reserve(GameData.ResourceType.PEOPLE)
+	return GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
 
 func get_effect(resource : int) -> float:
 	if (resource != GameData.ResourceType.PEOPLE):

@@ -54,6 +54,10 @@ config/name="CEV-1"
 run/main_scene="res://scenes/MainGameScene.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+GameStats="*res://scripts/GameStats.gd"
+
 [display]
 
 window/size/width=1280
