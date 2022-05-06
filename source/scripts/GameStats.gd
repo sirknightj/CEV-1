@@ -18,14 +18,52 @@ var _initial_reserves = {
 	GameData.ResourceType.PEOPLE: 25.0
 }
 
-# Called when the node enters the scene tree for the first time.
-# Note that this is loaded before every other node, as it is global.
-# Note: Since this is a singleton, this will only be called once.
+class BuildingStats:
+	var shape : Array
+	var name : String
+	var effects : Dictionary
+	var cost : Dictionary
+
+	func _init():
+		effects = {}
+		cost = {}
+
+# File path of buildings.json
+var buildings_json = "res://assets/data/buildings.json"
+# building_id -> BuildingStats
+var buildings_dict : Dictionary = {}
+
+func _init():
+	load_buildings_json()
+
 func _ready():
 	grid_size = 15
 	resources = GameObjs.Resources.new()
 	resources.set_reserves(_initial_reserves)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+"""
+	Reads the building data from assets/data/buildings.json and loads it into
+	the buildings_dict, which maps building_name -> building
+"""
+func load_buildings_json() -> void:
+	var file = File.new()
+	assert(file.file_exists(buildings_json))
+	file.open(buildings_json, File.READ)
+	var data = parse_json(file.get_as_text())
+	for building in data:
+		assert(not building.name == null)
+		var building_type : int = GameData.BuildingType[building.id.to_upper()]
+		var stats = BuildingStats.new()
+		stats.name = building.name
+		stats.shape = building.shape
+		for resource in GameData.ResourceType.keys():
+			var resource_type = GameData.ResourceType[resource]
+			if resource_type == GameData.ResourceType.PEOPLE:
+				stats.effects[resource_type] = 0
+				stats.cost[resource_type] = 0
+				continue
+			stats.cost[resource_type] = building[resource.to_lower() + "_cost"]
+			stats.effects[resource_type] = building[resource.to_lower() + "_effect"]
+		buildings_dict[building_type] = stats
+	print("Loaded the buildings: " + str(buildings_dict.keys()))
+	file.close()

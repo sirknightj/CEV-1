@@ -13,6 +13,7 @@ building_effects = {
 }
 building_cost = {
 }
+building_id = 0
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 2

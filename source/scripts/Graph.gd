@@ -52,7 +52,10 @@ func _on_hover_on(type: int) -> void:
 	# sort by absolute value decreasing
 	for building in resource_dict[type]:
 		var val = resource_dict[type][building]
-		building = "BID#" + str(building) # TODO: map to building name
+		if building == GameData.BuildingType.CENTER:
+			building = "Colonists"
+		else:
+			building = GameStats.buildings_dict[building].name
 		if val > 0:
 			total_production += val
 			production_texts.append([val, "\n" + building + ": " + str(val)])
