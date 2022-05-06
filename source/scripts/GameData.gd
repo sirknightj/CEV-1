@@ -128,4 +128,4 @@ static func is_building_type(type : int) -> bool:
 	return type in BuildingType.values()
 
 static func GET_SQUARE_SIZE() -> float:
-	return 32.0
+	return SQUARE_SIZE

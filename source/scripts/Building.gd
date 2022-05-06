@@ -210,8 +210,15 @@ func _update_shadow():
 	_shadow.global_position = snapped(_ghost.global_position)
 	_shadow.rotation = rotation
 
-func _update_ghost():
+func _update_ghost() -> void:
 	_ghost.global_position = snapped(global_position)
+
+func _is_in_grid_range() -> bool:
+	for child in get_children():
+		var _position : Vector2 = snapped(child.global_position) / _size
+		if _position.x < 0 or _position.x > GameStats.grid_size or _position.y < 0 or _position.y > GameStats.grid_size:
+			return false
+	return true
 
 func _process(_delta):
 	if (locked):
@@ -232,7 +239,7 @@ func _process(_delta):
 		_shadow.visible = false
 
 func _physics_process(_delta):
-	if (!is_overlapping()):
+	if not is_overlapping() and _is_in_grid_range():
 		_update_shadow()
 	global_position = _global_pos_next
 	rotation = _global_rot_next
