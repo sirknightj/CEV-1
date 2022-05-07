@@ -10,9 +10,6 @@ var graph : Control
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 
-var turn : int = 0 # the current turn
-var _turn_count_text # the text holder object that displays "Turn: 69"
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	sidebar = get_node("UILayer/Sidebar")
@@ -33,7 +30,7 @@ func update_stats():
 func on_next_turn():
 	update_resources()
 	GameStats.resources.step()
-	turn += 1
+	GameStats.turn += 1
 	emit_signal("next_turn")
 	update_stats()
 

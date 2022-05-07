@@ -8,6 +8,8 @@ var resources : GameObjs.Resources
 
 var grid_size : int # the number of squares the grid is at the moment
 
+var turn : int # The current month
+
 var _initial_reserves = {
 	GameData.ResourceType.FOOD: 100.0,
 	GameData.ResourceType.OXYGEN: 100.0,
@@ -38,6 +40,7 @@ func _init():
 
 func _ready():
 	grid_size = 15
+	turn = 0
 	resources = GameObjs.Resources.new()
 	resources.set_reserves(_initial_reserves)
 

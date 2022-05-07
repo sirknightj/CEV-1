@@ -12,23 +12,24 @@ var show_resources : Dictionary = {}
 func _ready():
 	game = get_parent().get_parent()
 	Turn_Count_Text = get_node("TurnCount")
+	update_turn_display()
 
 	# TODO: tutorial progression
 	for resource in GameData.ResourceType.values():
 		show_resources[resource] = true
 
 func _on_NextTurnButton_pressed() -> void:
-	update_turn_display()
 	game.on_next_turn()
+	update_turn_display()
 	game.place_building(-GameStats.grid_size / 2 * GameData.SQUARE_SIZE, -GameStats.grid_size / 2 * GameData.SQUARE_SIZE)
-	if game.turn % 5 == 0:
+	if GameStats.turn % 5 == 0:
 		grid.set_grid_size(GameStats.grid_size + 6)
 
 """
 	Updates the text displaying the turn count
 """
 func update_turn_display() -> void:
-	Turn_Count_Text.text = "Month " + str(game.turn)
+	Turn_Count_Text.text = "Month " + str(GameStats.turn)
 
 """
 	Updates the text displaying the resource counts
