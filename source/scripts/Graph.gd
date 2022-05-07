@@ -88,9 +88,12 @@ func _on_hover_off() -> void:
 	$ProductionRect.hide()
 	$ConsumptionRect.hide()
 
-func _to_str(number: float, include_plus: bool) -> String:
+func _to_str(number: float, include_plus: bool, people : float = 0.0) -> String:
 	var prefix = "+" if number >= 0 and include_plus else ""
-	return prefix + str(round(number))
+	if not people:
+		return prefix + str(floor(number))
+	else:
+		return prefix + str(floor(people + number) - floor(people))
 
 func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary) -> void:
 	resource_dict = new_resource_dict
@@ -122,7 +125,7 @@ func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary)
 	$ScienceStore.text = _to_str(resources.get_reserve(GameData.ResourceType.SCIENCE), false)
 	$ScienceDiff.text = _to_str(resources.get_income(GameData.ResourceType.SCIENCE), true) + " / mo"
 	$ColonistsStore.text = _to_str(resources.get_reserve(GameData.ResourceType.PEOPLE), false)
-	$ColonistsDiff.text = _to_str(resources.get_income(GameData.ResourceType.PEOPLE), true) + " / mo"
+	$ColonistsDiff.text = _to_str(resources.get_income(GameData.ResourceType.PEOPLE), true, resources.get_reserve(GameData.ResourceType.PEOPLE)) + " / mo"
 	# TODO: set dead colonists correctly:
 	var dead = 0
 	$ColonistsDead.text = _to_str(dead, false) + " dead"
