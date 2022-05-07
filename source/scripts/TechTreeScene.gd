@@ -225,7 +225,7 @@ func _on_Control_upgrade_changed() -> void:
 
 
 func _on_BuyButton_gui_input(event: InputEvent) -> void:
-	var is_left_click = event is InputEventMouseButton and event.button_index == 1 and not event.pressed
+	var is_left_click = event is InputEventMouseButton and event.button_index == BUTTON_LEFT and not event.pressed
 	if not is_left_click:
 		return
 	var upgrade : Upgrade = tree_dict.get(selected_upgrade)
@@ -235,3 +235,10 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	upgrade.unlock()
 	print("Unlocked ", upgrade.name)
 	set_sidebar(upgrade.name)
+
+"""
+	Called when the Back button is pressed
+"""
+func _on_Back_gui_input(event):
+	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
+		get_tree().change_scene("res://scenes/MainGameScene.tscn")

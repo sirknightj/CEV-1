@@ -63,9 +63,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -668.0
-margin_top = -260.0
+margin_top = -261.0
 margin_right = -563.0
-margin_bottom = -230.0
+margin_bottom = -231.0
 mouse_filter = 1
 mouse_default_cursor_shape = 2
 theme = ExtResource( 5 )
@@ -159,3 +159,6 @@ theme = ExtResource( 5 )
 icon = ExtResource( 3 )
 
 [connection signal="pressed" from="NextMonthButton" to="." method="_on_NextTurnButton_pressed"]
+[connection signal="gui_input" from="NextMonth/Label" to="." method="_on_Next_Month_gui_input"]
+[connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Upgrades_gui_input"]
+[connection signal="gui_input" from="Undo/Label" to="." method="_on_Undo_gui_input"]

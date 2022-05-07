@@ -35,3 +35,24 @@ func update_turn_display() -> void:
 """
 func update_displays() -> void:
 	pass
+
+"""
+	Called when the NextMonth button is clicked
+"""
+func _on_Next_Month_gui_input(event):
+	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
+		print("Next Month was clicked!")
+
+"""
+	Called when the Undo button is clicked
+"""
+func _on_Undo_gui_input(event):
+	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
+		print("Undo was clicked!")
+
+"""
+	Called when the Upgrades button is clicked
+"""
+func _on_Upgrades_gui_input(event):
+	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
+		get_tree().change_scene("res://scenes/TechTreeScene.tscn")
