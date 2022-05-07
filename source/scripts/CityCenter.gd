@@ -26,5 +26,5 @@ func get_effect(resource : int) -> float:
 		if turn_start > turn:
 			break
 		factor = turn_progression[turn_start]
-
+	
 	return _people() * factor

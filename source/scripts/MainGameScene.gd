@@ -54,6 +54,19 @@ func update_resources() -> void:
 	for building in get_tree().get_nodes_in_group("buildings"):
 		for resource in GameData.ResourceType.values():
 			GameStats.resources.add_effect(resource, building.get_effect(resource))
+	# Handle colonists dying
+	var dead_colonists : int = 0
+	for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
+		if GameStats.resources.get_reserve(resource) < 0:
+			var colonists_unsupported : int = -ceil(GameStats.resources.get_reserve(resource) / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource])
+			if dead_colonists < colonists_unsupported:
+				dead_colonists = colonists_unsupported
+	if dead_colonists:
+		GameStats.resources.consume(GameData.ResourceType.PEOPLE, dead_colonists)
+		GameStats.dead += dead_colonists
+		for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
+			GameStats.resources.give(resource, GameData.PEOPLE_RESOURCE_CONSUMPTION[resource] * dead_colonists)
+		print(str(dead_colonists) + " people died!")
 
 func aggregate_resources() -> Dictionary:
 	var dict : Dictionary = {}

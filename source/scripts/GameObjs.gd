@@ -50,8 +50,12 @@ class Resources:
 			assert(GameData.is_resource_type(type))
 			resources[type].reserves = reserves[type]
 	
+	func give(type : int, amount : float):
+		assert(amount > 0 and GameData.is_resource_type(type))
+		resources[type].reserves += amount
+	
 	func consume(type : int, amount : float):
-		assert(amount > 0)
+		assert(amount > 0 and GameData.is_resource_type(type))
 		resources[type].reserves -= amount
 
 	func get_reserve(type : int) -> float:

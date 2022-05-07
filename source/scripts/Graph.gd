@@ -127,5 +127,5 @@ func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary)
 	$ColonistsStore.text = _to_str(resources.get_reserve(GameData.ResourceType.PEOPLE), false)
 	$ColonistsDiff.text = _to_str(resources.get_income(GameData.ResourceType.PEOPLE), true, resources.get_reserve(GameData.ResourceType.PEOPLE)) + " / mo"
 	# TODO: set dead colonists correctly:
-	var dead = 0
+	var dead = GameStats.dead
 	$ColonistsDead.text = _to_str(dead, false) + " dead"
