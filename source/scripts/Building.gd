@@ -1,6 +1,8 @@
 extends Node2D
 class_name Building
 
+signal building_changed
+
 const HOVER_MODULATE : Color = Color.white
 const DRAGGING_MODULATE : Color = Color.white
 var REGULAR_MODULATE : Color = Color.white.darkened(0.2)
@@ -41,9 +43,14 @@ var _shadow : Node2D
 var _ghost : Node2D
 
 enum MouseState {
+	# The building is free to be selected
 	NONE,
+	# The mouse is hovering over the building
 	HOVER,
+	# The building is being dragged by the mouse
 	DRAGGING,
+	# Some other building is being dragged by the mouse, we shouldn't react to
+	# it
 	HOLDING
 }
 
@@ -65,8 +72,12 @@ var square_scene = preload("res://scenes/GridSquare.tscn")
 var _global_pos_next : Vector2
 var _global_rot_next : float
 
-export(bool) var enabled = true
+var _original_pos : Vector2
+var _original_rot : float
+
+export(bool) var enabled = false
 export(bool) var locked = false
+export(bool) var purchased = false
 export(Array) var shape
 export(Dictionary) var building_effects
 export(Dictionary) var building_cost
@@ -199,23 +210,37 @@ func snapped(position) -> Vector2:
 
 func get_effect(resource_type : int) -> float:
 	assert(GameData.is_resource_type(resource_type))
-	if (!enabled):
+	if not enabled:
 		return 0.0
 	return building_effects[resource_type]
 
 func get_adjacent_buildings() -> Array:
 	var buildings : Dictionary = {}
 	for grid_square in get_children():
-		if (!(grid_square is GridSquare)):
+		if not (grid_square is GridSquare):
 			continue
 		var adjacents : Array = grid_square.get_adjacent_buildings()
 		for adjacent in adjacents:
 			buildings[adjacent] = true
 	return buildings.keys()
 
+"""
+	Buy the Building with our stored cost if needed (the building has not been
+	purchased yet) and possible (there are enough resources to buy it).
+"""
+func purchase_building():
+	if not purchased and GameStats.resources.try_consume(building_cost):
+		purchased = true
+		# Automatically enable on purchase
+		enabled = true
+
 func _update_shadow():
 	_shadow.global_position = snapped(_ghost.global_position)
 	_shadow.rotation = rotation
+	if (_mouse_state == MouseState.DRAGGING):
+		_shadow.visible = true
+	else:
+		_shadow.visible = false
 
 func _update_ghost() -> void:
 	_ghost.global_position = snapped(global_position)
@@ -232,19 +257,14 @@ func _process(_delta):
 	if (locked):
 		return
 
-	if (_mouse_state == MouseState.HOVER):
+	if _mouse_state == MouseState.HOVER:
 		set_modulate(HOVER_MODULATE)
-	elif (_mouse_state == MouseState.DRAGGING):
+	elif _mouse_state == MouseState.DRAGGING:
 		set_modulate(DRAGGING_MODULATE)
 		set_z_index(DRAGGING_Z_INDEX)
 	else:
 		set_modulate(REGULAR_MODULATE)
 		set_z_index(REGULAR_Z_INDEX)
-
-	if (_mouse_state == MouseState.DRAGGING):
-		_shadow.visible = true
-	else:
-		_shadow.visible = false
 
 func _physics_process(_delta):
 	if not is_overlapping() and _is_in_grid_range():
@@ -253,35 +273,58 @@ func _physics_process(_delta):
 	rotation = _global_rot_next
 	_update_ghost()
 
+func _on_building_place():
+	purchase_building()
+	if purchased:
+		_mouse_state = MouseState.HOVER
+		_global_pos_next = _shadow.global_position
+		_global_rot_next = _shadow.rotation
+		emit_signal("building_changed")
+	else:
+		_mouse_state = MouseState.NONE
+		_global_pos_next = _original_pos
+		_global_rot_next = _original_rot
+		_ghost.global_position = _original_pos
+		_ghost.rotation = _original_rot
+		_shadow.global_position = _original_pos
+		_shadow.rotation = _original_rot
+
+func _on_building_grab():
+	_last_mouse_pos = get_global_mouse_position()
+	_original_pos = global_position
+	_original_rot = rotation
+
+func _on_building_rotate():
+	rotate_around(get_global_mouse_position(), PI/2)
+
+func _on_mouse_move():
+	_global_pos_next += (get_global_mouse_position() - _last_mouse_pos)
+	_last_mouse_pos = get_global_mouse_position()
+
 func _unhandled_input(event : InputEvent):
-	if (locked):
+	if locked:
 		return
 
-	if (event.is_action_pressed("building_grab")):
+	if event.is_action_pressed("building_grab"):
 		if (_mouse_state == MouseState.HOVER):
-			print("Grab ", get_name())
-			print("Adjacents: ", get_adjacent_buildings())
-			_last_mouse_pos = get_global_mouse_position()
+			_on_building_grab()
 			_mouse_state = MouseState.DRAGGING
 		else:
 			_mouse_state = MouseState.HOLDING
 
-	if (event.is_action_released("building_grab")):
+	if event.is_action_released("building_grab"):
 		if (_mouse_state == MouseState.DRAGGING):
-			_mouse_state = MouseState.HOVER
-			_global_pos_next = _shadow.global_position
-			_global_rot_next = _shadow.rotation
+			_on_building_place()
 		else:
 			_mouse_state = MouseState.NONE
 
 	if (event.is_action_pressed("building_rotate")
-			&& _mouse_state == MouseState.DRAGGING):
-		rotate_around(get_global_mouse_position(), PI/2)
+			and _mouse_state == MouseState.DRAGGING):
+		_on_building_rotate()
 
 	if (event is InputEventMouseMotion
-			&& _mouse_state == MouseState.DRAGGING):
-		_global_pos_next += (get_global_mouse_position() - _last_mouse_pos)
-		_last_mouse_pos = get_global_mouse_position()
+			and _mouse_state == MouseState.DRAGGING):
+		_on_mouse_move()
 
 func _on_MainSquare_mouse_entered():
 	_mouse_enters += 1

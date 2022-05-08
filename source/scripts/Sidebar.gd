@@ -21,7 +21,7 @@ func _ready():
 func _on_NextTurnButton_pressed() -> void:
 	game.on_next_turn()
 	update_turn_display()
-	game.place_building(-GameStats.grid_size / 2 * GameData.SQUARE_SIZE, -GameStats.grid_size / 2 * GameData.SQUARE_SIZE)
+	game.place_building(350, 50)
 	if GameStats.turn % 5 == 0:
 		grid.set_grid_size(GameStats.grid_size + 6)
 

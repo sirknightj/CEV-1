@@ -79,12 +79,12 @@ func aggregate_resources() -> Dictionary:
 			dict[resource][building.building_id] += building.get_effect(resource)
 	return dict
 
-func _on_Building_ready():
+func _on_Building_updated():
 	update_resources()
 	sidebar.update_displays()
 	update_stats()
 
 func _on_SceneTree_node_added(_node):
-	if (!(_node is Building)):
+	if not (_node is Building):
 		return
-	_node.connect("ready", self, "_on_Building_ready")
+	_node.connect("building_changed", self, "_on_Building_updated")
