@@ -16,5 +16,7 @@ centered = false
 [node name="Ghost" type="Node2D" parent="."]
 visible = false
 
-[node name="Sprite" type="Sprite" parent="."]
+[node name="Main" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="Main"]
 centered = false

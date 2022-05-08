@@ -2,6 +2,8 @@ extends Node2D
 class_name Building
 
 signal building_changed
+signal building_grabbed
+signal building_released
 
 const HOVER_MODULATE : Color = Color.white
 const DRAGGING_MODULATE : Color = Color.white
@@ -39,6 +41,7 @@ const _size : float = GameData.SQUARE_SIZE
 	right size and shape to fit the grid. The GridSquare objects hold the actual
 	collision detectors and render the actual textures for the building.
 """
+var _main : Node2D
 var _shadow : Node2D
 var _ghost : Node2D
 
@@ -85,10 +88,10 @@ export(int) var building_id = -1
 export(Color) var color
 export(Texture) var texture
 
-func init_shadow():
-	remove_child(_shadow)
-	get_parent().add_child(_shadow)
-	_shadow.global_position = _global_pos_next
+func _setup_sprite(sprite : Sprite):
+	var scale = Vector2(_size / SPRITE_BASE_SIZE, _size / SPRITE_BASE_SIZE)
+	sprite.texture = texture
+	sprite.scale = scale
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -98,20 +101,17 @@ func _ready():
 	assert(color != null)
 	assert(texture != null)
 
+	_main = get_node("Main")
 	if (building_id > 0 && building_id < GameData.BuildingType.size()):
 		set_name("AUTOGEN_" + GameData.BuildingType.keys()[building_id])
 	_last_mouse_pos = get_global_mouse_position()
-	_global_pos_next = global_position
+	_global_pos_next = _main.global_position
 	_global_rot_next = 0
 	_shadow = get_node("Shadow")
 	_ghost = get_node("Ghost")
-	call_deferred("init_shadow")
 
-	var scale = Vector2(_size / SPRITE_BASE_SIZE, _size / SPRITE_BASE_SIZE)
-	$Sprite.texture = texture
-	$Sprite.scale = scale
-	_shadow.get_node("Sprite").texture = texture
-	_shadow.get_node("Sprite").scale = scale
+	_setup_sprite(_main.get_node("Sprite"))
+	_setup_sprite(_shadow.get_node("Sprite"))
 
 	init_shape()
 	add_to_group("buildings")
@@ -122,8 +122,7 @@ func init_shape():
 	for x in range(shape.size()):
 		for y in range(shape[x].size()):
 			if (shape[x][y]):
-				setup_main_square(create_grid_square(x, y, self))
-				create_grid_square(x, y, _shadow).set_collision_box_size(_size)
+				setup_main_square(create_grid_square(x, y, _main))
 				setup_ghost_square(create_grid_square(x, y, _ghost))
 
 """
@@ -181,7 +180,7 @@ func building_mouse_exited():
 
 func set_next_pos(pos : Vector2):
 	_global_pos_next = pos
-	global_position = pos
+	_main.global_position = pos
 	_ghost.global_position = pos
 	_shadow.global_position = pos
 
@@ -236,14 +235,15 @@ func purchase_building():
 
 func _update_shadow():
 	_shadow.global_position = snapped(_ghost.global_position)
-	_shadow.rotation = rotation
+	_shadow.rotation = _ghost.rotation
 	if (_mouse_state == MouseState.DRAGGING):
 		_shadow.visible = true
 	else:
 		_shadow.visible = false
 
 func _update_ghost() -> void:
-	_ghost.global_position = snapped(global_position)
+	_ghost.global_position = snapped(_main.global_position)
+	_ghost.rotation = _main.rotation
 
 func _is_in_grid_range() -> bool:
 	for child in _ghost.get_children():
@@ -254,7 +254,7 @@ func _is_in_grid_range() -> bool:
 	return true
 
 func _process(_delta):
-	if (locked):
+	if locked:
 		return
 
 	if _mouse_state == MouseState.HOVER:
@@ -266,15 +266,21 @@ func _process(_delta):
 		set_modulate(REGULAR_MODULATE)
 		set_z_index(REGULAR_Z_INDEX)
 
+func _update_main():
+	_main.global_position = _global_pos_next
+	_main.rotation = _global_rot_next
+
 func _physics_process(_delta):
 	if not is_overlapping() and _is_in_grid_range():
 		_update_shadow()
-	global_position = _global_pos_next
-	rotation = _global_rot_next
+	_update_main()
 	_update_ghost()
 
+func has_moved():
+	return _shadow.global_position != _original_pos or _shadow.rotation != _original_rot
+
 func _on_building_place():
-	if not is_overlapping() and _is_in_grid_range():
+	if has_moved():
 		purchase_building()
 	if purchased:
 		_mouse_state = MouseState.HOVER
@@ -289,11 +295,23 @@ func _on_building_place():
 		_ghost.rotation = _original_rot
 		_shadow.global_position = _original_pos
 		_shadow.rotation = _original_rot
+		_on_building_release()
+
+func force_update():
+	_on_mouse_move()
+	_update_main()
+	_update_ghost()
+	_update_shadow()
+	_shadow.visible = false
+
+func _on_building_release():
+	emit_signal("building_released")
 
 func _on_building_grab():
 	_last_mouse_pos = get_global_mouse_position()
-	_original_pos = global_position
-	_original_rot = rotation
+	_original_pos = _main.global_position
+	_original_rot = _main.rotation
+	emit_signal("building_grabbed")
 
 func _on_building_rotate():
 	rotate_around(get_global_mouse_position(), PI/2)
@@ -308,8 +326,8 @@ func _unhandled_input(event : InputEvent):
 
 	if event.is_action_pressed("building_grab"):
 		if (_mouse_state == MouseState.HOVER):
-			_on_building_grab()
 			_mouse_state = MouseState.DRAGGING
+			_on_building_grab()
 		else:
 			_mouse_state = MouseState.HOLDING
 
@@ -318,6 +336,7 @@ func _unhandled_input(event : InputEvent):
 			_on_building_place()
 		else:
 			_mouse_state = MouseState.NONE
+			_on_building_release()
 
 	if (event.is_action_pressed("building_rotate")
 			and _mouse_state == MouseState.DRAGGING):

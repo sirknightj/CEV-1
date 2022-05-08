@@ -123,6 +123,7 @@ margin_left = -13.0
 margin_top = 374.0
 margin_right = 559.0
 margin_bottom = 717.0
+mouse_filter = 2
 
 [node name="BuildingEntries" type="VBoxContainer" parent="ScrollContainer"]
 

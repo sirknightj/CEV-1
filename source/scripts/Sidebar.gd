@@ -43,7 +43,20 @@ func _ready():
 			entry.add_child(building_cost_label)
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
-			_building.set_next_pos(_building.snapped(Vector2(350, 50)))
+			#_building.set_next_pos(_building.snapped(Vector2(0, 50)))
+			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
+			_building.connect("building_released", self, "_on_Building_building_released", [_building])
+			break
+
+func _on_Building_building_grabbed(building : Building):
+	building.get_parent().remove_child(building)
+	get_tree().current_scene.add_child(building)
+	building.force_update()
+
+func _on_Building_building_released(building : Building):
+	if not building.purchased:
+		building.get_parent().remove_child(building)
+		self.add_child(building)
 
 """
 	Updates the text displaying the turn count
