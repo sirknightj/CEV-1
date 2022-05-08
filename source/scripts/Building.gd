@@ -304,6 +304,9 @@ func _on_building_place():
 		force_set(_original_pos, _original_rot)
 	_on_building_release()
 
+func force_update():
+	_last_mouse_pos = get_global_mouse_position()
+
 func _on_building_release():
 	emit_signal("building_released")
 
