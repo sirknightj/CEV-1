@@ -23,7 +23,27 @@ func _ready():
 	for resource in GameData.ResourceType.values():
 		show_resources[resource] = true
 	
-	for building in GameStats.buildings_dict:
+	populate_sidebar_correctly()
+
+func repopulate_sidebar():
+	populate_sidebar_correctly()
+
+func populate_sidebar_correctly() -> void:
+	if GameStats.turn == 0:
+		populate_sidebar_with_buildings([GameData.BuildingType.WATER1])
+
+func populate_sidebar_with_buildings(_buildings : Array) -> void:
+	var buildings : Dictionary = {}
+	for building in _buildings:
+		assert(GameData.BuildingType.values().has(building))
+		buildings[building] = GameStats.buildings_dict[building]
+	populate_sidebar(buildings)
+
+func populate_sidebar(buildings : Dictionary) -> void:
+	for child in $ScrollContainer/BuildingEntries.get_children():
+		$ScrollContainer/BuildingEntries.remove_child(child)
+
+	for building in buildings:
 		var building_stats = GameStats.buildings_dict[building]
 		
 		if building_stats.name != 'City center':
@@ -75,7 +95,7 @@ func _ready():
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
 			_building.set_physics_process(false)
-			_building.force_set(Vector2(1050, 360), 0.0)
+			_building.force_set(Vector2(1050, 375), 0.0)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
 
 func _on_Building_building_grabbed(building : Building):
@@ -91,6 +111,7 @@ func _on_Building_building_grabbed(building : Building):
 func _on_Building_building_released(building : Building, original_pos : Vector2, hbox : HBoxContainer):
 	building.disconnect("building_released", self, "_on_Building_building_released")
 	if building.purchased:
+		repopulate_sidebar()
 		building.disconnect("building_grabbed", self, "_on_Building_building_grabbed")
 	else:
 		building.set_physics_process(false)
