@@ -6,6 +6,8 @@ extends Node
 
 var resources : GameObjs.Resources
 
+var logger : Logger.Log
+
 var grid_size : int # the number of squares the grid is at the moment
 
 var turn : int # The current month
@@ -49,6 +51,7 @@ var buildings_json = "res://assets/data/buildings.json"
 var buildings_dict : Dictionary = {}
 
 func _init():
+	logger = Logger.Log.new()
 	load_buildings_json()
 
 func _ready():

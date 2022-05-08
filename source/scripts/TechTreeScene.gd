@@ -241,4 +241,5 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 """
 func _on_Back_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
+		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuBackClicked)
 		get_tree().change_scene("res://scenes/MainGameScene.tscn")
