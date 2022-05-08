@@ -29,14 +29,6 @@ margin_right = 560.0
 margin_bottom = 720.0
 color = Color( 0.72549, 0.0941176, 0.0941176, 0.25098 )
 
-[node name="NextMonthButton" type="Button" parent="."]
-margin_left = 344.0
-margin_top = 394.0
-margin_right = 519.0
-margin_bottom = 433.0
-theme = ExtResource( 5 )
-text = "Next Month"
-
 [node name="TurnCount" type="Label" parent="."]
 margin_left = 23.0
 margin_top = 22.0
@@ -158,7 +150,6 @@ margin_bottom = 82.0
 theme = ExtResource( 5 )
 icon = ExtResource( 3 )
 
-[connection signal="pressed" from="NextMonthButton" to="." method="_on_NextTurnButton_pressed"]
 [connection signal="gui_input" from="NextMonth/Label" to="." method="_on_Next_Month_gui_input"]
 [connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Upgrades_gui_input"]
 [connection signal="gui_input" from="Undo/Label" to="." method="_on_Undo_gui_input"]

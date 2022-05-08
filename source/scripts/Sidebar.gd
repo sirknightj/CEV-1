@@ -18,13 +18,6 @@ func _ready():
 	for resource in GameData.ResourceType.values():
 		show_resources[resource] = true
 
-func _on_NextTurnButton_pressed() -> void:
-	game.on_next_turn()
-	update_turn_display()
-	game.place_building(350, 50)
-	if GameStats.turn % 5 == 0:
-		grid.set_grid_size(GameStats.grid_size + 6)
-
 """
 	Updates the text displaying the turn count
 """
@@ -42,7 +35,11 @@ func update_displays() -> void:
 """
 func _on_Next_Month_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
-		print("Next Month was clicked!")
+		game.on_next_turn()
+		update_turn_display()
+		game.place_building(350, 50)
+		if GameStats.turn % 5 == 0:
+			grid.set_grid_size(GameStats.grid_size + 6)
 
 """
 	Called when the Undo button is clicked
