@@ -311,6 +311,7 @@ func _on_building_release():
 	emit_signal("building_released")
 
 func _on_building_grab():
+	GameStats.current_selected_building = self
 	_last_mouse_pos = get_global_mouse_position()
 	_original_pos = _main.global_position
 	_original_rot = _main.rotation
