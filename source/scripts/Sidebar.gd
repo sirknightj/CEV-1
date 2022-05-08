@@ -8,6 +8,8 @@ var Turn_Count_Text # The node holding the turn count text
 
 var show_resources : Dictionary = {}
 
+onready var building_scene = preload("res://scenes/Building.tscn")
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	game = get_parent().get_parent()
@@ -17,6 +19,31 @@ func _ready():
 	# TODO: tutorial progression
 	for resource in GameData.ResourceType.values():
 		show_resources[resource] = true
+	
+	for building in GameStats.buildings_dict:
+		var building_stats = GameStats.buildings_dict[building]
+		
+		if building_stats.name != 'City center':
+			var entry : HBoxContainer = HBoxContainer.new()
+			var building_name_label : Label = Label.new()
+			building_name_label.text = GameStats.buildings_dict[building].name
+			entry.add_child(building_name_label)
+			
+			# Attempting to put a building inside of the HBox
+			var _building = building_scene.instance()
+			_building.shape = building_stats.shape
+			_building.building_effects = building_stats.effects
+			_building.building_cost = building_stats.cost
+			_building.building_id = building
+			_building.texture = GameData.BUILDING_TO_TEXTURE[building]
+			entry.add_child(_building)
+
+			var building_cost_label : Label = Label.new()
+			var cost_text : String = "TODO: Cost"
+			entry.add_child(building_cost_label)
+			
+			$ScrollContainer/BuildingEntries.add_child(entry)
+			_building.set_next_pos(_building.snapped(Vector2(350, 50)))
 
 """
 	Updates the text displaying the turn count
