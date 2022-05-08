@@ -68,11 +68,13 @@ func _ready():
 			_building.set_next_pos(_building.snapped(Vector2(1050, 360)))
 			var original_pos = _building.snapped(Vector2(1050, 360))
 			var original_rot = _building.rotation
+			_building.set_physics_process(false)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
 			_building.connect("building_released", self, "_on_Building_building_released", [_building, original_pos, original_rot, entry])
-			break
+
 
 func _on_Building_building_grabbed(building : Building):
+	building.set_physics_process(true)
 	building.get_parent().remove_child(building)
 	get_tree().current_scene.add_child(building)
 	building.force_update()
@@ -82,6 +84,7 @@ func _on_Building_building_released(building : Building, original_pos : Vector2,
 		building.disconnect("building_grabbed", self, "_on_Building_building_grabbed")
 		building.disconnect("building_released", self, "_on_Building_building_released")
 	else:
+		building.set_physics_process(false)
 		building.get_parent().remove_child(building)
 		hbox.add_child(building)
 		building.force_set(original_pos, original_rot)
