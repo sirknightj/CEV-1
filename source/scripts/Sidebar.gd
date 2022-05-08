@@ -32,6 +32,7 @@ func _ready():
 			var spacing1 : MarginContainer = MarginContainer.new()
 			spacing1.add_constant_override("margin_right", 20)
 			entry.add_child(spacing1)
+			spacing1.add_constant_override("margin_top", building_stats.shape.size() * GameData.SQUARE_SIZE)
 			
 			var building_cost_label : Label = Label.new()
 			var cost_text : String = "Cost:\n"
@@ -65,8 +66,8 @@ func _ready():
 			entry.add_child(_building)
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
-			_building.set_next_pos(_building.snapped(Vector2(1050, 360)))
-			var original_pos = _building.snapped(Vector2(1050, 360))
+			_building.set_next_pos(Vector2(1050, 370))
+			var original_pos = Vector2(1050, 370)
 			var original_rot = _building.rotation
 			_building.set_physics_process(false)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
