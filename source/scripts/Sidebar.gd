@@ -29,6 +29,32 @@ func _ready():
 			building_name_label.text = GameStats.buildings_dict[building].name
 			entry.add_child(building_name_label)
 			
+			var spacing1 : MarginContainer = MarginContainer.new()
+			spacing1.add_constant_override("margin_right", 20)
+			entry.add_child(spacing1)
+			
+			var building_cost_label : Label = Label.new()
+			var cost_text : String = "Cost:\n"
+			for stat in building_stats.cost:
+				if (building_stats.cost[stat] > 0):
+					cost_text += str(building_stats.cost[stat]) + " " + GameData.ResourceType.keys()[stat].capitalize() + "\n"
+			building_cost_label.text = cost_text.strip_edges()
+			entry.add_child(building_cost_label)
+			
+			var spacing2 : MarginContainer = MarginContainer.new()
+			spacing2.add_constant_override("margin_right", 20)
+			entry.add_child(spacing2)
+			
+			var building_effects_label : Label = Label.new()
+			var effects_text : String = "Effects:\n"
+			for stat in building_stats.effects:
+				if (building_stats.effects[stat] > 0):
+					effects_text += "+" + str(building_stats.effects[stat]) + " " + GameData.ResourceType.keys()[stat].capitalize() + "/mo\n"
+				elif (building_stats.effects[stat] < 0):
+					effects_text += "-" + str(-building_stats.effects[stat]) + " " + GameData.ResourceType.keys()[stat].capitalize() + "/mo\n"
+			building_effects_label.text = effects_text.strip_edges()
+			entry.add_child(building_effects_label)
+			
 			# Attempting to put a building inside of the HBox
 			var _building = building_scene.instance()
 			_building.shape = building_stats.shape
@@ -37,17 +63,13 @@ func _ready():
 			_building.building_id = building
 			_building.texture = GameData.BUILDING_TO_TEXTURE[building]
 			entry.add_child(_building)
-
-			var building_cost_label : Label = Label.new()
-			var cost_text : String = "TODO: Cost"
-			entry.add_child(building_cost_label)
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
-			#_building.set_next_pos(_building.snapped(Vector2(0, 50)))
-			var original_pos = _building.global_position
+			_building.set_next_pos(_building.snapped(Vector2(1050, 360)))
+			var original_pos = _building.snapped(Vector2(1050, 360))
 			var original_rot = _building.rotation
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
-			_building.connect("building_released", self, "_on_Building_building_released", [_building, original_pos, original_rot])
+			_building.connect("building_released", self, "_on_Building_building_released", [_building, original_pos, original_rot, entry])
 			break
 
 func _on_Building_building_grabbed(building : Building):
@@ -55,13 +77,13 @@ func _on_Building_building_grabbed(building : Building):
 	get_tree().current_scene.add_child(building)
 	building.force_update()
 
-func _on_Building_building_released(building : Building, original_pos : Vector2, original_rot : float):
+func _on_Building_building_released(building : Building, original_pos : Vector2, original_rot : float, hbox : HBoxContainer):
 	if building.purchased:
 		building.disconnect("building_grabbed", self, "_on_Building_building_grabbed")
 		building.disconnect("building_released", self, "_on_Building_building_released")
 	else:
 		building.get_parent().remove_child(building)
-		self.add_child(building)
+		hbox.add_child(building)
 		building.force_set(original_pos, original_rot)
 
 """
