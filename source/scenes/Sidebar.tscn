@@ -126,6 +126,7 @@ margin_bottom = 717.0
 mouse_filter = 2
 
 [node name="BuildingEntries" type="VBoxContainer" parent="ScrollContainer"]
+mouse_filter = 2
 
 [connection signal="gui_input" from="NextMonth/Label" to="." method="_on_Next_Month_gui_input"]
 [connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Upgrades_gui_input"]

@@ -284,6 +284,8 @@ func force_set(pos : Vector2, rot : float):
 	_original_rot = rot
 	_global_pos_next = pos
 	_global_rot_next = rot
+	_main.global_position = pos
+	_main.rotation = rot
 	_ghost.global_position = pos
 	_ghost.rotation = rot
 	_shadow.global_position = pos
@@ -300,12 +302,7 @@ func _on_building_place():
 	else:
 		_mouse_state = MouseState.NONE
 		force_set(_original_pos, _original_rot)
-		_on_building_release()
-
-func force_update():
-	_on_mouse_move()
-	_update_main()
-	force_set(_main.global_position, _main.rotation)
+	_on_building_release()
 
 func _on_building_release():
 	emit_signal("building_released")
@@ -320,7 +317,7 @@ func _on_building_grab():
 func _on_building_rotate():
 	rotate_around(get_global_mouse_position(), PI/2)
 
-func _on_mouse_move():
+func _on_building_drag():
 	_global_pos_next += (get_global_mouse_position() - _last_mouse_pos)
 	_last_mouse_pos = get_global_mouse_position()
 
@@ -347,7 +344,7 @@ func _unhandled_input(event : InputEvent):
 
 	if (event is InputEventMouseMotion
 			and _mouse_state == MouseState.DRAGGING):
-		_on_mouse_move()
+		_on_building_drag()
 
 func _on_MainSquare_mouse_entered():
 	_mouse_enters += 1

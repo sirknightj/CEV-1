@@ -10,6 +10,9 @@ var show_resources : Dictionary = {}
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 
+func _setup_control_element(control : Control):
+	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	game = get_parent().get_parent()
@@ -25,15 +28,18 @@ func _ready():
 		
 		if building_stats.name != 'City center':
 			var entry : HBoxContainer = HBoxContainer.new()
+			_setup_control_element(entry)
 			var building_name_label : Label = Label.new()
 			building_name_label.text = GameStats.buildings_dict[building].name
 			entry.add_child(building_name_label)
 			
 			var spacing1 : MarginContainer = MarginContainer.new()
+			_setup_control_element(spacing1)
 			spacing1.add_constant_override("margin_right", 20)
 			entry.add_child(spacing1)
 			
 			var building_cost_label : Label = Label.new()
+			_setup_control_element(building_cost_label)
 			var cost_text : String = "Cost:\n"
 			for stat in building_stats.cost:
 				if (building_stats.cost[stat] > 0):
@@ -42,10 +48,12 @@ func _ready():
 			entry.add_child(building_cost_label)
 			
 			var spacing2 : MarginContainer = MarginContainer.new()
+			_setup_control_element(spacing2)
 			spacing2.add_constant_override("margin_right", 20)
 			entry.add_child(spacing2)
 			
 			var building_effects_label : Label = Label.new()
+			_setup_control_element(building_effects_label)
 			var effects_text : String = "Effects:\n"
 			for stat in building_stats.effects:
 				if (building_stats.effects[stat] > 0):
@@ -65,29 +73,29 @@ func _ready():
 			entry.add_child(_building)
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
-			_building.set_next_pos(_building.snapped(Vector2(1050, 360)))
-			var original_pos = _building.snapped(Vector2(1050, 360))
-			var original_rot = _building.rotation
 			_building.set_physics_process(false)
+			_building.force_set(Vector2(1050, 360), 0.0)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
-			_building.connect("building_released", self, "_on_Building_building_released", [_building, original_pos, original_rot, entry])
-
 
 func _on_Building_building_grabbed(building : Building):
-	building.set_physics_process(true)
+	building.connect("building_released", self, "_on_Building_building_released", [building, building._main.global_position, building.get_parent()])
+	var diff = get_global_mouse_position() - building._main.global_position
 	building.get_parent().remove_child(building)
 	get_tree().current_scene.add_child(building)
 	building.force_update()
+	var mouse = get_tree().current_scene.get_global_mouse_position()
+	building.force_set(mouse - diff, 0.0)
+	building.set_physics_process(true)
 
-func _on_Building_building_released(building : Building, original_pos : Vector2, original_rot : float, hbox : HBoxContainer):
+func _on_Building_building_released(building : Building, original_pos : Vector2, hbox : HBoxContainer):
+	building.disconnect("building_released", self, "_on_Building_building_released")
 	if building.purchased:
 		building.disconnect("building_grabbed", self, "_on_Building_building_grabbed")
-		building.disconnect("building_released", self, "_on_Building_building_released")
 	else:
 		building.set_physics_process(false)
 		building.get_parent().remove_child(building)
 		hbox.add_child(building)
-		building.force_set(original_pos, original_rot)
+		building.force_set(original_pos, 0.0)
 
 """
 	Updates the text displaying the turn count
