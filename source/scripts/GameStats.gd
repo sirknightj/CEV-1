@@ -31,6 +31,8 @@ var _initial_reserves = {
 	GameData.ResourceType.PEOPLE: 25.0
 }
 
+var current_selected_building : Building = null
+
 class BuildingStats:
 	var shape : Array
 	var name : String
