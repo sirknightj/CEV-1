@@ -274,7 +274,8 @@ func _physics_process(_delta):
 	_update_ghost()
 
 func _on_building_place():
-	purchase_building()
+	if not is_overlapping() and _is_in_grid_range():
+		purchase_building()
 	if purchased:
 		_mouse_state = MouseState.HOVER
 		_global_pos_next = _shadow.global_position
