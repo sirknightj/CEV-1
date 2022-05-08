@@ -118,10 +118,12 @@ func _on_Next_Month_gui_input(event):
 func _on_Undo_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
 		print("Undo was clicked!")
+		GameStats.logger.log_action_with_no_level(Logger.Actions.UndoClicked)
 
 """
 	Called when the Upgrades button is clicked
 """
 func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
+		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuClicked)
 		get_tree().change_scene("res://scenes/TechTreeScene.tscn")

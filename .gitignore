@@ -1,3 +1,7 @@
+# Export
+export/*
+!export/logging.js
+
 # Godot 4+ specific ignores
 .godot/
 
@@ -13,7 +17,6 @@ export_presets.cfg
 .mono/
 data_*/
 
-export
 bin
 dump
 .vscode

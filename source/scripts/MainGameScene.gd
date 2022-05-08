@@ -12,6 +12,7 @@ onready var building_scene = preload("res://scenes/Building.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	GameStats.logger.start_new_session(123)
 	sidebar = get_node("UILayer/Sidebar")
 	graph = get_node("UILayer/Sidebar/Graph")
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
