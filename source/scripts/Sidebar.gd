@@ -69,6 +69,7 @@ func _ready():
 			_building.set_next_pos(Vector2(1050, 370))
 			var original_pos = Vector2(1050, 370)
 			var original_rot = _building.rotation
+			_building.force_set(original_pos, original_rot)
 			_building.set_physics_process(false)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
 			_building.connect("building_released", self, "_on_Building_building_released", [_building, original_pos, original_rot, entry])
