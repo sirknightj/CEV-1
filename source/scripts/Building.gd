@@ -279,6 +279,16 @@ func _physics_process(_delta):
 func has_moved():
 	return _shadow.global_position != _original_pos or _shadow.rotation != _original_rot
 
+func force_set(pos : Vector2, rot : float):
+	_original_pos = pos
+	_original_rot = rot
+	_global_pos_next = pos
+	_global_rot_next = rot
+	_ghost.global_position = pos
+	_ghost.rotation = rot
+	_shadow.global_position = pos
+	_shadow.rotation = rot
+
 func _on_building_place():
 	if has_moved():
 		purchase_building()
@@ -289,20 +299,13 @@ func _on_building_place():
 		emit_signal("building_changed")
 	else:
 		_mouse_state = MouseState.NONE
-		_global_pos_next = _original_pos
-		_global_rot_next = _original_rot
-		_ghost.global_position = _original_pos
-		_ghost.rotation = _original_rot
-		_shadow.global_position = _original_pos
-		_shadow.rotation = _original_rot
+		force_set(_original_pos, _original_rot)
 		_on_building_release()
 
 func force_update():
 	_on_mouse_move()
 	_update_main()
-	_update_ghost()
-	_update_shadow()
-	_shadow.visible = false
+	force_set(_main.global_position, _main.rotation)
 
 func _on_building_release():
 	emit_signal("building_released")
@@ -325,18 +328,17 @@ func _unhandled_input(event : InputEvent):
 		return
 
 	if event.is_action_pressed("building_grab"):
-		if (_mouse_state == MouseState.HOVER):
+		if _mouse_state == MouseState.HOVER:
 			_mouse_state = MouseState.DRAGGING
 			_on_building_grab()
 		else:
 			_mouse_state = MouseState.HOLDING
 
 	if event.is_action_released("building_grab"):
-		if (_mouse_state == MouseState.DRAGGING):
+		if _mouse_state == MouseState.DRAGGING:
 			_on_building_place()
 		else:
 			_mouse_state = MouseState.NONE
-			_on_building_release()
 
 	if (event.is_action_pressed("building_rotate")
 			and _mouse_state == MouseState.DRAGGING):

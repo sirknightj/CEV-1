@@ -44,8 +44,10 @@ func _ready():
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
 			#_building.set_next_pos(_building.snapped(Vector2(0, 50)))
+			var original_pos = _building.global_position
+			var original_rot = _building.rotation
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
-			_building.connect("building_released", self, "_on_Building_building_released", [_building])
+			_building.connect("building_released", self, "_on_Building_building_released", [_building, original_pos, original_rot])
 			break
 
 func _on_Building_building_grabbed(building : Building):
@@ -53,10 +55,14 @@ func _on_Building_building_grabbed(building : Building):
 	get_tree().current_scene.add_child(building)
 	building.force_update()
 
-func _on_Building_building_released(building : Building):
-	if not building.purchased:
+func _on_Building_building_released(building : Building, original_pos : Vector2, original_rot : float):
+	if building.purchased:
+		building.disconnect("building_grabbed", self, "_on_Building_building_grabbed")
+		building.disconnect("building_released", self, "_on_Building_building_released")
+	else:
 		building.get_parent().remove_child(building)
 		self.add_child(building)
+		building.force_set(original_pos, original_rot)
 
 """
 	Updates the text displaying the turn count
