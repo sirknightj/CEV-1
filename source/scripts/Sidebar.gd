@@ -37,6 +37,7 @@ func _ready():
 			_setup_control_element(spacing1)
 			spacing1.add_constant_override("margin_right", 20)
 			entry.add_child(spacing1)
+			spacing1.add_constant_override("margin_top", building_stats.shape.size() * GameData.SQUARE_SIZE)
 			
 			var building_cost_label : Label = Label.new()
 			_setup_control_element(building_cost_label)
