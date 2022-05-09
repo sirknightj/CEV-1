@@ -14,6 +14,8 @@ func _people():
 	return GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
 
 func get_effect(resource : int) -> float:
+	if (resource == GameData.ResourceType.SCIENCE):
+		return 1.0
 	if (resource != GameData.ResourceType.PEOPLE):
 		var consumption_map = GameData.PEOPLE_RESOURCE_CONSUMPTION
 		if (consumption_map.has(resource)):
