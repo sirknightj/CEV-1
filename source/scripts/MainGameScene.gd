@@ -23,7 +23,11 @@ func _ready():
 """
 func update_stats():
 	sidebar.update_displays()
-	graph.update_graph(GameStats.resources, aggregate_resources())
+	var all_resources = aggregate_resources()
+	var shown_resources : Dictionary = {}
+	for resource in $UILayer/Sidebar.show_resources:
+		shown_resources[resource] = all_resources[resource]
+	graph.update_graph(GameStats.resources, shown_resources)
 
 """
 	Handles the logic for the next turn

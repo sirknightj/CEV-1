@@ -21,7 +21,7 @@ func _ready():
 
 	# TODO: tutorial progression
 	for resource in GameData.ResourceType.values():
-		show_resources[resource] = true
+		show_resources[resource] = false
 	
 	populate_sidebar_correctly()
 
@@ -29,8 +29,26 @@ func repopulate_sidebar():
 	populate_sidebar_correctly()
 
 func populate_sidebar_correctly() -> void:
-	if GameStats.turn == 0:
+	var turn = GameStats.turn
+	if turn <= 2:
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1])
+		show_resources([GameData.ResourceType.WATER])
+	elif turn <= 5:
+		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1])
+		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD])
+	elif turn <= 7:
+		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1])
+		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL])
+	elif turn <= 14:
+		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1])
+		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY])
+	else:
+		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1, GameData.BuildingType.SCI1])
+		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
+
+func show_resources(resources : Array) -> void:
+	for resource in GameData.ResourceType.values():
+		show_resources[resource] = resources.has(resource)
 
 func populate_sidebar_with_buildings(_buildings : Array) -> void:
 	var buildings : Dictionary = {}
@@ -138,9 +156,10 @@ func _on_Next_Month_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
 		game.on_next_turn()
 		update_turn_display()
-		game.place_building(350, 50)
+		# game.place_building(350, 50)
 		if GameStats.turn % 5 == 0:
 			grid.set_grid_size(GameStats.grid_size + 6)
+		populate_sidebar_correctly()
 
 """
 	Called when the Undo button is clicked
