@@ -121,13 +121,23 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			_building.building_cost = building_stats.cost
 			_building.building_id = building
 			_building.texture = GameData.BUILDING_TO_TEXTURE[building]
-			_building.locked = not GameStats.resources.enough_resources(building_stats.cost)
+			_building.locked = not available(building) or not GameStats.resources.enough_resources(building_stats.cost)
+			print(str(building) + " is " + str(_building.locked))
 			entry.add_child(_building)
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
 			_building.set_physics_process(false)
 			_building.force_set(Vector2(1050, 375), 0.0)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
+
+func available(building) -> bool:
+	print(str(building) + " " + str(GameStats.restrictions))
+	if GameStats.restrictions.has(building):
+		return true
+	elif GameStats.restrictions.keys().size() == 0:
+		return true
+	else:
+		return false
 
 func _on_Building_building_grabbed(building : Building):
 	building.connect("building_released", self, "_on_Building_building_released", [building, building._main.global_position, building.get_parent()])
@@ -142,13 +152,13 @@ func _on_Building_building_grabbed(building : Building):
 func _on_Building_building_released(building : Building, original_pos : Vector2, hbox : HBoxContainer):
 	building.disconnect("building_released", self, "_on_Building_building_released")
 	if building.purchased:
-		repopulate_sidebar()
 		building.disconnect("building_grabbed", self, "_on_Building_building_grabbed")
 		if GameStats.buildings_owned.has(building.building_id):
 			GameStats.buildings_owned[building.building_id] += 1
 		else:
 			GameStats.buildings_owned[building.building_id] = 1
-		update_next_month_button()
+		placed_building(building.building_id)
+		repopulate_sidebar()
 	else:
 		building.set_physics_process(false)
 		building.get_parent().remove_child(building)
@@ -175,8 +185,8 @@ func _on_Next_Month_gui_input(event):
 		game.on_next_turn()
 		update_turn_display()
 		# game.place_building(350, 50)
-		if GameStats.turn % 5 == 0:
-			grid.set_grid_size(GameStats.grid_size + 6)
+		#if GameStats.turn % 5 == 0:
+		#	grid.set_grid_size(GameStats.grid_size + 6)
 		populate_sidebar_correctly()
 
 """
@@ -195,20 +205,17 @@ func _on_Upgrades_gui_input(event):
 		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuClicked)
 		get_tree().change_scene("res://scenes/TechTreeScene.tscn")
 
-func update_next_month_button():
-	var turn = GameStats.turn
-	if turn == 0:
-		pass
-	elif turn == 1:
-		if GameStats.buildings_owned.has(GameData.BuildingType.WATER1) and GameStats.buildings_owned[GameData.BuildingType.WATER1] == 5:
-			toggle_next_month_button(true)
-	elif turn == 2:
-		if GameStats.buildings_owned.has(GameData.BuildingType.WATER1) and GameStats.buildings_owned[GameData.BuildingType.WATER1] == 6:
-			toggle_next_month_button(true)
-	elif turn == 3:
-		$TextBox.text = "Each human also consumes 2 food/month.\nFEED THE HUMANS"
-	else:
-		$TextBox.text = ""
+"""
+	Tells the restrictions that the player has placed a building
+"""
+func placed_building(building : int):
+	if GameStats.restrictions.has(building) and GameStats.restrictions[building] > 1:
+		GameStats.restrictions[building] -= 1
+	elif GameStats.restrictions.has(building) and GameStats.restrictions[building] == 1:
+		GameStats.restrictions.erase(building)
+	
+	if GameStats.restrictions.keys().size() == 0:
+		toggle_next_month_button(true)
 
 """
 	Lets the "next month" button be clicked

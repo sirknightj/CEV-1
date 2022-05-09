@@ -9,6 +9,7 @@ var resources : GameObjs.Resources
 var logger : Logger.Log
 
 var buildings_owned : Dictionary = {}
+var restrictions : Dictionary = {}
 
 var grid_size : int # the number of squares the grid is at the moment
 
@@ -28,8 +29,8 @@ var dead : int # The number of dead colonists
 var _initial_reserves = {
 	GameData.ResourceType.FOOD: 10000.0,
 	GameData.ResourceType.OXYGEN: 10000.0,
-	GameData.ResourceType.WATER: 5500.0,
-	GameData.ResourceType.METAL: 30.0,
+	GameData.ResourceType.WATER: 55.0,
+	GameData.ResourceType.METAL: 0.0,
 	GameData.ResourceType.ELECTRICITY: 5000.0,
 	GameData.ResourceType.SCIENCE: 0.0,
 	GameData.ResourceType.PEOPLE: 50.0
