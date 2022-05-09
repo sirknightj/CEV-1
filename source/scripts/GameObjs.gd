@@ -114,3 +114,90 @@ class Resources:
 	func step_n(n : int):
 		for resource in resources.values():
 			resource.step_n(n)
+
+class UpgradeTree:
+	var _tree_json = "res://assets/data/tree.json"
+	var tree_dict : Dictionary = {} # upgrade name -> upgrade data
+	
+	func _init() -> void:
+		load_tree_json()
+		recalculate_available()
+	
+	# Loads upgrades configuration file
+	func load_tree_json() -> void:
+		var file = File.new()
+		assert(file.file_exists(_tree_json))
+		file.open(_tree_json, File.READ)
+		var data = parse_json(file.get_as_text())
+		for upgrade in data:
+			tree_dict[upgrade.name] = Upgrade.new(upgrade, self)
+		print("Loaded the upgrades: " + str(tree_dict.keys()))
+		file.close()
+	
+	func recalculate_available() -> void:
+		for v in tree_dict.values():
+			v.recalculate_available()
+
+class Upgrade:
+	var name: String
+	var prereqs: Array
+	var type: String
+	var description: String
+	var effects: String
+	var unlocks: String
+	var science_cost: int
+	var unlocked: bool
+	var available: bool
+	var enabled: bool
+	var node: Node
+	var links: Array
+	var pos: Vector2
+	var tree: UpgradeTree
+	
+	func _init(data, parent_tree) -> void:
+		name = data.name
+		prereqs = data.prereqs if data.prereqs else []
+		type = data.type
+		description = data.description
+		effects = data.effects
+		unlocks = data.unlocks
+		science_cost = -data.science_cost
+		node = null
+		unlocked = data.starting
+		available = false # correctly set by recalculate_available later
+		enabled = data.starting
+		tree = parent_tree
+		
+		var minX = 0.7
+		var maxX = 9.1
+		var minY = 0.7
+		var maxY = 9.1
+		
+		var minScreenX = 100
+		var maxScreenX = 800
+		var minScreenY = 100
+		var maxScreenY = 720 - 90
+		
+		var x = (data.x-minX) / (maxX-minX) * (maxScreenX-minScreenX) + minScreenX
+		var y = (data.y-minY) / (maxY-minY) * (maxScreenY-minScreenY) + minScreenY
+		pos = Vector2(x, y)
+	
+	func unlock() -> void:
+		assert(not unlocked and available)
+		unlocked = true
+		enabled = true
+		tree.recalculate_available()
+	
+	func recalculate_available() -> void:
+		if available:
+			return
+		for p in prereqs:
+			if not tree.tree_dict.get(p).unlocked:
+				return
+		available = true
+	
+	func get_all_pre_links() -> Array:
+		var res = links.duplicate()
+		for p in prereqs:
+			res += tree.tree_dict.get(p).get_all_pre_links()
+		return res

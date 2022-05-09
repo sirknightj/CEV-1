@@ -5,6 +5,7 @@ extends Node
 # And also access any variable in this class by doing GameStats.var_name
 
 var resources : GameObjs.Resources
+var upgrade_tree : GameObjs.UpgradeTree
 
 var logger : Logger.Log
 
@@ -55,6 +56,7 @@ var buildings_dict : Dictionary = {}
 
 func _init():
 	logger = Logger.Log.new()
+	upgrade_tree = GameObjs.UpgradeTree.new()
 	load_buildings_json()
 
 func _ready():

@@ -203,7 +203,7 @@ func _on_Undo_gui_input(event):
 func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuClicked)
-		get_tree().change_scene("res://scenes/TechTreeScene.tscn")
+		$CanvasLayer/TechTree.show()
 
 """
 	Tells the restrictions that the player has placed a building

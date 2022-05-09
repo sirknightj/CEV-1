@@ -1,9 +1,15 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/Grid.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Sidebar.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/buildings/CityCenter.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scripts/MainGameScene.gd" type="Script" id=4]
+[ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=5]
+[ext_resource path="res://BAHNSCHRIFT.TTF" type="DynamicFontData" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 20
+font_data = ExtResource( 6 )
 
 [node name="MainGameScene" type="Node2D"]
 script = ExtResource( 4 )
@@ -30,7 +36,13 @@ script = ExtResource( 1 )
 current = true
 
 [node name="TextBox" type="Label" parent="."]
-margin_left = -185.0
-margin_top = 205.0
-margin_right = -101.0
-margin_bottom = 219.0
+margin_left = -214.0
+margin_top = 154.0
+margin_right = 111.0
+margin_bottom = 256.0
+theme = ExtResource( 5 )
+custom_fonts/font = SubResource( 1 )
+text = "TUTORIAL TEXT
+TUTORIAL TEXT
+TUTORIAL TEXT"
+autowrap = true

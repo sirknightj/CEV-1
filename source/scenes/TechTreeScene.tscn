@@ -98,5 +98,4 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[connection signal="upgrade_changed" from="." to="." method="_on_Control_upgrade_changed"]
 [connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Back_gui_input"]
