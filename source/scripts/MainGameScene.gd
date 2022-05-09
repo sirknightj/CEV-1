@@ -37,6 +37,7 @@ func on_next_turn():
 	update_resources()
 	GameStats.resources.step()
 	GameStats.turn += 1
+	update_resources()
 	emit_signal("next_turn")
 	update_stats()
 	show_correct_text()
