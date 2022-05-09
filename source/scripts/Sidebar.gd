@@ -36,19 +36,30 @@ func populate_sidebar_correctly() -> void:
 	elif turn <= 5:
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1])
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD])
-	elif turn <= 7:
+	elif turn <= 9:
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1])
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL])
 	elif turn <= 14:
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1])
-		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY])
+		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
 	else:
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1, GameData.BuildingType.SCI1])
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
 
 func show_resources(resources : Array) -> void:
 	for resource in GameData.ResourceType.values():
-		show_resources[resource] = resources.has(resource)
+		toggle(resource, resources.has(resource))
+
+func toggle(resource : int, hide : bool) -> void:
+	# Graph handles food, water, oxygen, metal, and energy
+	if $Graph.RESOURCE_TYPE_TO_STRING.has(resource):
+		var node = get_node("Graph/HBoxContainer/" + $Graph.RESOURCE_TYPE_TO_STRING[resource])
+		node.visible = hide
+	elif resource == GameData.ResourceType.SCIENCE:
+		$Graph/Label.visible = hide
+		$Graph/ScienceStore.visible = hide
+		$Graph/ScienceDiff.visible = hide
+	# ignore people
 
 func populate_sidebar_with_buildings(_buildings : Array) -> void:
 	var buildings : Dictionary = {}
