@@ -44,37 +44,40 @@ func on_next_turn():
 func show_correct_text():
 	var turn = GameStats.turn
 	if turn == 0:
-		$TextBox.text = "Welcome! You're in charge of a Mars colony of 50 colonists.\nClick the \"Next Month\" button to start."
+		$UILayer/TextBox.text = "Welcome! You're in charge of a Mars colony of 50 colonists.\nClick the \"Next Month\" button to start."
 	elif turn == 1:
-		$TextBox.text = "Each colonist consumes 1 water/month.\nPlace down some wells to ensure you don't run out of water!\nTip: use R to rotate the building."
+		$UILayer/TextBox.text = "Each colonist consumes 1 water/month.\nPlace down some wells to ensure you don't run out of water!\nTip: use R to rotate the building."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 30)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 5}
 	elif turn == 2:
-		$TextBox.text = "Notice how another person has arrived to your colony.\nYou now need another well to support your growing population."
+		$UILayer/TextBox.text = "Notice how another person has arrived to your colony.\nYou now need another well to support your growing population."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 6)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1}
 	elif turn == 3:
-		$TextBox.text = "Each human also consumes 2 food/month.\nFEED THE HUMANS"
+		$UILayer/TextBox.text = "Each human also consumes 2 food/month.\nFEED THE HUMANS"
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 106)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 5}
 	elif turn == 4:
-		$TextBox.text = "Keep expanding your colony! And keep your people alive!"
+		$UILayer/TextBox.text = "Keep expanding your colony! And keep your people alive!"
 	elif turn == 5:
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 32)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 2, GameData.BuildingType.FOOD1: 1}
 	elif turn == 6:
-		$TextBox.text = "Humans consume 1 oxygen/mo.\nMake sure you have enough!\nYour colony will need metal to building more buildings."
+		$UILayer/TextBox.text = "Humans consume 1 oxygen/mo.\nMake sure you have enough!\nYour colony will need metal to building more buildings."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 246)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 2}
 	elif turn == 9:
-		$TextBox.text = "Your mine needs electricity to function.\nPlace down some solar panels."		
+		$UILayer/TextBox.text = "Your mine needs electricity to function.\nPlace down some solar panels."
+		$UILayer/Sidebar.toggle_next_month_button(false)
+		GameStats.resources.give(GameData.ResourceType.METAL, 32)
+		GameStats.restrictions = {GameData.BuildingType.ELEC1: 4}	
 	else:
-		$TextBox.text = ""
+		$UILayer/TextBox.text = ""
 
 """
 	Place the building at the grid square (_x, _y).

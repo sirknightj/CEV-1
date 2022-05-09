@@ -37,7 +37,7 @@ func populate_sidebar_correctly() -> void:
 	elif turn <= 5:
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1])
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD])
-	elif turn <= 9:
+	elif turn <= 8:
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1])
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL])
 	elif turn <= 14:
@@ -122,16 +122,23 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			_building.building_id = building
 			_building.texture = GameData.BUILDING_TO_TEXTURE[building]
 			_building.locked = not available(building) or not GameStats.resources.enough_resources(building_stats.cost)
-			print(str(building) + " is " + str(_building.locked))
+			print(GameStats.buildings_dict[building].name + ", locked=" + str(_building.locked) + ", available=" + str(available(building)) + ", enough=" + str(GameStats.resources.enough_resources(building_stats.cost)))
 			entry.add_child(_building)
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
 			_building.set_physics_process(false)
 			_building.force_set(Vector2(1050, 375), 0.0)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
+	
+	var extra_spacing : HBoxContainer = HBoxContainer.new()
+	var spacer : MarginContainer = MarginContainer.new()
+	_setup_control_element(spacer)
+	_setup_control_element(extra_spacing)
+	spacer.add_constant_override("margin_top", GameData.SQUARE_SIZE)
+	extra_spacing.add_child(spacer)
+	$ScrollContainer/BuildingEntries.add_child(extra_spacing)
 
 func available(building) -> bool:
-	print(str(building) + " " + str(GameStats.restrictions))
 	if GameStats.restrictions.has(building):
 		return true
 	elif GameStats.restrictions.keys().size() == 0:
@@ -181,13 +188,21 @@ func update_displays() -> void:
 	Called when the NextMonth button is clicked
 """
 func _on_Next_Month_gui_input(event):
-	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT and not ignore_next_month):
-		game.on_next_turn()
-		update_turn_display()
-		# game.place_building(350, 50)
-		#if GameStats.turn % 5 == 0:
-		#	grid.set_grid_size(GameStats.grid_size + 6)
-		populate_sidebar_correctly()
+	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
+		if ignore_next_month:
+			if GameStats.restrictions.keys().size() > 0:
+				var required_placements = "Please place down "
+				for building in GameStats.restrictions.keys():
+					required_placements += (str(GameStats.restrictions[building]) + " more " + pluralize(GameStats.restrictions[building], GameStats.buildings_dict[building].name) + ", ") # TODO: get the actual building name instead of printing out the building id
+				required_placements.erase(required_placements.length() - 2, 2)
+				get_parent().get_parent().get_node("UILayer/TextBox").text = required_placements + "."
+		else:
+			game.on_next_turn()
+			update_turn_display()
+			# game.place_building(350, 50)
+			#if GameStats.turn % 5 == 0:
+			#	grid.set_grid_size(GameStats.grid_size + 6)
+			populate_sidebar_correctly()
 
 """
 	Called when the Undo button is clicked
@@ -217,6 +232,12 @@ func placed_building(building : int):
 	if GameStats.restrictions.keys().size() == 0:
 		toggle_next_month_button(true)
 
+func pluralize(quantity : int, word : String) -> String:
+	if quantity == 1:
+		return word
+	else:
+		return word + "s"
+		
 """
 	Lets the "next month" button be clicked
 	_clickable: true if the button is allowed to be clicked, false otherwise
