@@ -98,7 +98,7 @@ const SQUARE_SIZE : float = 32.0
 """
 const TURN_PROGRESSION : Dictionary = {
 	0: 0,
-	1: 0.05,
+	1: 0.02,
 	2: 0.08,
 	4: 0.25,
 	5: 0.08,

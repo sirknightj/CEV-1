@@ -17,6 +17,7 @@ func _ready():
 	graph = get_node("UILayer/Sidebar/Graph")
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 	update_stats()
+	show_correct_text()
 
 """
 	Update visualizations
@@ -38,6 +39,24 @@ func on_next_turn():
 	GameStats.turn += 1
 	emit_signal("next_turn")
 	update_stats()
+	show_correct_text()
+
+func show_correct_text():
+	var turn = GameStats.turn
+	if turn == 0:
+		$TextBox.text = "Welcome! You're in charge of a Mars colony of 50 survivors.\nClick the \"Next Month\" button to start."
+	elif turn == 1:
+		$TextBox.text = "Each colonist consumes 1 water/month.\nPlace down some wells to ensure you don't run out of water!\nTip: use R to rotate the building."
+		$UILayer/Sidebar.toggle_next_month_button(false)
+	elif turn == 2:
+		GameStats.resources.give(GameData.ResourceType.METAL, 6)
+		$TextBox.text = "Notice how another person has arrived to your colony.\nYou now need another well to support your growing population."
+		$UILayer/Sidebar.toggle_next_month_button(false)
+	elif turn == 3:
+		GameStats.resources.give(GameData.ResourceType.METAL, 10000)
+		$TextBox.text = "Each human also consumes 2 food/month.\nFEED THE HUMANS"
+	else:
+		$TextBox.text = ""
 
 """
 	Place the building at the grid square (_x, _y).

@@ -7,6 +7,7 @@ var game : Game # The node representing the game
 var Turn_Count_Text # The node holding the turn count text
 
 var show_resources : Dictionary = {}
+var ignore_next_month : bool = false # default = clickable
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 
@@ -120,6 +121,7 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			_building.building_cost = building_stats.cost
 			_building.building_id = building
 			_building.texture = GameData.BUILDING_TO_TEXTURE[building]
+			_building.locked = not GameStats.resources.enough_resources(building_stats.cost)
 			entry.add_child(_building)
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
@@ -142,6 +144,11 @@ func _on_Building_building_released(building : Building, original_pos : Vector2,
 	if building.purchased:
 		repopulate_sidebar()
 		building.disconnect("building_grabbed", self, "_on_Building_building_grabbed")
+		if GameStats.buildings_owned.has(building.building_id):
+			GameStats.buildings_owned[building.building_id] += 1
+		else:
+			GameStats.buildings_owned[building.building_id] = 1
+		update_next_month_button()
 	else:
 		building.set_physics_process(false)
 		building.get_parent().remove_child(building)
@@ -164,7 +171,7 @@ func update_displays() -> void:
 	Called when the NextMonth button is clicked
 """
 func _on_Next_Month_gui_input(event):
-	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
+	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT and not ignore_next_month):
 		game.on_next_turn()
 		update_turn_display()
 		# game.place_building(350, 50)
@@ -176,7 +183,7 @@ func _on_Next_Month_gui_input(event):
 	Called when the Undo button is clicked
 """
 func _on_Undo_gui_input(event):
-	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
+	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		print("Undo was clicked!")
 		GameStats.logger.log_action_with_no_level(Logger.Actions.UndoClicked)
 
@@ -184,6 +191,33 @@ func _on_Undo_gui_input(event):
 	Called when the Upgrades button is clicked
 """
 func _on_Upgrades_gui_input(event):
-	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
+	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuClicked)
 		get_tree().change_scene("res://scenes/TechTreeScene.tscn")
+
+func update_next_month_button():
+	var turn = GameStats.turn
+	if turn == 0:
+		pass
+	elif turn == 1:
+		if GameStats.buildings_owned.has(GameData.BuildingType.WATER1) and GameStats.buildings_owned[GameData.BuildingType.WATER1] == 5:
+			toggle_next_month_button(true)
+	elif turn == 2:
+		if GameStats.buildings_owned.has(GameData.BuildingType.WATER1) and GameStats.buildings_owned[GameData.BuildingType.WATER1] == 6:
+			toggle_next_month_button(true)
+	elif turn == 3:
+		$TextBox.text = "Each human also consumes 2 food/month.\nFEED THE HUMANS"
+	else:
+		$TextBox.text = ""
+
+"""
+	Lets the "next month" button be clicked
+	_clickable: true if the button is allowed to be clicked, false otherwise
+"""
+func toggle_next_month_button(_clickable) -> void:
+	if _clickable:
+		ignore_next_month = false
+		$NextMonth/Label.set("custom_colors/font_color", Color("#FFFFFF"))
+	else:
+		ignore_next_month = true
+		$NextMonth/Label.set("custom_colors/font_color", Color("#808080"))

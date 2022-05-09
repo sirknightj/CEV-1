@@ -63,12 +63,17 @@ class Resources:
 	# consumed the appropriate resources, returns false if there are not enough
 	# so we do not consume any resources
 	func try_consume(consume_resources : Dictionary) -> bool:
-		for type in consume_resources.keys():
-			assert(GameData.is_resource_type(type))
-			if resources[type].reserves < consume_resources[type]:
-				return false
+		if not enough_resources(consume_resources):
+			return false
 		for type in consume_resources.keys():
 			resources[type].reserves -= consume_resources[type]
+		return true
+	
+	func enough_resources(res : Dictionary) -> bool:
+		for type in res.keys():
+			assert(GameData.is_resource_type(type))
+			if resources[type].reserves < res[type]:
+				return false
 		return true
 
 	func get_reserve(type : int) -> float:
