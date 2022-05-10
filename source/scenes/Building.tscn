@@ -1,23 +1,42 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scripts/Building.gd" type="Script" id=1]
 
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+uniform float saturation: hint_range(0.0, 1.0) = 0.0;
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	COLOR.rgb = mix(vec3(dot(tex.rgb, vec3(0.3, 0.5, 0.2))), tex.rgb, saturation);
+	COLOR.a = tex.a;
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = SubResource( 1 )
+shader_param/saturation = 1.0
+
 [node name="Building" type="Node2D"]
+material = SubResource( 2 )
 z_as_relative = false
 script = ExtResource( 1 )
 
 [node name="Shadow" type="Node2D" parent="."]
 visible = false
 modulate = Color( 1, 1, 1, 0.27451 )
+use_parent_material = true
 
 [node name="Sprite" type="Sprite" parent="Shadow"]
+use_parent_material = true
 centered = false
 
 [node name="Ghost" type="Node2D" parent="."]
 visible = false
 
 [node name="Main" type="Node2D" parent="."]
+use_parent_material = true
 z_index = 1
 
 [node name="Sprite" type="Sprite" parent="Main"]
+use_parent_material = true
 centered = false

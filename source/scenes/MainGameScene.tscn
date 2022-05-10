@@ -15,8 +15,10 @@ font_data = ExtResource( 6 )
 script = ExtResource( 4 )
 
 [node name="CityCenter" parent="." instance=ExtResource( 3 )]
+material = null
 z_index = 5
 z_as_relative = true
+locked = false
 building_effects = {
 }
 building_cost = {

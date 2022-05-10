@@ -125,8 +125,8 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			_building.building_cost = building_stats.cost
 			_building.building_id = building
 			_building.texture = GameData.BUILDING_TO_TEXTURE[building]
-			_building.locked = not available(building) or not GameStats.resources.enough_resources(building_stats.cost)
-			print(GameStats.buildings_dict[building].name + ", locked=" + str(_building.locked) + ", available=" + str(available(building)) + ", enough=" + str(GameStats.resources.enough_resources(building_stats.cost)))
+			_building.set_locked(not available(building) or not GameStats.resources.enough_resources(building_stats.cost))
+			# print(GameStats.buildings_dict[building].name + ", locked=" + str(_building.locked) + ", available=" + str(available(building)) + ", enough=" + str(GameStats.resources.enough_resources(building_stats.cost)))
 			entry.add_child(_building)
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
