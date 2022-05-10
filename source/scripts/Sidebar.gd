@@ -237,6 +237,24 @@ func how_many_people_will_die_next_turn() -> int:
 	return dead_colonists
 
 """
+	Returns how much electricity you'll overdraw next turn
+	0 if your electricity reserves are fine
+"""
+func how_much_electricity_over() -> int:
+	var electricity_over : int = GameStats.resources.get_reserve(GameData.ResourceType.ELECTRICITY) + GameStats.resources.get_income(GameData.ResourceType.ELECTRICITY) - GameStats.resources.get_expense(GameData.ResourceType.ELECTRICITY)
+	if electricity_over < 0:
+		return -electricity_over
+	else:
+		return 0
+
+"""
+	Returns true if we have enough electricity for next turn
+	false otherwise
+"""
+func has_enough_electricity() -> bool:
+	return how_much_electricity_over() == 0
+
+"""
 	Returns a dictionary Resource -> # Needed to purchase a given building.
 	Empty dictionary if player has enough resources
 	_building : building id
