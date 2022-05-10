@@ -130,7 +130,7 @@ func _ready():
 func clear(node : Node2D):
 	for child in node.get_children():
 		if child is GridSquare:
-			child.queue_free()
+			child.free()
 
 func reset_graphics():
 	_mouse_enters = 0
