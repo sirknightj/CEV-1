@@ -28,7 +28,7 @@ var dead : int # The number of dead colonists
 }"""
 
 var _initial_reserves = {
-	GameData.ResourceType.FOOD: 10000.0,
+	GameData.ResourceType.FOOD: 550.0,
 	GameData.ResourceType.OXYGEN: 10000.0,
 	GameData.ResourceType.WATER: 55.0,
 	GameData.ResourceType.METAL: 0.0,

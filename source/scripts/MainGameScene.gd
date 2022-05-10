@@ -46,6 +46,7 @@ func show_correct_text():
 	var turn = GameStats.turn
 	if turn == 0:
 		$UILayer/TextBox.text = "Welcome! You're in charge of a Mars colony of 50 colonists.\nClick the \"Next Month\" button to start."
+		$UILayer/Sidebar.toggle_upgrades_button(false)
 	elif turn == 1:
 		$UILayer/TextBox.text = "Each colonist consumes 1 water/month.\nPlace down some wells to ensure you don't run out of water!\nTip: use R to rotate the building."
 		$UILayer/Sidebar.toggle_next_month_button(false)
@@ -76,7 +77,10 @@ func show_correct_text():
 		$UILayer/TextBox.text = "Your mine needs electricity to function.\nPlace down some solar panels."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 32)
-		GameStats.restrictions = {GameData.BuildingType.ELEC1: 4}	
+		GameStats.restrictions = {GameData.BuildingType.ELEC1: 4}
+	elif turn == 10:
+		$UILayer/TextBox.text = "Your city center has generated enough science for an upgrade! Spend your science points to unlock new building types and expand your colony!"
+		$UILayer/Sidebar.toggle_upgrades_button(true)
 	else:
 		$UILayer/TextBox.text = ""
 
