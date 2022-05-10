@@ -193,6 +193,7 @@ func update_displays() -> void:
 """
 func _on_Next_Month_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
+		print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:
 			if GameStats.restrictions.keys().size() > 0:
 				var required_placements = "Please place down "
@@ -239,7 +240,34 @@ func pluralize(quantity : int, word : String) -> String:
 		return word
 	else:
 		return word + "s"
-		
+
+"""
+	Returns how many people will die next turn
+	0 if no one will die next turn
+"""
+func how_many_people_will_die_next_turn() -> int:
+	var dead_colonists : int = 0
+	for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
+		var resources_have : float = GameStats.resources.get_reserve(resource) + GameStats.resources.get_income(resource) - GameStats.resources.get_expense(resource)
+		if 0 > resources_have:
+			dead_colonists = max(dead_colonists, ceil(-resources_have / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource]))
+	return dead_colonists
+
+"""
+	Returns a dictionary Resource -> # Needed to purchase a given building.
+	Empty dictionary if player has enough resources
+	_building : building id
+"""
+func resources_needed(_building) -> Dictionary:
+	assert(GameStats.buildings_dict.has(_building))
+	var needed : Dictionary = {}
+	for resource in GameStats.buildings_dict[_building].cost:
+		var amount_needed : float = GameStats.buildings_dict[_building].cost[resource]
+		var have : float = GameStats.resources.get_reserve(resource)
+		if amount_needed > have:
+			needed[resource] = abs(amount_needed - have)
+	return needed
+
 """
 	Lets the "next month" button be clicked
 	_clickable: true if the button is allowed to be clicked, false otherwise

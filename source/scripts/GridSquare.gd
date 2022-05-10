@@ -1,7 +1,7 @@
 extends Area2D
 class_name GridSquare
 
-const SPRITE_BASE_SIZE = 1
+const SPRITE_BASE_SIZE = 9
 
 var shape : RectangleShape2D
 var is_ghost_square : bool = false

@@ -13,7 +13,7 @@ var LOCKED_MODULATE : Color = Color.white.darkened(0.6)
 const DRAGGING_Z_INDEX : int = 10
 const REGULAR_Z_INDEX : int = 1
 
-const SPRITE_BASE_SIZE : int = 1
+const SPRITE_BASE_SIZE : int = 9
 
 const _size : float = GameData.SQUARE_SIZE
 
