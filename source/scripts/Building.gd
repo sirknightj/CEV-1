@@ -98,8 +98,6 @@ export(Texture) var texture
 
 var building_effect_upgrades : Dictionary = {}
 
-const DELETE_PAST_X : float = 290.0
-
 func _setup_sprite(sprite : Sprite, flipped : bool):
 	var scale = Vector2(_size / SPRITE_BASE_SIZE, _size / SPRITE_BASE_SIZE)
 	sprite.texture = texture
@@ -424,7 +422,7 @@ func force_update():
 	_last_mouse_pos = get_global_mouse_position()
 
 func is_in_trash_area():
-	return _shadow.visible and get_global_mouse_position().x > DELETE_PAST_X
+	return _shadow.visible and get_global_mouse_position().x > GameStats.grid.get_edge() * 1.10
 
 func _on_building_release():
 	if not is_instance_valid(self):
