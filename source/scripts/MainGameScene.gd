@@ -20,6 +20,7 @@ func _ready():
 	for building in get_tree().get_nodes_in_group("buildings"):
 		_on_SceneTree_node_added(building)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
+	get_tree().connect("node_removed", self, "_on_SceneTree_node_removed")
 	update_stats()
 	show_correct_text()
 	GameStats.resources.set_callback(funcref(self, "_on_Resources_changed"))
@@ -147,6 +148,10 @@ func _on_Resources_changed():
 	update_resources()
 	sidebar.update_displays()
 	update_stats()
+
+func _on_SceneTree_node_removed(_node):
+	if _node is Building:
+		_on_Resources_changed()
 
 func _on_SceneTree_node_added(_node):
 	if (not _node.is_in_group("buildings")

@@ -4,6 +4,7 @@ class_name Building
 signal building_changed
 signal building_grabbed
 signal building_released
+signal building_destroy
 
 const HOVER_MODULATE : Color = Color.white
 const DRAGGING_MODULATE : Color = Color.white
@@ -391,7 +392,19 @@ func force_set(pos : Vector2, rot : float, flip : bool):
 	_main_flipped = flip
 	reset_graphics()
 
+func destroy():
+	remove_from_group("buildings")
+	emit_signal("building_destroy")
+	GameStats.current_selected_building = null
+	Input.set_custom_mouse_cursor(null)
+	queue_free()
+
 func _on_building_place():
+	if is_in_trash_area():
+		destroy()
+		return
+	else:
+		check_trash()
 	if has_moved():
 		purchase_building()
 	if purchased:
@@ -414,11 +427,8 @@ func is_in_trash_area():
 	return _shadow.visible and get_global_mouse_position().x > DELETE_PAST_X
 
 func _on_building_release():
-	if is_in_trash_area():
-		queue_free()
+	if not is_instance_valid(self):
 		return
-	else:
-		check_trash()
 	if GameStats.current_selected_building == self:
 		GameStats.current_selected_building = null
 	_emit_release_on_next_physics = true
@@ -439,11 +449,14 @@ func _on_building_flip():
 	set_building_flip(!_main_flipped)
 
 func _on_building_drag():
+	check_trash()
 	_global_pos_next += (get_global_mouse_position() - _last_mouse_pos)
 	_last_mouse_pos = get_global_mouse_position()
 
 func _unhandled_input(event : InputEvent):
 	if locked:
+		return
+	if not is_instance_valid(self):
 		return
 
 	if event.is_action_pressed("building_grab"):

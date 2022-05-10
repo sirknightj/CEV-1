@@ -125,6 +125,7 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		_building.set_physics_process(false)
 		_building.force_set(building_pos, 0.0, false)
 		_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
+		_building.connect("building_destroy", self, "repopulate_sidebar")
 
 func available(building) -> bool:
 	return GameStats.restrictions.empty() or GameStats.restrictions.has(building)
@@ -148,15 +149,9 @@ func _on_Building_building_released(building : Building, original_pos : Vector2,
 		else:
 			GameStats.buildings_owned[building.building_id] = 1
 		placed_building(building.building_id)
-		repopulate_sidebar()
 	else:
-		building.set_physics_process(false)
-		var parent = building.get_parent()
-		if parent:
-			parent.remove_child(building)
-		if building_row:
-			building_row.add_child(building)
-		building.force_set(original_pos, 0.0, false)
+		building.destroy()
+	repopulate_sidebar()
 
 """
 	Updates the text displaying the turn count
