@@ -242,6 +242,10 @@ func pluralize(quantity : int, word : String) -> String:
 	else:
 		return word + "s"
 
+"""
+	Returns how many people will die next turn
+	0 if no one will die next turn
+"""
 func how_many_people_will_die_next_turn() -> int:
 	var dead_colonists : int = 0
 	for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
@@ -249,6 +253,21 @@ func how_many_people_will_die_next_turn() -> int:
 		if 0 > resources_have:
 			dead_colonists = max(dead_colonists, ceil(-resources_have / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource]))
 	return dead_colonists
+
+"""
+	Returns a dictionary Resource -> # Needed to purchase a given building.
+	Empty dictionary if player has enough resources
+	_building : building id
+"""
+func resources_needed(_building) -> Dictionary:
+	assert(GameStats.buildings_dict.has(_building))
+	var needed : Dictionary = {}
+	for resource in GameStats.buildings_dict[_building].cost:
+		var amount_needed : float = GameStats.buildings_dict[_building].cost[resource]
+		var have : float = GameStats.resources.get_reserve(resource)
+		if amount_needed > have:
+			needed[resource] = abs(amount_needed - have)
+	return needed
 
 """
 	Lets the "next month" button be clicked
