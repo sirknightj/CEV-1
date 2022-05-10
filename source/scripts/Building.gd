@@ -63,6 +63,7 @@ var _mouse_state : int = MouseState.NONE
 var _mouse_enters : int = 0
 var _overlapping_areas : int = 0
 var square_scene = preload("res://scenes/GridSquare.tscn")
+var trash_icon = preload("res://assets/images/trash.png")
 
 """
 	These are needed because of the following Godot bug:
@@ -95,6 +96,8 @@ export(Color) var color
 export(Texture) var texture
 
 var building_effect_upgrades : Dictionary = {}
+
+const DELETE_PAST_X : float = 290.0
 
 func _setup_sprite(sprite : Sprite, flipped : bool):
 	var scale = Vector2(_size / SPRITE_BASE_SIZE, _size / SPRITE_BASE_SIZE)
@@ -297,6 +300,12 @@ func purchase_building():
 		# Automatically enable on purchase
 		enabled = true
 
+func check_trash():
+	if is_in_trash_area():
+		Input.set_custom_mouse_cursor(trash_icon)
+	else:
+		Input.set_custom_mouse_cursor(null)
+
 func _update_shadow():
 	_shadow_flipped_next = _ghost_flipped
 	_shadow.global_position = snapped(_ghost.global_position)
@@ -401,7 +410,15 @@ func _on_building_place():
 func force_update():
 	_last_mouse_pos = get_global_mouse_position()
 
+func is_in_trash_area():
+	return _shadow.visible and get_global_mouse_position().x > DELETE_PAST_X
+
 func _on_building_release():
+	if is_in_trash_area():
+		queue_free()
+		return
+	else:
+		check_trash()
 	if GameStats.current_selected_building == self:
 		GameStats.current_selected_building = null
 	_emit_release_on_next_physics = true
