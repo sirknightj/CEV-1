@@ -191,6 +191,7 @@ func update_displays() -> void:
 """
 func _on_Next_Month_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
+		print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:
 			if GameStats.restrictions.keys().size() > 0:
 				var required_placements = "Please place down "
@@ -244,10 +245,9 @@ func pluralize(quantity : int, word : String) -> String:
 func how_many_people_will_die_next_turn() -> int:
 	var dead_colonists : int = 0
 	for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
-		if GameStats.resources.get_reserve(resource) < 0:
-			var colonists_unsupported : int = -ceil(GameStats.resources.get_reserve(resource) / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource])
-			if dead_colonists < colonists_unsupported:
-				dead_colonists = colonists_unsupported
+		var resources_have : float = GameStats.resources.get_reserve(resource) + GameStats.resources.get_income(resource) - GameStats.resources.get_expense(resource)
+		if 0 > resources_have:
+			dead_colonists = max(dead_colonists, ceil(-resources_have / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource]))
 	return dead_colonists
 
 """
