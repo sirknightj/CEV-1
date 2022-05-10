@@ -35,43 +35,43 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 76.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 75, 235 )
+rect_min_size = Vector2( 76, 235 )
 rect_pivot_offset = Vector2( 266, 201 )
 
 [node name="Food" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 79.0
-margin_right = 155.0
+margin_left = 80.0
+margin_right = 156.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 75, 235 )
+rect_min_size = Vector2( 76, 235 )
 rect_pivot_offset = Vector2( 266, 201 )
 
 [node name="Oxygen" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 158.0
-margin_right = 234.0
+margin_left = 160.0
+margin_right = 236.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 75, 235 )
+rect_min_size = Vector2( 76, 235 )
 rect_pivot_offset = Vector2( 266, 201 )
 
 [node name="Energy" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 237.0
-margin_right = 313.0
+margin_left = 240.0
+margin_right = 316.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 75, 235 )
+rect_min_size = Vector2( 76, 235 )
 rect_pivot_offset = Vector2( 266, 201 )
 
 [node name="Metal" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 316.0
-margin_right = 392.0
+margin_left = 320.0
+margin_right = 396.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 75, 235 )
+rect_min_size = Vector2( 76, 235 )
 rect_pivot_offset = Vector2( 266, 201 )
 
 [node name="Label" type="Label" parent="."]

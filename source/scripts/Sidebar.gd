@@ -8,6 +8,7 @@ var Turn_Count_Text # The node holding the turn count text
 
 var show_resources : Dictionary = {}
 var ignore_next_month : bool = false # default = clickable
+var ignore_upgrades_button = true # default = unclickable
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 
@@ -74,7 +75,8 @@ func populate_sidebar_with_buildings(_buildings : Array) -> void:
 func populate_sidebar(buildings : Dictionary) -> void:
 	for child in $ScrollContainer/BuildingEntries.get_children():
 		$ScrollContainer/BuildingEntries.remove_child(child)
-
+	
+	var scroll_offset = $ScrollContainer.get_v_scrollbar().value
 	for building in buildings:
 		var building_stats = GameStats.buildings_dict[building]
 		
@@ -129,7 +131,7 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
 			_building.set_physics_process(false)
-			_building.force_set(Vector2(1050, 375), 0.0)
+			_building.force_set(Vector2(1050, 375 - scroll_offset), 0.0)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
 	
 	var extra_spacing : HBoxContainer = HBoxContainer.new()
@@ -220,7 +222,8 @@ func _on_Undo_gui_input(event):
 func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuClicked)
-		$CanvasLayer/TechTree.show()
+		if not ignore_upgrades_button:
+			$CanvasLayer/TechTree.show()
 
 """
 	Tells the restrictions that the player has placed a building
@@ -244,10 +247,21 @@ func pluralize(quantity : int, word : String) -> String:
 	Lets the "next month" button be clicked
 	_clickable: true if the button is allowed to be clicked, false otherwise
 """
-func toggle_next_month_button(_clickable) -> void:
+func toggle_next_month_button(_clickable : bool) -> void:
+	ignore_next_month = not _clickable
 	if _clickable:
-		ignore_next_month = false
 		$NextMonth/Label.set("custom_colors/font_color", Color("#FFFFFF"))
 	else:
-		ignore_next_month = true
 		$NextMonth/Label.set("custom_colors/font_color", Color("#808080"))
+
+"""
+	Lets the "upgrades" button be clicked
+	_clickable: true if the button is allowed to be clicked, false otherwise
+"""
+func toggle_upgrades_button(_clickable) -> void:
+	ignore_upgrades_button = not _clickable
+	if _clickable:
+		$Upgrades/Label.set("custom_colors/font_color", Color("#FFFFFF"))
+	else:
+		$Upgrades/Label.set("custom_colors/font_color", Color("#808080"))
+		

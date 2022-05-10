@@ -17,10 +17,14 @@ class GameResource:
 class Resources:
 	var resources : Dictionary = {}
 	var callback : FuncRef
+	var resources_generated : Dictionary = {}  # only for final stats purposes
+	var resources_used : Dictionary = {}  # only for final stats purposes
 
 	func _init_resources():
 		for type in GameData.ResourceType.values():
 			resources[type] = GameResource.new()
+			resources_generated[type] = 0
+			resources_used[type] = 0
 
 	func _init():
 		_init_resources()
@@ -66,15 +70,17 @@ class Resources:
 			assert(GameData.is_resource_type(type))
 			resources[type].reserves = reserves[type]
 		on_update()
-	
+
 	func give(type : int, amount : float):
 		assert(amount > 0 and GameData.is_resource_type(type))
 		resources[type].reserves += amount
+		resources_generated[type] += amount
 		on_update()
-	
+
 	func consume(type : int, amount : float):
 		assert(amount > 0 and GameData.is_resource_type(type))
 		resources[type].reserves -= amount
+		resources_used[type] += amount
 		on_update()
 
 	# Consumes the given GameData.ResourceType -> float dictionary if there are
@@ -86,9 +92,10 @@ class Resources:
 			return false
 		for type in consume_resources.keys():
 			resources[type].reserves -= consume_resources[type]
+			resources_used[type] += consume_resources[type]
 		on_update()
 		return true
-	
+
 	func enough_resources(res : Dictionary) -> bool:
 		for type in res.keys():
 			assert(GameData.is_resource_type(type))
@@ -116,7 +123,7 @@ class Resources:
 	func step() -> void:
 		step_n(1)
 		on_update()
-	
+
 	"""
 		Return a string representation of this for debugging purposes
 	"""
@@ -138,6 +145,7 @@ class Resources:
 
 class UpgradeTree:
 	var tree_dict : Dictionary = {} # upgrade ID -> upgrade data
+	var num_initial_unlocked : int = 0
 
 	# Loads upgrades to the given node
 	func load_upgrade_tree(parent : Node) -> void:
@@ -157,11 +165,20 @@ class UpgradeTree:
 				"y": upgrade.position.y,
 				"instance": instance
 			}, self)
+			if upgrade.starting:
+				num_initial_unlocked += 1
 		recalculate_available()
 
 	func recalculate_available() -> void:
 		for v in tree_dict.values():
 			v.recalculate_available()
+
+	func get_num_bought() -> int:
+		var num_unlocked = 0
+		for v in tree_dict.values():
+			if v.unlocked:
+				num_unlocked += 1
+		return num_unlocked - num_initial_unlocked
 
 class UpgradeTreeNode:
 	var id: int
@@ -178,7 +195,7 @@ class UpgradeTreeNode:
 	var pos: Vector2
 	var tree: UpgradeTree
 	var instance: Upgrade
-	
+
 	func _init(data, parent_tree) -> void:
 		id = data.id
 		name = data.name
@@ -219,7 +236,7 @@ class UpgradeTreeNode:
 		enabled = true
 		instance.purchase()
 		tree.recalculate_available()
-	
+
 	func recalculate_available() -> void:
 		if available:
 			return
@@ -227,7 +244,7 @@ class UpgradeTreeNode:
 			if not tree.tree_dict.get(p).unlocked:
 				return
 		available = true
-	
+
 	func get_all_pre_links() -> Array:
 		var res = links.duplicate()
 		for p in prereqs:
