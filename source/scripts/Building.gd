@@ -51,10 +51,7 @@ enum MouseState {
 	# The mouse is hovering over the building
 	HOVER,
 	# The building is being dragged by the mouse
-	DRAGGING,
-	# Some other building is being dragged by the mouse, we shouldn't react to
-	# it
-	HOLDING
+	DRAGGING
 }
 
 var _main_flipped : bool = false
@@ -219,7 +216,8 @@ func setup_ghost_square(grid_square : GridSquare):
 	return grid_square
 
 func building_mouse_entered():
-	if (_mouse_state == MouseState.NONE):
+	if (_mouse_state == MouseState.NONE
+			and GameStats.current_selected_building == null):
 		_mouse_state = MouseState.HOVER
 
 func building_mouse_exited():
@@ -404,6 +402,8 @@ func force_update():
 	_last_mouse_pos = get_global_mouse_position()
 
 func _on_building_release():
+	if GameStats.current_selected_building == self:
+		GameStats.current_selected_building = null
 	_emit_release_on_next_physics = true
 	if (_mouse_enters == 0):
 		building_mouse_exited()
@@ -433,14 +433,10 @@ func _unhandled_input(event : InputEvent):
 		if _mouse_state == MouseState.HOVER:
 			_mouse_state = MouseState.DRAGGING
 			_on_building_grab()
-		else:
-			_mouse_state = MouseState.HOLDING
 
 	if event.is_action_released("building_grab"):
 		if _mouse_state == MouseState.DRAGGING:
 			_on_building_place()
-		else:
-			_mouse_state = MouseState.NONE
 
 	if (event.is_action_pressed("building_rotate")
 			and _mouse_state == MouseState.DRAGGING):
