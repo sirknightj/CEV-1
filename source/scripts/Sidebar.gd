@@ -11,6 +11,7 @@ var ignore_next_month : bool = false # default = clickable
 var ignore_upgrades_button = true # default = unclickable
 
 onready var building_scene = preload("res://scenes/Building.tscn")
+onready var row_scene = preload("res://scenes/BuildingRow.tscn")
 
 func _setup_control_element(control : Control):
 	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -80,75 +81,53 @@ func populate_sidebar(buildings : Dictionary) -> void:
 	for building in buildings:
 		var building_stats = GameStats.buildings_dict[building]
 		
-		if building_stats.name != 'City center':
-			var entry : HBoxContainer = HBoxContainer.new()
-			_setup_control_element(entry)
-			var building_name_label : Label = Label.new()
-			building_name_label.text = GameStats.buildings_dict[building].name
-			entry.add_child(building_name_label)
-			
-			var spacing1 : MarginContainer = MarginContainer.new()
-			_setup_control_element(spacing1)
-			spacing1.add_constant_override("margin_right", 20)
-			entry.add_child(spacing1)
-			spacing1.add_constant_override("margin_top", building_stats.shape.size() * GameData.SQUARE_SIZE)
-			
-			var building_cost_label : Label = Label.new()
-			_setup_control_element(building_cost_label)
-			var cost_text : String = "Cost:\n"
-			for stat in building_stats.cost:
-				if (building_stats.cost[stat] > 0):
-					cost_text += str(building_stats.cost[stat]) + " " + GameData.ResourceType.keys()[stat].capitalize() + "\n"
-			building_cost_label.text = cost_text.strip_edges()
-			entry.add_child(building_cost_label)
-			
-			var spacing2 : MarginContainer = MarginContainer.new()
-			_setup_control_element(spacing2)
-			spacing2.add_constant_override("margin_right", 20)
-			entry.add_child(spacing2)
-			
-			var building_effects_label : Label = Label.new()
-			_setup_control_element(building_effects_label)
-			var effects_text : String = "Effects:\n"
-			for stat in building_stats.effects:
-				if (building_stats.effects[stat] > 0):
-					effects_text += "+" + str(building_stats.effects[stat]) + " " + GameData.ResourceType.keys()[stat].capitalize() + "/mo\n"
-				elif (building_stats.effects[stat] < 0):
-					effects_text += "-" + str(-building_stats.effects[stat]) + " " + GameData.ResourceType.keys()[stat].capitalize() + "/mo\n"
-			building_effects_label.text = effects_text.strip_edges()
-			entry.add_child(building_effects_label)
-			
-			# Attempting to put a building inside of the HBox
-			var _building = building_scene.instance()
-			_building.shape = building_stats.shape
-			_building.building_effects = building_stats.effects
-			_building.building_cost = building_stats.cost
-			_building.building_id = building
-			_building.texture = GameData.BUILDING_TO_TEXTURE[building]
-			_building.set_locked(not available(building) or not GameStats.resources.enough_resources(building_stats.cost))
-			# print(GameStats.buildings_dict[building].name + ", locked=" + str(_building.locked) + ", available=" + str(available(building)) + ", enough=" + str(GameStats.resources.enough_resources(building_stats.cost)))
-			entry.add_child(_building)
-			
-			$ScrollContainer/BuildingEntries.add_child(entry)
-			_building.set_physics_process(false)
-			_building.force_set(Vector2(1050, 375 - scroll_offset), 0.0, false)
-			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
-	
-	var extra_spacing : HBoxContainer = HBoxContainer.new()
-	var spacer : MarginContainer = MarginContainer.new()
-	_setup_control_element(spacer)
-	_setup_control_element(extra_spacing)
-	spacer.add_constant_override("margin_top", GameData.SQUARE_SIZE)
-	extra_spacing.add_child(spacer)
-	$ScrollContainer/BuildingEntries.add_child(extra_spacing)
+		if building_stats.name == "City center":
+			continue
+		
+		var entry : Node = row_scene.instance()
+		entry.get_node("BuildingName").text = GameStats.buildings_dict[building].name
+		
+		# TODO: sort costs decreasing
+		var cost_text : String = ""
+		for stat in building_stats.cost:
+			if building_stats.cost[stat] > 0:
+				cost_text += str(building_stats.cost[stat]) + " " + GameData.ResourceType.keys()[stat].capitalize() + "\n"
+		entry.get_node("Cost").text = cost_text.strip_edges()
+		
+		# TODO: sort effects by abs(value) decreasing
+		var effects_text : String = ""
+		for stat in building_stats.effects:
+			var e = building_stats.effects[stat]
+			var key = GameData.ResourceType.keys()[stat].capitalize()
+			if key == "Electricity":
+				key = "Energy"
+			if e > 0:
+				effects_text += "+" + str(e) + " " + key + "\n"
+			elif e < 0:
+				effects_text += "-" + str(-e) + " " + key + "\n"
+		entry.get_node("Effects").text = effects_text.strip_edges()
+		
+		# building icon
+		var _building = building_scene.instance()
+		_building.shape = building_stats.shape
+		_building.building_effects = building_stats.effects
+		_building.building_cost = building_stats.cost
+		_building.building_id = building
+		_building.texture = GameData.BUILDING_TO_TEXTURE[building]
+		_building.set_locked(not available(building) or not GameStats.resources.enough_resources(building_stats.cost))
+		entry.add_child(_building)
+		
+		# vertically center building with row
+		var building_pos = Vector2(1035, $ScrollContainer.rect_position.y - scroll_offset)
+		building_pos.y += entry.rect_min_size.y / 2 - _building.shape.size() * GameData.SQUARE_SIZE / 2
+		
+		$ScrollContainer/BuildingEntries.add_child(entry)
+		_building.set_physics_process(false)
+		_building.force_set(building_pos, 0.0, false)
+		_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
 
 func available(building) -> bool:
-	if GameStats.restrictions.has(building):
-		return true
-	elif GameStats.restrictions.keys().size() == 0:
-		return true
-	else:
-		return false
+	return GameStats.restrictions.empty() or GameStats.restrictions.has(building)
 
 func _on_Building_building_grabbed(building : Building):
 	building.connect("building_released", self, "_on_Building_building_released", [building, building._main.global_position, building.get_parent()])
@@ -160,7 +139,7 @@ func _on_Building_building_grabbed(building : Building):
 	building.force_set(mouse - diff, 0.0, false)
 	building.set_physics_process(true)
 
-func _on_Building_building_released(building : Building, original_pos : Vector2, hbox : HBoxContainer):
+func _on_Building_building_released(building : Building, original_pos : Vector2, building_row : Node):
 	building.disconnect("building_released", self, "_on_Building_building_released")
 	if building.purchased:
 		building.disconnect("building_grabbed", self, "_on_Building_building_grabbed")
@@ -172,8 +151,11 @@ func _on_Building_building_released(building : Building, original_pos : Vector2,
 		repopulate_sidebar()
 	else:
 		building.set_physics_process(false)
-		building.get_parent().remove_child(building)
-		hbox.add_child(building)
+		var parent = building.get_parent()
+		if parent:
+			parent.remove_child(building)
+		if building_row:
+			building_row.add_child(building)
 		building.force_set(original_pos, 0.0, false)
 
 """
@@ -193,7 +175,8 @@ func update_displays() -> void:
 """
 func _on_Next_Month_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
-		print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
+		# TODO(vishal)
+		# print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:
 			if GameStats.restrictions.keys().size() > 0:
 				var required_placements = "Please place down "
@@ -289,4 +272,11 @@ func toggle_upgrades_button(_clickable) -> void:
 		$Upgrades/Label.set("custom_colors/font_color", Color("#FFFFFF"))
 	else:
 		$Upgrades/Label.set("custom_colors/font_color", Color("#808080"))
-		
+
+const SCROLL_SPEED = 12
+func _unhandled_input(event : InputEvent):
+	if event is InputEventMouseButton:
+		if event.button_index == BUTTON_WHEEL_DOWN:
+			$ScrollContainer.scroll_vertical += SCROLL_SPEED
+		elif event.button_index == BUTTON_WHEEL_UP:
+			$ScrollContainer.scroll_vertical -= SCROLL_SPEED
