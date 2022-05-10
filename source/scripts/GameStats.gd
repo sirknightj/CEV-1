@@ -123,7 +123,7 @@ var upgrades_data = {
 	GameData.UpgradeType.GRID_2: {
 		"scene": preload("res://scenes/upgrades/impl/Grid2.tscn"),
 		"position": Vector2(3.5, 4.9),
-		"prereqs": [GameData.UpgradeType.GRID_1, GameData.UpgradeType.UNLOCK_OXY2],
+		"prereqs": [GameData.UpgradeType.GRID_1],
 		"starting": false
 	},
 	GameData.UpgradeType.GRID_3: {

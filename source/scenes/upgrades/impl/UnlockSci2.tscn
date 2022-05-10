@@ -4,7 +4,7 @@
 
 [node name="BuildingUpgrade" instance=ExtResource( 1 )]
 cost = {
-5: 500.0
+5: 75.0
 }
 upgrade_name = "Space research"
 unlock_building_id = 14
