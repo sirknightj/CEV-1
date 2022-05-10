@@ -62,8 +62,9 @@ func _on_hover_on(type: int) -> void:
 			total_production += val
 			production_texts.append([val, "\n" + building + ": " + str(val)])
 		elif val < 0:
-			total_consumption += -val
-			consumption_texts.append([-val, "\n" + building + ": " + str(val)])
+			val *= -1
+			total_consumption += val
+			consumption_texts.append([val, "\n" + building + ": " + str(val)])
 	
 	var production_text = "Production: " + str(total_production)
 	production_texts.sort_custom(BuildingEffectsSorter, "sort_descending")
@@ -86,7 +87,6 @@ func _on_hover_on(type: int) -> void:
 	$ConsumptionRect.rect_size.x = $ConsumptionRect/ConsumptionLabel.rect_size.x + 20
 	
 	var graph_bar = get_node("HBoxContainer/" + node_name)
-	print(graph_bar, ' ', graph_bar.rect_position.x, ' ', graph_bar.rect_size.x)
 	$ProductionRect.rect_position.x = graph_bar.rect_position.x + graph_bar.rect_size.x - 9
 	$ProductionRect.rect_position.y = graph_bar.rect_position.y + graph_bar.get_node("Bar").rect_position.y
 	

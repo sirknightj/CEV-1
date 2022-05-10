@@ -14,10 +14,14 @@ class GameResource:
 
 class Resources:
 	var resources : Dictionary = {}
+	var resources_generated : Dictionary = {}  # only for final stats purposes
+	var resources_used : Dictionary = {}  # only for final stats purposes
 
 	func _init_resources():
 		for type in GameData.ResourceType.values():
 			resources[type] = GameResource.new()
+			resources_generated[type] = 0
+			resources_used[type] = 0
 
 	func _init():
 		_init_resources()
@@ -53,11 +57,13 @@ class Resources:
 	func give(type : int, amount : float):
 		assert(amount > 0 and GameData.is_resource_type(type))
 		resources[type].reserves += amount
+		resources_generated[type] += amount
 	
 	func consume(type : int, amount : float):
 		assert(amount > 0 and GameData.is_resource_type(type))
 		resources[type].reserves -= amount
-
+		resources_used[type] += amount
+	
 	# Consumes the given GameData.ResourceType -> float dictionary if there are
 	# enough resources in reserves. Returns true if there are and we have
 	# consumed the appropriate resources, returns false if there are not enough
@@ -67,6 +73,7 @@ class Resources:
 			return false
 		for type in consume_resources.keys():
 			resources[type].reserves -= consume_resources[type]
+			resources_used[type] += consume_resources[type]
 		return true
 	
 	func enough_resources(res : Dictionary) -> bool:
@@ -118,6 +125,7 @@ class Resources:
 class UpgradeTree:
 	var _tree_json = "res://assets/data/tree.json"
 	var tree_dict : Dictionary = {} # upgrade name -> upgrade data
+	var num_initial_unlocked : int = 0
 	
 	func _init() -> void:
 		load_tree_json()
@@ -131,12 +139,21 @@ class UpgradeTree:
 		var data = parse_json(file.get_as_text())
 		for upgrade in data:
 			tree_dict[upgrade.name] = Upgrade.new(upgrade, self)
+			if upgrade.starting:
+				num_initial_unlocked += 1
 		print("Loaded the upgrades: " + str(tree_dict.keys()))
 		file.close()
 	
 	func recalculate_available() -> void:
 		for v in tree_dict.values():
 			v.recalculate_available()
+	
+	func get_num_bought() -> int:
+		var num_unlocked = 0
+		for v in tree_dict.values():
+			if v.unlocked:
+				num_unlocked += 1
+		return num_unlocked - num_initial_unlocked
 
 class Upgrade:
 	var name: String
