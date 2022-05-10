@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scripts/TechTreeScene.gd" type="Script" id=1]
 [ext_resource path="res://BAHNSCHRIFT.TTF" type="DynamicFontData" id=2]
@@ -6,8 +6,7 @@
 [ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=4]
 
 [sub_resource type="Gradient" id=2]
-offsets = PoolRealArray( 0, 0.994676 )
-colors = PoolColorArray( 0.144629, 0.338675, 0.958984, 1, 0.262052, 0.0514633, 0.880859, 1 )
+colors = PoolColorArray( 0.0929254, 0.0693811, 0.162109, 1, 0.101961, 0.101961, 0.101961, 1 )
 
 [sub_resource type="GradientTexture" id=3]
 gradient = SubResource( 2 )
@@ -21,6 +20,10 @@ size = 30
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=5]
+size = 18
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=6]
 size = 18
 font_data = ExtResource( 2 )
 
@@ -97,5 +100,15 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": true
 }
+
+[node name="ScienceReserve" type="Label" parent="."]
+margin_left = 1014.0
+margin_top = 27.0
+margin_right = 1112.0
+margin_bottom = 46.0
+theme = ExtResource( 4 )
+custom_colors/font_color = Color( 0.8, 0.4, 1, 1 )
+custom_fonts/font = SubResource( 6 )
+text = "Science: 123"
 
 [connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Back_gui_input"]

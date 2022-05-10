@@ -7,6 +7,13 @@ var item_scene = preload("res://scenes/TreeItem.tscn")
 var selected_upgrade : int = -1
 var hovered_upgrade : int = -1
 
+var COLORS : Dictionary = {
+	"unlocked" : [Color("#049F0C"), Color("#049F0C").darkened(0.4)],
+	"available" : [Color("#CCA700"), Color("#CCA700").darkened(0.4)],
+	"locked" : [Color("#FFFFFF"), Color("#D4C2BF")]
+}
+const DEFAULT_LINK_COLOR = Color("#4AD0CCD0")
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	GameStats.upgrade_tree.load_upgrade_tree(self)
@@ -24,7 +31,6 @@ func add_nodes() -> void:
 			line.clear_points()
 			line.add_point(upgrade.pos)
 			line.add_point(tree_dict.get(p).pos)
-			line.width = 10
 			line.set_meta('pre', p)
 			line.set_meta('post', upgrade.id)
 			add_child(line)
@@ -48,18 +54,20 @@ func add_nodes() -> void:
 func set_node_styles() -> void:
 	for upgrade in GameStats.upgrade_tree.tree_dict.values():
 		var item = upgrade.node
-		var background = "171c40" if upgrade.available else "BCC3F1"
-		var border = "EEEEEE"
+		var type = "locked"
 		if upgrade.unlocked:
-			border = "049F0C"
+			type = "unlocked"
 		elif upgrade.available:
-			border = "C79200"
-		item.get_node("BackgroundRect").color = Color(background)
-		item.get_node("BorderRect").color = Color(border)
+			type = "available"
+		item.get_node("BackgroundRect").color = COLORS[type][1]
+		item.get_node("BorderRect").color = COLORS[type][0]
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
 #	pass
+
+func _update_reserve_text() -> void:
+	$ScienceReserve.text = "Science: " + str(int(GameStats.resources.get_reserve(GameData.ResourceType.SCIENCE)))
 
 func set_sidebar(name: int) -> void:
 	var upgrade : GameObjs.UpgradeTreeNode = GameStats.upgrade_tree.tree_dict.get(name)
@@ -96,18 +104,20 @@ func set_link_colors() -> void:
 	
 	# clear all link colors
 	for line in all_links:
-		line.default_color = Color("#AA171c40")
+		line.default_color = DEFAULT_LINK_COLOR
+		line.width = 9
 	# set link colors of name
 	if name != -1:
 		var links = tree_dict.get(name).get_all_pre_links()
 		for line in links:
 			var post = tree_dict.get(line.get_meta('post'))
-			var color = "#FFB0B6E3"
+			var type = "locked"
 			if post.unlocked:
-				color = "049F0C"
+				type = "unlocked"
 			elif post.available:
-				color = "C79200"
-			line.default_color = Color(color)
+				type = "available"
+			line.default_color = COLORS[type][0]
+			line.width = 12
 
 func _on_item_hover_on(name: int) -> void:
 	if selected_upgrade == -1:
@@ -131,6 +141,9 @@ func _on_item_click(_name: int) -> void:
 		selected_upgrade = _name
 		set_sidebar(_name)
 
+func show() -> void:
+	_update_reserve_text()
+	.show()  # Godot equivalent of super.show()
 
 func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	var is_left_click = event is InputEventMouseButton and event.button_index == BUTTON_LEFT and not event.pressed
@@ -141,7 +154,9 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	upgrade.unlock()
 	print("Unlocked ", upgrade.name)
 	set_node_styles()
+	set_link_colors()
 	set_sidebar(upgrade.id)
+	_update_reserve_text()
 
 """
 	Called when the Back button is pressed

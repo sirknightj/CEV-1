@@ -269,8 +269,10 @@ func toggle_next_month_button(_clickable : bool) -> void:
 func toggle_upgrades_button(_clickable) -> void:
 	ignore_upgrades_button = not _clickable
 	if _clickable:
-		$Upgrades/Label.set("custom_colors/font_color", Color("#FFFFFF"))
+		# $Upgrades/Label.set("custom_colors/font_color", Color("#FFFFFF"))
+		$Upgrades.show()
 	else:
+		$Upgrades.hide()
 		$Upgrades/Label.set("custom_colors/font_color", Color("#808080"))
 
 const SCROLL_SPEED = 12
