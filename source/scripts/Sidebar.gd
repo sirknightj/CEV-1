@@ -43,10 +43,10 @@ func populate_sidebar_correctly() -> void:
 	elif turn <= 8:
 		GameStats.buildings_unlocked.append_array([GameData.BuildingType.OXY1, GameData.BuildingType.METAL1])
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL])
-	elif turn <= 14:
+	elif turn <= 9:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.ELEC1)
-		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
-	elif turn == 15:
+		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY])
+	elif turn <= 10:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.SCI1)
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
 	populate_sidebar_with_buildings(GameStats.buildings_unlocked)
@@ -235,6 +235,24 @@ func how_many_people_will_die_next_turn() -> int:
 		if 0 > resources_have:
 			dead_colonists = max(dead_colonists, ceil(-resources_have / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource]))
 	return dead_colonists
+
+"""
+	Returns how much electricity you'll overdraw next turn
+	0 if your electricity reserves are fine
+"""
+func how_much_electricity_over() -> int:
+	var electricity_over : int = GameStats.resources.get_reserve(GameData.ResourceType.ELECTRICITY) + GameStats.resources.get_income(GameData.ResourceType.ELECTRICITY) - GameStats.resources.get_expense(GameData.ResourceType.ELECTRICITY)
+	if electricity_over < 0:
+		return -electricity_over
+	else:
+		return 0
+
+"""
+	Returns true if we have enough electricity for next turn
+	false otherwise
+"""
+func has_enough_electricity() -> bool:
+	return how_much_electricity_over() == 0
 
 """
 	Returns a dictionary Resource -> # Needed to purchase a given building.
