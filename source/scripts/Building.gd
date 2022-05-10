@@ -251,10 +251,6 @@ func rotate_around(rotation_position : Vector2, rotation_angle : float):
 	otherwise
 """
 func is_overlapping() -> bool:
-	"""for square in _ghost.get_children():
-		if square is GridSquare and square.get_overlapping_areas().size() > 0:
-			return true
-	return false"""
 	return _overlapping_areas != 0
 
 func snapped(position) -> Vector2:
