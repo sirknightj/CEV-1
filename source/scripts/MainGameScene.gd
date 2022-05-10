@@ -75,8 +75,10 @@ func show_correct_text():
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 246)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 2}
+	elif turn == 7:
+				$UILayer/TextBox.text = "Tip: You can use T to flip the building, in addition to R for rotating!"
 	elif turn == 9:
-		$UILayer/TextBox.text = "Your mine needs electricity to function.\nPlace down some solar panels."
+		$UILayer/TextBox.text = "Your mine needs energy to function.\nPlace down some solar panels."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 32)
 		GameStats.restrictions = {GameData.BuildingType.ELEC1: 4}

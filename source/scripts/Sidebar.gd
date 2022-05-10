@@ -43,10 +43,10 @@ func populate_sidebar_correctly() -> void:
 	elif turn <= 8:
 		GameStats.buildings_unlocked.append_array([GameData.BuildingType.OXY1, GameData.BuildingType.METAL1])
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL])
-	elif turn <= 14:
+	elif turn <= 9:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.ELEC1)
-		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
-	elif turn == 15:
+		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY])
+	elif turn <= 10:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.SCI1)
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
 	populate_sidebar_with_buildings(GameStats.buildings_unlocked)
