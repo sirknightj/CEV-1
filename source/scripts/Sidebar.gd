@@ -240,7 +240,16 @@ func pluralize(quantity : int, word : String) -> String:
 		return word
 	else:
 		return word + "s"
-		
+
+func how_many_people_will_die_next_turn() -> int:
+	var dead_colonists : int = 0
+	for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
+		if GameStats.resources.get_reserve(resource) < 0:
+			var colonists_unsupported : int = -ceil(GameStats.resources.get_reserve(resource) / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource])
+			if dead_colonists < colonists_unsupported:
+				dead_colonists = colonists_unsupported
+	return dead_colonists
+
 """
 	Lets the "next month" button be clicked
 	_clickable: true if the button is allowed to be clicked, false otherwise
