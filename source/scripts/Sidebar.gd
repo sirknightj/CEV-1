@@ -131,7 +131,7 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			
 			$ScrollContainer/BuildingEntries.add_child(entry)
 			_building.set_physics_process(false)
-			_building.force_set(Vector2(1050, 375 - scroll_offset), 0.0)
+			_building.force_set(Vector2(1050, 375 - scroll_offset), 0.0, false)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
 	
 	var extra_spacing : HBoxContainer = HBoxContainer.new()
@@ -157,7 +157,7 @@ func _on_Building_building_grabbed(building : Building):
 	get_tree().current_scene.add_child(building)
 	building.force_update()
 	var mouse = get_tree().current_scene.get_global_mouse_position()
-	building.force_set(mouse - diff, 0.0)
+	building.force_set(mouse - diff, 0.0, false)
 	building.set_physics_process(true)
 
 func _on_Building_building_released(building : Building, original_pos : Vector2, hbox : HBoxContainer):
@@ -174,7 +174,7 @@ func _on_Building_building_released(building : Building, original_pos : Vector2,
 		building.set_physics_process(false)
 		building.get_parent().remove_child(building)
 		hbox.add_child(building)
-		building.force_set(original_pos, 0.0)
+		building.force_set(original_pos, 0.0, false)
 
 """
 	Updates the text displaying the turn count

@@ -58,6 +58,10 @@ enum MouseState {
 	HOLDING
 }
 
+var _main_flipped : bool = false
+var _ghost_flipped : bool = false
+var _shadow_flipped : bool = false
+
 var _last_mouse_pos : Vector2
 var _mouse_state : int = MouseState.NONE
 var _mouse_enters : int = 0
@@ -76,9 +80,13 @@ var square_scene = preload("res://scenes/GridSquare.tscn")
 var _global_pos_next : Vector2
 var _global_rot_next : float
 var _emit_release_on_next_physics : bool = false
+var _main_flipped_next : bool = false
+var _ghost_flipped_next : bool = false
+var _shadow_flipped_next : bool = false
 
 var _original_pos : Vector2
 var _original_rot : float
+var _original_flipped : bool
 
 export(bool) var enabled = false
 export(bool) var locked = false
@@ -92,10 +100,11 @@ export(Texture) var texture
 
 var building_effect_upgrades : Dictionary = {}
 
-func _setup_sprite(sprite : Sprite):
+func _setup_sprite(sprite : Sprite, flipped : bool):
 	var scale = Vector2(_size / SPRITE_BASE_SIZE, _size / SPRITE_BASE_SIZE)
 	sprite.texture = texture
 	sprite.scale = scale
+	sprite.flip_h = flipped
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -114,22 +123,52 @@ func _ready():
 	_global_rot_next = 0
 	_shadow = get_node("Shadow")
 	_ghost = get_node("Ghost")
+	reset_graphics()
 
-	_setup_sprite(_main.get_node("Sprite"))
-	_setup_sprite(_shadow.get_node("Sprite"))
-
-	init_shape()
 	add_to_group("buildings")
+
+func clear(node : Node2D):
+	for child in node.get_children():
+		if child is GridSquare:
+			child.queue_free()
+
+func reset_graphics():
+	_mouse_enters = 0
+	building_mouse_exited()
+	_setup_sprite(_main.get_node("Sprite"), _main_flipped)
+	_setup_sprite(_shadow.get_node("Sprite"), _shadow_flipped)
+	clear(_main)
+	clear(_ghost)
+	clear(_shadow)
+	init_shape()
+
+func setup_main(x : int, y : int):
+	setup_main_square(create_grid_square(x, y, _main))
+
+func setup_shadow(x : int, y : int):
+	setup_shadow_square(create_grid_square(x, y, _shadow))
+
+func setup_ghost(x : int, y : int):
+	setup_ghost_square(create_grid_square(x, y, _ghost))
 
 func init_shape():
 	assert(shape.size() > 0)
 
 	for x in range(shape.size()):
 		for y in range(shape[x].size()):
-			if (shape[x][y]):
-				setup_main_square(create_grid_square(x, y, _main))
-				setup_shadow_square(create_grid_square(x, y, _shadow))
-				setup_ghost_square(create_grid_square(x, y, _ghost))
+			if shape[x][y]:
+				if _main_flipped:
+					setup_main(x, shape[x].size() - y - 1)
+				else:
+					setup_main(x, y)
+				if _ghost_flipped:
+					setup_ghost(x, shape[x].size() - y - 1)
+				else:
+					setup_ghost(x, y)
+				if _shadow_flipped:
+					setup_shadow(x, shape[x].size() - y - 1)
+				else:
+					setup_shadow(x, y)
 
 """
 	Create a grid square
@@ -212,6 +251,10 @@ func rotate_around(rotation_position : Vector2, rotation_angle : float):
 	otherwise
 """
 func is_overlapping() -> bool:
+	"""for square in _ghost.get_children():
+		if square is GridSquare and square.get_overlapping_areas().size() > 0:
+			return true
+	return false"""
 	return _overlapping_areas != 0
 
 func snapped(position) -> Vector2:
@@ -262,6 +305,7 @@ func purchase_building():
 		enabled = true
 
 func _update_shadow():
+	_shadow_flipped_next = _ghost_flipped
 	_shadow.global_position = snapped(_ghost.global_position)
 	_shadow.rotation = _ghost.rotation
 	if (_mouse_state == MouseState.DRAGGING):
@@ -307,11 +351,22 @@ func _physics_process(_delta):
 	if _emit_release_on_next_physics:
 		_emit_release_on_next_physics = false
 		emit_signal("building_released")
+	if (_main_flipped_next != _main_flipped
+			or _shadow_flipped_next != _shadow_flipped
+			or _ghost_flipped_next != _ghost_flipped):
+		_main_flipped = _main_flipped_next
+		_ghost_flipped = _ghost_flipped_next
+		_shadow_flipped = _shadow_flipped_next
+		reset_graphics()
 
 func has_moved():
-	return _shadow.global_position != _original_pos or _shadow.rotation != _original_rot
+	return _shadow.global_position != _original_pos or _shadow.rotation != _original_rot or _shadow_flipped != _original_flipped
 
-func force_set(pos : Vector2, rot : float):
+func set_building_flip(flipped : bool):
+	_main_flipped_next = flipped
+	_ghost_flipped_next = flipped
+
+func force_set(pos : Vector2, rot : float, flip : bool):
 	_original_pos = pos
 	_original_rot = rot
 	_global_pos_next = pos
@@ -322,6 +377,13 @@ func force_set(pos : Vector2, rot : float):
 	_ghost.rotation = rot
 	_shadow.global_position = pos
 	_shadow.rotation = rot
+	_shadow_flipped_next = flip
+	_ghost_flipped_next = flip
+	_main_flipped_next = flip
+	_shadow_flipped = flip
+	_ghost_flipped = flip
+	_main_flipped = flip
+	reset_graphics()
 
 func _on_building_place():
 	if has_moved():
@@ -330,10 +392,13 @@ func _on_building_place():
 		_mouse_state = MouseState.HOVER
 		_global_pos_next = _shadow.global_position
 		_global_rot_next = _shadow.rotation
+		_main_flipped_next = _shadow_flipped
+		_ghost_flipped_next = _main_flipped_next
+		_shadow_flipped_next = _shadow_flipped
 		emit_signal("building_changed")
 	else:
 		_mouse_state = MouseState.NONE
-		force_set(_original_pos, _original_rot)
+		force_set(_original_pos, _original_rot, _original_flipped)
 	_on_building_release()
 
 func force_update():
@@ -341,6 +406,8 @@ func force_update():
 
 func _on_building_release():
 	_emit_release_on_next_physics = true
+	if (_mouse_enters == 0):
+		building_mouse_exited()
 
 func _on_building_grab():
 	GameStats.current_selected_building = self
@@ -351,6 +418,9 @@ func _on_building_grab():
 
 func _on_building_rotate():
 	rotate_around(get_global_mouse_position(), PI/2)
+
+func _on_building_flip():
+	set_building_flip(!_main_flipped)
 
 func _on_building_drag():
 	_global_pos_next += (get_global_mouse_position() - _last_mouse_pos)
@@ -376,6 +446,10 @@ func _unhandled_input(event : InputEvent):
 	if (event.is_action_pressed("building_rotate")
 			and _mouse_state == MouseState.DRAGGING):
 		_on_building_rotate()
+
+	if (event.is_action_pressed("building_flip")
+			and _mouse_state == MouseState.DRAGGING):
+		_on_building_flip()
 
 	if (event is InputEventMouseMotion
 			and _mouse_state == MouseState.DRAGGING):
