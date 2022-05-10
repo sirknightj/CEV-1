@@ -83,6 +83,7 @@ func show_correct_text():
 		$UILayer/Sidebar.toggle_upgrades_button(true)
 	else:
 		$UILayer/TextBox.text = ""
+	update_resources()
 
 """
 	Place the building at the grid square (_x, _y).
