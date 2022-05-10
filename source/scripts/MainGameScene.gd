@@ -52,8 +52,8 @@ func show_correct_text():
 	elif turn == 1:
 		$UILayer/TextBox.text = "Each colonist consumes 1 water/month.\nPlace down some wells to ensure you don't run out of water!\nTip: use R to rotate the building."
 		$UILayer/Sidebar.toggle_next_month_button(false)
-		GameStats.resources.give(GameData.ResourceType.METAL, 30)
-		GameStats.restrictions = {GameData.BuildingType.WATER1: 5}
+		GameStats.resources.give(GameData.ResourceType.METAL, 12)
+		GameStats.restrictions = {GameData.BuildingType.WATER1: 2}
 	elif turn == 2:
 		$UILayer/TextBox.text = "Notice how another person has arrived to your colony.\nYou now need another well to support your growing population."
 		$UILayer/Sidebar.toggle_next_month_button(false)
@@ -62,22 +62,19 @@ func show_correct_text():
 	elif turn == 3:
 		$UILayer/TextBox.text = "Each human also consumes 2 food/month.\nFEED THE HUMANS\nYou can also use T to flip the building!"
 		$UILayer/Sidebar.toggle_next_month_button(false)
-		GameStats.resources.give(GameData.ResourceType.METAL, 106)
-		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 5}
+		GameStats.resources.give(GameData.ResourceType.METAL, 40)
+		GameStats.restrictions = {GameData.BuildingType.FOOD1: 2}
 	elif turn == 4:
 		$UILayer/TextBox.text = "Keep expanding your colony! And keep your people alive!"
 	elif turn == 5:
 		$UILayer/Sidebar.toggle_next_month_button(false)
-		GameStats.resources.give(GameData.ResourceType.METAL, 32)
-		GameStats.restrictions = {GameData.BuildingType.WATER1: 2, GameData.BuildingType.FOOD1: 1}
+		GameStats.resources.give(GameData.ResourceType.METAL, 26)
+		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 1}
 	elif turn == 6:
 		$UILayer/TextBox.text = "Humans consume 1 oxygen/mo.\nMake sure you have enough!\nYour colony will need metal to building more buildings."
 		$UILayer/Sidebar.toggle_next_month_button(false)
-		GameStats.resources.give(GameData.ResourceType.METAL, 246)
-		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 2}
-	elif turn == 7:
-		# $UILayer/TextBox.text = "Tip: You can use T to flip the building, in addition to R for rotating!"
-		pass
+		GameStats.resources.give(GameData.ResourceType.METAL, 146)
+		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 1}
 	elif turn == 9:
 		$UILayer/TextBox.text = "Your mine needs energy to function.\nPlace down some solar panels."
 		$UILayer/Sidebar.toggle_next_month_button(false)
