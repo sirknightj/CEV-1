@@ -6,9 +6,52 @@ extends Node
 
 var resources : GameObjs.Resources
 var upgrade_tree : GameObjs.UpgradeTree
+var grid : Grid
+var game : Game
 
 var logger : Logger.Log
 
+"""
+	Each upgrade object defines its individual properties and mechanics
+
+	This map loads the upgrades, assigns labels to them, and describes the
+	_relationships_ between them
+"""
+var upgrades_data = {
+	GameData.UpgradeType.UNLOCK_WATER2: {
+		"scene": preload("res://scenes/upgrades/impl/UnlockWater2.tscn"),
+		"position": Vector2(7.7, 6.3),
+		"prereqs": [],
+		"starting": false
+	},
+	GameData.UpgradeType.UNLOCK_WATER3: {
+		"scene": preload("res://scenes/upgrades/impl/UnlockWater3.tscn"),
+		"position": Vector2(9.1, 6.3),
+		"prereqs": [],
+		"starting": false
+	},
+	GameData.UpgradeType.GRID_2: {
+		"scene": preload("res://scenes/upgrades/impl/Grid2.tscn"),
+		"position": Vector2(3.5, 4.9),
+		"prereqs": [],
+		"starting": false
+	},
+	GameData.UpgradeType.IMPROVE_MINE1: {
+		"scene": preload("res://scenes/upgrades/impl/ImproveMine1.tscn"),
+		"position": Vector2(9.1, 4.9),
+		"prereqs": [],
+		"starting": false
+	},
+	GameData.UpgradeType.IMPROVE_ELEC1: {
+		"scene": preload("res://scenes/upgrades/impl/ImproveElec1.tscn"),
+		"position": Vector2(0.7, 2.1),
+		"prereqs": [],
+		"starting": false
+	}
+}
+
+# Array of building IDs that are unlocked
+var buildings_unlocked : Array = []
 var buildings_owned : Dictionary = {}
 var restrictions : Dictionary = {}
 

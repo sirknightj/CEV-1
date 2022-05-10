@@ -1,4 +1,5 @@
 extends Node2D
+class_name Grid
 
 var LINE_COLOR : Color = Color("#242424")
 
@@ -6,6 +7,7 @@ onready var _screen_size = get_viewport().get_visible_rect().size
 onready var sidebar = $"../UILayer/Sidebar"
 
 func _ready():
+	GameStats.grid = self
 	_set_camera(GameStats.grid_size)
 
 func set_grid_size(size : int):

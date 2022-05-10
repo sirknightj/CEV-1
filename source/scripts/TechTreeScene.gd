@@ -4,14 +4,15 @@ var all_links : Array # Array of Line2Ds
 
 var item_scene = preload("res://scenes/TreeItem.tscn")
 
-var selected_upgrade : String = ""
-var hovered_upgrade : String = ""
+var selected_upgrade : int = -1
+var hovered_upgrade : int = -1
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	GameStats.upgrade_tree.load_upgrade_tree(self)
 	add_nodes()
 	set_node_styles()
-	_on_item_hover_off("")
+	_on_item_hover_off(-1)
 	$SelectedUpgrade/BuyButton.connect("gui_input", self, "_on_BuyButton_gui_input")
 
 func add_nodes() -> void:
@@ -25,7 +26,7 @@ func add_nodes() -> void:
 			line.add_point(tree_dict.get(p).pos)
 			line.width = 10
 			line.set_meta('pre', p)
-			line.set_meta('post', upgrade.name)
+			line.set_meta('post', upgrade.id)
 			add_child(line)
 			links.append(line)
 		upgrade.links = links
@@ -38,7 +39,7 @@ func add_nodes() -> void:
 		var label = item.get_node("NameLabel")
 		label.text = upgrade.name
 
-		item.item_name = upgrade.name
+		item.item_name = upgrade.id
 		item.connect("hover_on", self, "_on_item_hover_on")
 		item.connect("hover_off", self, "_on_item_hover_off")
 		item.connect("click", self, "_on_item_click")
@@ -60,20 +61,19 @@ func set_node_styles() -> void:
 #func _process(delta: float) -> void:
 #	pass
 
-func set_sidebar(name: String) -> void:
-	var upgrade : GameObjs.Upgrade = GameStats.upgrade_tree.tree_dict.get(name)
+func set_sidebar(name: int) -> void:
+	var upgrade : GameObjs.UpgradeTreeNode = GameStats.upgrade_tree.tree_dict.get(name)
 	var desc : String = upgrade.description
 	if not desc:
 		desc = "TODO"
 	var effects : String = upgrade.effects
-	if upgrade.unlocks:
-		if effects:
-			effects += "\n"
-		effects += "Unlocks: " + upgrade.unlocks
 
-	$SelectedUpgrade/Name.text = name
-	$SelectedUpgrade/Cost.text = "Cost: " + str(upgrade.science_cost) + " science"
-	var can_afford : bool = GameStats.resources.get_reserve(GameData.ResourceType.SCIENCE) >= upgrade.science_cost
+	$SelectedUpgrade/Name.text = upgrade.name
+	$SelectedUpgrade/Cost.text = "Cost: "
+	for resource_type in upgrade.cost.keys():
+		$SelectedUpgrade/Cost.text += (str(upgrade.cost[resource_type])
+				+ " " + str(GameData.ResourceType.keys()[resource_type]).to_lower()) + "\n"
+	var can_afford : bool = upgrade.can_afford()
 	if not upgrade.unlocked and upgrade.available and can_afford:
 		$SelectedUpgrade/BuyButton.show()
 	else:
@@ -98,7 +98,7 @@ func set_link_colors() -> void:
 	for line in all_links:
 		line.default_color = Color("#AA171c40")
 	# set link colors of name
-	if name:
+	if name != -1:
 		var links = tree_dict.get(name).get_all_pre_links()
 		for line in links:
 			var post = tree_dict.get(line.get_meta('post'))
@@ -109,41 +109,39 @@ func set_link_colors() -> void:
 				color = "C79200"
 			line.default_color = Color(color)
 
-func _on_item_hover_on(name: String) -> void:
-	if selected_upgrade == "":
+func _on_item_hover_on(name: int) -> void:
+	if selected_upgrade == -1:
 		set_sidebar(name)
-	if name == "":
+	if name == -1:
 		return
 	hovered_upgrade = name
 	set_link_colors()
 
-func _on_item_hover_off(_name: String) -> void:
-	if selected_upgrade == "":
+func _on_item_hover_off(_name: int) -> void:
+	if selected_upgrade == -1:
 		clear_sidebar()
-	hovered_upgrade = ""
+	hovered_upgrade = _name
 	set_link_colors()
 
-func _on_item_click(name: String) -> void:
-	if selected_upgrade == name:
-		selected_upgrade = ""
+func _on_item_click(_name: int) -> void:
+	if selected_upgrade == _name:
+		selected_upgrade = -1
 		clear_sidebar()
 	else:
-		selected_upgrade = name
-		set_sidebar(name)
+		selected_upgrade = _name
+		set_sidebar(_name)
 
 
 func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	var is_left_click = event is InputEventMouseButton and event.button_index == BUTTON_LEFT and not event.pressed
 	if not is_left_click:
 		return
-	var upgrade : GameObjs.Upgrade = GameStats.upgrade_tree.tree_dict.get(selected_upgrade)
+	var upgrade : GameObjs.UpgradeTreeNode = GameStats.upgrade_tree.tree_dict.get(selected_upgrade)
 	
-	GameStats.resources.consume(GameData.ResourceType.SCIENCE, upgrade.science_cost)
-	print(GameStats.resources.to_string())
 	upgrade.unlock()
 	print("Unlocked ", upgrade.name)
 	set_node_styles()
-	set_sidebar(upgrade.name)
+	set_sidebar(upgrade.id)
 
 """
 	Called when the Back button is pressed

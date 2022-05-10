@@ -39,6 +39,38 @@ enum ResourceType {
 }
 
 """
+	The upgrade type (ID)
+"""
+enum UpgradeType {
+	UNLOCK_SCI1
+	UNLOCK_SCI2
+	UNLOCK_WATER1
+	UNLOCK_WATER2
+	UNLOCK_WATER3
+	UNLOCK_FOOD1
+	UNLOCK_FOOD2
+	UNLOCK_FOOD3
+	UNLOCK_OXY1
+	UNLOCK_OXY2
+	UNLOCK_OXY3
+	UNLOCK_METAL2
+	UNLOCK_ELEC1
+	UNLOCK_ELEC2
+	UNLOCK_ELEC3
+	GRID_1
+	GRID_2
+	GRID_3
+	GRID_4
+	IMPROVE_FARM
+	IMPROVE_MINE1
+	ASTRO
+	IMPROVE_FARM2
+	IMPROVE_PEOPLE1
+	IMPROVE_PEOPLE2
+	IMPROVE_ELEC1
+}
+
+"""
 	A map of buildings to the color they should be
 """
 const BUILDING_TO_COLOR : Dictionary = {
@@ -129,7 +161,6 @@ static func is_building_type(type : int) -> bool:
 
 static func GET_SQUARE_SIZE() -> float:
 	return SQUARE_SIZE
-
 
 """
 	Colors

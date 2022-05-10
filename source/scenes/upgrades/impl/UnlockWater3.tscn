@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/upgrades/base/BuildingUpgrade.tscn" type="PackedScene" id=1]
+
+[node name="UnlockWater3" instance=ExtResource( 1 )]
+cost = {
+5: 100.0
+}
+upgrade_name = "Ice mines"
+description = "Harvest the ice from distant glaciers using the same technology as your automated mines."
+unlock_building_id = 17

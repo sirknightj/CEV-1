@@ -13,7 +13,7 @@ func _ready():
 func _people():
 	return GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
 
-func get_effect(resource : int) -> float:
+func get_base_effect(resource : int) -> float:
 	if (resource == GameData.ResourceType.SCIENCE):
 		return 1.0
 	if (resource != GameData.ResourceType.PEOPLE):

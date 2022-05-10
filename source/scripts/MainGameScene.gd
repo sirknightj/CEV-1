@@ -2,6 +2,7 @@ extends Node2D
 class_name Game
 
 signal next_turn
+signal building_added
 
 # The sidebar object
 var sidebar : Control
@@ -12,12 +13,14 @@ onready var building_scene = preload("res://scenes/Building.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	GameStats.game = self
 	GameStats.logger.start_new_session(123)
 	sidebar = get_node("UILayer/Sidebar")
 	graph = get_node("UILayer/Sidebar/Graph")
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 	update_stats()
 	show_correct_text()
+	GameStats.resources.set_callback(funcref(self, "_on_Resources_changed"))
 
 """
 	Update visualizations
@@ -34,12 +37,9 @@ func update_stats():
 	Handles the logic for the next turn
 """
 func on_next_turn():
-	update_resources()
 	GameStats.resources.step()
 	GameStats.turn += 1
-	update_resources()
 	emit_signal("next_turn")
-	update_stats()
 	show_correct_text()
 
 func show_correct_text():
@@ -96,6 +96,8 @@ func place_building(_x: int, _y: int) -> void:
 	building.set_next_pos(building.snapped(Vector2(_x, _y)))
 
 func update_resources() -> void:
+	var cb = GameStats.resources.get_callback()
+	GameStats.resources.set_callback(null)
 	GameStats.resources.reset_income_expense()
 	for building in get_tree().get_nodes_in_group("buildings"):
 		for resource in GameData.ResourceType.values():
@@ -113,6 +115,7 @@ func update_resources() -> void:
 		for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
 			GameStats.resources.give(resource, GameData.PEOPLE_RESOURCE_CONSUMPTION[resource] * dead_colonists)
 		print(str(dead_colonists) + " people died!")
+	GameStats.resources.set_callback(cb)
 
 func aggregate_resources() -> Dictionary:
 	var dict : Dictionary = {}
@@ -125,12 +128,15 @@ func aggregate_resources() -> Dictionary:
 			dict[resource][building.building_id] += building.get_effect(resource)
 	return dict
 
-func _on_Building_updated():
+func _on_Resources_changed():
 	update_resources()
 	sidebar.update_displays()
 	update_stats()
 
 func _on_SceneTree_node_added(_node):
-	if not (_node is Building):
+	if (not _node.is_in_group("buildings")
+			or _node.is_in_group("tracked")):
 		return
-	_node.connect("building_changed", self, "_on_Building_updated")
+	_node.add_to_group("tracked")
+	_node.connect("building_changed", self, "_on_Resources_changed")
+	emit_signal("building_added", _node)

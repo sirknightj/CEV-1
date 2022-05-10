@@ -8,7 +8,7 @@ signal click
 # var a: int = 2
 # var b: String = "text"
 
-var item_name: String
+var item_name: int
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

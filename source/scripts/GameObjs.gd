@@ -1,6 +1,8 @@
 extends Object
 class_name GameObjs
 
+signal resources_changed
+
 class GameResource:
 	# Amount of resource currently in reserves
 	var reserves : float = 0
@@ -14,6 +16,7 @@ class GameResource:
 
 class Resources:
 	var resources : Dictionary = {}
+	var callback : FuncRef
 
 	func _init_resources():
 		for type in GameData.ResourceType.values():
@@ -21,6 +24,16 @@ class Resources:
 
 	func _init():
 		_init_resources()
+
+	func set_callback(cb : FuncRef):
+		callback = cb
+
+	func get_callback():
+		return callback
+
+	func on_update():
+		if callback != null:
+			callback.call_func()
 
 	func reset_income_expense():
 		for resource in resources.values():
@@ -30,6 +43,7 @@ class Resources:
 	func set_reserve(type : int, amount_in_reserve : float):
 		assert(GameData.is_resource_type(type))
 		resources[type].reserves = amount_in_reserve
+		on_update()
 
 	func add_effect(type : int, effect : float):
 		if (effect < 0):
@@ -40,23 +54,28 @@ class Resources:
 	func add_income(type : int, income : float):
 		assert(GameData.is_resource_type(type))
 		resources[type].income += income
+		on_update()
 
 	func add_expense(type : int, expense : float):
 		assert(GameData.is_resource_type(type))
 		resources[type].expense += expense
+		on_update()
 
 	func set_reserves(reserves : Dictionary):
 		for type in reserves:
 			assert(GameData.is_resource_type(type))
 			resources[type].reserves = reserves[type]
+		on_update()
 	
 	func give(type : int, amount : float):
 		assert(amount > 0 and GameData.is_resource_type(type))
 		resources[type].reserves += amount
+		on_update()
 	
 	func consume(type : int, amount : float):
 		assert(amount > 0 and GameData.is_resource_type(type))
 		resources[type].reserves -= amount
+		on_update()
 
 	# Consumes the given GameData.ResourceType -> float dictionary if there are
 	# enough resources in reserves. Returns true if there are and we have
@@ -67,6 +86,7 @@ class Resources:
 			return false
 		for type in consume_resources.keys():
 			resources[type].reserves -= consume_resources[type]
+		on_update()
 		return true
 	
 	func enough_resources(res : Dictionary) -> bool:
@@ -95,6 +115,7 @@ class Resources:
 		# Alias for step_n(1)
 	func step() -> void:
 		step_n(1)
+		on_update()
 	
 	"""
 		Return a string representation of this for debugging purposes
@@ -116,36 +137,39 @@ class Resources:
 			resource.step_n(n)
 
 class UpgradeTree:
-	var _tree_json = "res://assets/data/tree.json"
-	var tree_dict : Dictionary = {} # upgrade name -> upgrade data
-	
-	func _init() -> void:
-		load_tree_json()
+	var tree_dict : Dictionary = {} # upgrade ID -> upgrade data
+
+	# Loads upgrades to the given node
+	func load_upgrade_tree(parent : Node) -> void:
+		for id in GameStats.upgrades_data.keys():
+			var upgrade = GameStats.upgrades_data[id]
+			var instance : Upgrade = upgrade.scene.instance()
+			parent.add_child(instance)
+			tree_dict[id] = UpgradeTreeNode.new({
+				"id": id,
+				"name": instance.upgrade_name,
+				"prereqs": upgrade.prereqs,
+				"description": instance.description,
+				"effects": instance.effects,
+				"cost": instance.cost,
+				"starting": upgrade.starting,
+				"x": upgrade.position.x,
+				"y": upgrade.position.y,
+				"instance": instance
+			}, self)
 		recalculate_available()
-	
-	# Loads upgrades configuration file
-	func load_tree_json() -> void:
-		var file = File.new()
-		assert(file.file_exists(_tree_json))
-		file.open(_tree_json, File.READ)
-		var data = parse_json(file.get_as_text())
-		for upgrade in data:
-			tree_dict[upgrade.name] = Upgrade.new(upgrade, self)
-		print("Loaded the upgrades: " + str(tree_dict.keys()))
-		file.close()
-	
+
 	func recalculate_available() -> void:
 		for v in tree_dict.values():
 			v.recalculate_available()
 
-class Upgrade:
+class UpgradeTreeNode:
+	var id: int
 	var name: String
 	var prereqs: Array
-	var type: String
 	var description: String
 	var effects: String
-	var unlocks: String
-	var science_cost: int
+	var cost: Dictionary
 	var unlocked: bool
 	var available: bool
 	var enabled: bool
@@ -153,39 +177,47 @@ class Upgrade:
 	var links: Array
 	var pos: Vector2
 	var tree: UpgradeTree
+	var instance: Upgrade
 	
 	func _init(data, parent_tree) -> void:
+		id = data.id
 		name = data.name
 		prereqs = data.prereqs if data.prereqs else []
-		type = data.type
 		description = data.description
 		effects = data.effects
-		unlocks = data.unlocks
-		science_cost = -data.science_cost
+		cost = data.cost
 		node = null
 		unlocked = data.starting
 		available = false # correctly set by recalculate_available later
 		enabled = data.starting
 		tree = parent_tree
-		
+
 		var minX = 0.7
 		var maxX = 9.1
 		var minY = 0.7
 		var maxY = 9.1
-		
+
 		var minScreenX = 100
 		var maxScreenX = 800
 		var minScreenY = 100
 		var maxScreenY = 720 - 90
-		
+
 		var x = (data.x-minX) / (maxX-minX) * (maxScreenX-minScreenX) + minScreenX
 		var y = (data.y-minY) / (maxY-minY) * (maxScreenY-minScreenY) + minScreenY
 		pos = Vector2(x, y)
-	
+
+		instance = data.instance
+		if data.starting:
+			instance.purchased = true
+
+	func can_afford() -> bool:
+		return GameStats.resources.enough_resources(cost)
+
 	func unlock() -> void:
 		assert(not unlocked and available)
 		unlocked = true
 		enabled = true
+		instance.purchase()
 		tree.recalculate_available()
 	
 	func recalculate_available() -> void:

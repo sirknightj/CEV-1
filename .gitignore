@@ -23,8 +23,10 @@ dump
 *.diff
 *.hxproj
 .unittest
+.idea
 
 .DS_Store
 Thumbs.db
 Desktop.ini
+cev1.tar.gz
 *~

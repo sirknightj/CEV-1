@@ -32,20 +32,22 @@ func repopulate_sidebar():
 func populate_sidebar_correctly() -> void:
 	var turn = GameStats.turn
 	if turn <= 2:
-		populate_sidebar_with_buildings([GameData.BuildingType.WATER1])
+		GameStats.buildings_unlocked.append(GameData.BuildingType.WATER1)
 		show_resources([GameData.ResourceType.WATER])
 	elif turn <= 5:
+		GameStats.buildings_unlocked.append(GameData.BuildingType.FOOD1)
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1])
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD])
 	elif turn <= 8:
-		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1])
+		GameStats.buildings_unlocked.append_array([GameData.BuildingType.OXY1, GameData.BuildingType.METAL1])
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL])
 	elif turn <= 14:
-		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1])
+		GameStats.buildings_unlocked.append(GameData.BuildingType.ELEC1)
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
-	else:
-		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1, GameData.BuildingType.SCI1])
+	elif turn == 15:
+		GameStats.buildings_unlocked.append(GameData.BuildingType.SCI1)
 		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
+	populate_sidebar_with_buildings(GameStats.buildings_unlocked)
 
 func show_resources(resources : Array) -> void:
 	for resource in GameData.ResourceType.values():

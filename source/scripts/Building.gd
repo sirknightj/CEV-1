@@ -74,6 +74,7 @@ var square_scene = preload("res://scenes/GridSquare.tscn")
 """
 var _global_pos_next : Vector2
 var _global_rot_next : float
+var _emit_release_on_next_physics : bool = false
 
 var _original_pos : Vector2
 var _original_rot : float
@@ -88,6 +89,8 @@ export(int) var building_id = -1
 export(Color) var color
 export(Texture) var texture
 
+var building_effect_upgrades : Dictionary = {}
+
 func _setup_sprite(sprite : Sprite):
 	var scale = Vector2(_size / SPRITE_BASE_SIZE, _size / SPRITE_BASE_SIZE)
 	sprite.texture = texture
@@ -100,6 +103,7 @@ func _ready():
 	assert(building_cost != null)
 	assert(color != null)
 	assert(texture != null)
+	assert(building_id != -1)
 
 	_main = get_node("Main")
 	if (building_id > 0 && building_id < GameData.BuildingType.size()):
@@ -123,6 +127,7 @@ func init_shape():
 		for y in range(shape[x].size()):
 			if (shape[x][y]):
 				setup_main_square(create_grid_square(x, y, _main))
+				setup_shadow_square(create_grid_square(x, y, _shadow))
 				setup_ghost_square(create_grid_square(x, y, _ghost))
 
 """
@@ -144,6 +149,10 @@ func create_grid_square(x : int, y : int, parent : Node):
 func setup_main_square(grid_square : GridSquare):
 	grid_square.connect("mouse_entered", self, "_on_MainSquare_mouse_entered")
 	grid_square.connect("mouse_exited", self, "_on_MainSquare_mouse_exited")
+	grid_square.set_collision_box_size(_size)
+	return grid_square
+
+func setup_shadow_square(grid_square : GridSquare):
 	grid_square.collision_layer = 4
 	grid_square.collision_mask = 4
 	# Needs to be ever so slightly larger than the actual grid snap size so
@@ -207,15 +216,33 @@ func is_overlapping() -> bool:
 func snapped(position) -> Vector2:
 	return position.snapped(Vector2(_size, _size))
 
-func get_effect(resource_type : int) -> float:
+func add_building_effect_upgrade(upgrade : BuildingEffectUpgrade):
+	building_effect_upgrades[upgrade] = true
+	emit_signal("building_changed")
+
+func has_building_effect_upgrade(upgrade : BuildingEffectUpgrade):
+	return building_effect_upgrades.has(upgrade)
+
+func remove_building_effect_upgrade(upgrade : BuildingEffectUpgrade):
+	if building_effect_upgrades.has(upgrade):
+		building_effect_upgrades.erase(upgrade)
+		emit_signal("building_changed")
+
+func get_base_effect(resource_type : int) -> float:
 	assert(GameData.is_resource_type(resource_type))
 	if not enabled:
 		return 0.0
 	return building_effects[resource_type]
 
+func get_effect(resource_type : int) -> float:
+	var effect = get_base_effect(resource_type)
+	for upgrade in building_effect_upgrades.keys():
+		effect = upgrade.stack_effect(self, resource_type, effect)
+	return effect
+
 func get_adjacent_buildings() -> Array:
 	var buildings : Dictionary = {}
-	for grid_square in get_children():
+	for grid_square in _shadow.get_children():
 		if not (grid_square is GridSquare):
 			continue
 		var adjacents : Array = grid_square.get_adjacent_buildings()
@@ -275,6 +302,9 @@ func _physics_process(_delta):
 		_update_shadow()
 	_update_main()
 	_update_ghost()
+	if _emit_release_on_next_physics:
+		_emit_release_on_next_physics = false
+		emit_signal("building_released")
 
 func has_moved():
 	return _shadow.global_position != _original_pos or _shadow.rotation != _original_rot
@@ -308,7 +338,7 @@ func force_update():
 	_last_mouse_pos = get_global_mouse_position()
 
 func _on_building_release():
-	emit_signal("building_released")
+	_emit_release_on_next_physics = true
 
 func _on_building_grab():
 	GameStats.current_selected_building = self
