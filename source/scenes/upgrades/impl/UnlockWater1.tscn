@@ -4,7 +4,8 @@
 
 [node name="UnlockWater2" instance=ExtResource( 1 )]
 cost = {
-5: 100.0
+5: 0.0
 }
-upgrade_name = "Filtration"
-unlock_building_id = 16
+upgrade_name = "Rodwell"
+description = "A Rodriguez Well harvests water from glaciers."
+unlock_building_id = 15

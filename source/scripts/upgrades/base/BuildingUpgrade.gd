@@ -9,3 +9,4 @@ func _ready():
 
 func apply():
 	GameStats.buildings_unlocked.append(unlock_building_id)
+	GameStats.game.sidebar.repopulate_sidebar()

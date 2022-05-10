@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/upgrades/base/BuildingUpgrade.tscn" type="PackedScene" id=1]
+
+[node name="BuildingUpgrade" instance=ExtResource( 1 )]
+upgrade_name = "Electrolysis"
+description = "An inefficient process for producing oxygen: 2H2O → O2 + 2H2."
+unlock_building_id = 10

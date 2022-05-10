@@ -8,6 +8,7 @@ signal building_released
 const HOVER_MODULATE : Color = Color.white
 const DRAGGING_MODULATE : Color = Color.white
 var REGULAR_MODULATE : Color = Color.white.darkened(0.2)
+var LOCKED_MODULATE : Color = Color.white.darkened(0.6)
 
 const DRAGGING_Z_INDEX : int = 10
 const REGULAR_Z_INDEX : int = 1
@@ -282,6 +283,7 @@ func _is_in_grid_range() -> bool:
 
 func _process(_delta):
 	if locked:
+		set_modulate(LOCKED_MODULATE)
 		return
 
 	if _mouse_state == MouseState.HOVER:

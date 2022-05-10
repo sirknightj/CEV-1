@@ -203,9 +203,6 @@ func _on_Next_Month_gui_input(event):
 		else:
 			game.on_next_turn()
 			update_turn_display()
-			# game.place_building(350, 50)
-			#if GameStats.turn % 5 == 0:
-			#	grid.set_grid_size(GameStats.grid_size + 6)
 			populate_sidebar_correctly()
 
 """

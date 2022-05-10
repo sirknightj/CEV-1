@@ -17,6 +17,8 @@ func _ready():
 	GameStats.logger.start_new_session(123)
 	sidebar = get_node("UILayer/Sidebar")
 	graph = get_node("UILayer/Sidebar/Graph")
+	for building in get_tree().get_nodes_in_group("buildings"):
+		_on_SceneTree_node_added(building)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 	update_stats()
 	show_correct_text()
@@ -83,7 +85,7 @@ func show_correct_text():
 		$UILayer/Sidebar.toggle_upgrades_button(true)
 	else:
 		$UILayer/TextBox.text = ""
-	update_resources()
+	_on_Resources_changed()
 
 """
 	Place the building at the grid square (_x, _y).
@@ -103,6 +105,7 @@ func place_building(_x: int, _y: int) -> void:
 func update_resources() -> void:
 	var cb = GameStats.resources.get_callback()
 	GameStats.resources.set_callback(null)
+
 	GameStats.resources.reset_income_expense()
 	for building in get_tree().get_nodes_in_group("buildings"):
 		for resource in GameData.ResourceType.values():
@@ -120,6 +123,7 @@ func update_resources() -> void:
 		for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
 			GameStats.resources.give(resource, GameData.PEOPLE_RESOURCE_CONSUMPTION[resource] * dead_colonists)
 		print(str(dead_colonists) + " people died!")
+
 	GameStats.resources.set_callback(cb)
 
 func aggregate_resources() -> Dictionary:

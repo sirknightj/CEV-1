@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/upgrades/base/Upgrade.tscn" type="PackedScene" id=1]
+
+[node name="Upgrade" instance=ExtResource( 1 )]
+cost = {
+5: 50.0
+}
+upgrade_name = "Astrobiology"
+description = "Research space organisms to unlock future potential innovations"

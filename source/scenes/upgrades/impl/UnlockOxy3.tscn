@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/upgrades/base/BuildingUpgrade.tscn" type="PackedScene" id=1]
+
+[node name="BuildingUpgrade" instance=ExtResource( 1 )]
+cost = {
+5: 400.0
+}
+upgrade_name = "Photolysis"
+description = "A highly efficient cyanobacteria converts water into oxygen just using sunlight."
+unlock_building_id = 12

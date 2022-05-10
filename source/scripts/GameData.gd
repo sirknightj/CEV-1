@@ -53,15 +53,16 @@ enum UpgradeType {
 	UNLOCK_OXY1
 	UNLOCK_OXY2
 	UNLOCK_OXY3
-	UNLOCK_METAL2
+	UNLOCK_METAL1
 	UNLOCK_ELEC1
 	UNLOCK_ELEC2
 	UNLOCK_ELEC3
+	UNLOCK_END1
 	GRID_1
 	GRID_2
 	GRID_3
 	GRID_4
-	IMPROVE_FARM
+	IMPROVE_FARM1
 	IMPROVE_MINE1
 	ASTRO
 	IMPROVE_FARM2
@@ -158,9 +159,6 @@ static func is_resource_type(type : int) -> bool:
 
 static func is_building_type(type : int) -> bool:
 	return type in BuildingType.values()
-
-static func GET_SQUARE_SIZE() -> float:
-	return SQUARE_SIZE
 
 """
 	Colors

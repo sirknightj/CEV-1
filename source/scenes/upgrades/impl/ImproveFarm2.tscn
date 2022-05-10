@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/upgrades/base/AdjacencyUpgrade.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/upgrades/impl/ImproveFarm2.gd" type="Script" id=2]
+
+[node name="Upgrade" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+cost = {
+5: 400.0
+}
+upgrade_name = "Genetic modification"
+description = "Modify plants to better survive Mars conditions."
+effects = "Increases food output of all farms 50%"
+multipliers = {
+0: 1.5
+}
