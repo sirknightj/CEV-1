@@ -411,8 +411,12 @@ func destroy():
 
 func _on_building_place():
 	if is_in_trash_area():
-		destroy()
-		return
+		if GameStats.selling_enabled:
+			destroy()
+			return
+		else:
+			get_node("../../MainGameScene/UILayer/TextBox").text = "Selling is currently disabled."
+			Input.set_custom_mouse_cursor(null)
 	else:
 		check_trash()
 	if has_moved():

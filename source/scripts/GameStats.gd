@@ -9,6 +9,9 @@ var upgrade_tree : GameObjs.UpgradeTree
 var grid : Grid
 var game : Game
 
+var win_status : bool # true if the player won. false if they lost
+var selling_enabled : bool = false # true if selling is enabled. false if disabled
+
 var logger : Logger.Log
 
 """

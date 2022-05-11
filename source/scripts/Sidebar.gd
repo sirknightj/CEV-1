@@ -12,6 +12,7 @@ var ignore_upgrades_button = true # default = unclickable
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 onready var row_scene = preload("res://scenes/BuildingRow.tscn")
+onready var win_lose_scene = preload("res://scenes/EndScreen.tscn")
 
 func _setup_control_element(control : Control):
 	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -27,6 +28,7 @@ func _ready():
 		show_resources[resource] = false
 	
 	populate_sidebar_correctly()
+	
 
 func repopulate_sidebar():
 	populate_sidebar_correctly()
@@ -291,6 +293,15 @@ func toggle_upgrades_button(_clickable) -> void:
 		$Upgrades.show()
 	else:
 		$Upgrades.hide()
+
+"""
+	Show the win/lose screen
+	is_win true if the player won
+	false if the player lost
+"""
+func show_win_lose_screen(is_win : bool) -> void:
+	GameStats.win_status = is_win
+	get_tree().change_scene("res://scenes/EndScreen.tscn")
 
 const SCROLL_SPEED = 12
 func _unhandled_input(event : InputEvent):

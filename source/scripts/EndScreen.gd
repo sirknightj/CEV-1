@@ -8,7 +8,7 @@ const win_color = Color("#20AE0A")
 const lose_color = Color("#AE200A")
 
 func _ready() -> void:
-	pass
+	set_condition(GameStats.win_status)
 
 func set_condition(is_win: bool) -> void:
 	var title = "Win" if is_win else "Lose"
@@ -19,7 +19,7 @@ func set_condition(is_win: bool) -> void:
 	$Background.color = color
 	
 	_set_stats()
-	.show()
+	# .show()
 
 """
 Months
