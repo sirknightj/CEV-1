@@ -59,6 +59,7 @@ func show_correct_text():
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 12)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 2}
+		GameStats.selling_enabled = true
 	elif turn == 2:
 		$UILayer/TextBox.text = "Notice how another person has arrived to your colony.\nYou now need another well to support your growing population."
 		$UILayer/Sidebar.toggle_next_month_button(false)

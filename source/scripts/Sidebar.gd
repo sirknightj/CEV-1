@@ -34,6 +34,12 @@ func repopulate_sidebar():
 	populate_sidebar_correctly()
 
 func populate_sidebar_correctly() -> void:
+	if not has_enough_electricity():
+		toggle_next_month_button(false)
+		get_parent().get_parent().get_node("UILayer/TextBox").text = "You don't have enough energy to keep your buildings running! You'll need to sell some buildings or generate more electricity!"
+	elif GameStats.turn >= 12:
+		toggle_next_month_button(true)
+	
 	var turn = GameStats.turn
 	if turn <= 2:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.WATER1)
@@ -151,6 +157,8 @@ func _on_Building_building_released(building : Building, original_pos : Vector2,
 		else:
 			GameStats.buildings_owned[building.building_id] = 1
 		placed_building(building.building_id)
+		if building.building_id == GameData.BuildingType.END1:
+			show_win_lose_screen(true)
 	else:
 		building.destroy()
 	repopulate_sidebar()
@@ -203,7 +211,7 @@ func _on_Undo_gui_input(event):
 """
 func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
-		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuClicked)
+		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuClicked)
 		if GameStats.turn == 10:
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
@@ -245,6 +253,7 @@ func how_many_people_will_die_next_turn() -> int:
 """
 func how_much_electricity_over() -> int:
 	var electricity_over : int = GameStats.resources.get_reserve(GameData.ResourceType.ELECTRICITY) + GameStats.resources.get_income(GameData.ResourceType.ELECTRICITY) - GameStats.resources.get_expense(GameData.ResourceType.ELECTRICITY)
+	print(electricity_over)
 	if electricity_over < 0:
 		return -electricity_over
 	else:
