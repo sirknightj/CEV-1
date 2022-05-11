@@ -141,7 +141,8 @@ class CapstoneLogger {
 	}
 
 	async logLevelStart(levelId, details) {
-		console.log("[LOG LEVEL START]", levelId, details)
+		details = this.parseArgs(details);
+		console.log("[LOG LEVEL START]", levelId, details);
 		this.flushBufferedLevelActions();
 		if (this.levelActionTimer) {
 			clearInterval(this.levelActionTimer);
@@ -173,7 +174,8 @@ class CapstoneLogger {
 	}
 
 	async logLevelEnd(details) {
-		console.log("[LOG LEVEL END]", details)
+		details = this.parseArgs(details);
+		console.log("[LOG LEVEL END]", details);
 		this.flushBufferedLevelActions();
 		if (this.levelActionTimer) {
 			clearInterval(this.levelActionTimer);
@@ -195,7 +197,8 @@ class CapstoneLogger {
 	// Actions should be buffered and sent at a limited rate
 	// (immediately flush if an end occurs or new quest start)
 	logLevelAction(actionId, details) {
-		console.log("[LOG LEVEL ACTION]", actionId, details)
+		details = this.parseArgs(details);
+		console.log("[LOG LEVEL ACTION]", actionId, details);
 		// Per action, figure out the time since the start of the level
 		const timestampOfAction = Date.now();
 		const relativeTime = timestampOfAction - this.timestampOfPrevLevelStart;
@@ -211,7 +214,8 @@ class CapstoneLogger {
 	}
 
 	logActionWithNoLevel(actionId, details) {
-		console.log("[LOG ACTION NO LEVEL]", actionId, details)
+		details = this.parseArgs(details);
+		console.log("[LOG ACTION NO LEVEL]", actionId, details);
 		this._request("loggingactionnoquest/set/", {
 			session_seqid: ++this.currentActionSeqInSession,
 			cid: this.categoryId,
@@ -239,6 +243,26 @@ class CapstoneLogger {
 			// Clear out old array
 			this.levelActionBuffer = [];
 		}
+	}
+
+	getCommonData() {
+		return {
+			client_ts: Date.now(),
+			cid: this.categoryId,
+			svid: 2,
+			lid: 0,
+			vid: this.versionNumber,
+			qid: this.currentLevelId,
+			g_name: this.gameName,
+			uid: this.currentUserId,
+			g_s_id: this.gameId,
+			tid: 0,
+			gid: this.gameId
+		};
+	}
+
+	parseArgs(jsonString) {
+		return jsonString ? JSON.parse(jsonString) : null
 	}
 }
 

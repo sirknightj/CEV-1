@@ -143,7 +143,9 @@ func _on_item_click(_name: int) -> void:
 		action = Logger.Actions.UpgradeClickOn
 		selected_upgrade = _name
 		set_sidebar(_name)
-	GameStats.logger.log_level_action(action)
+	GameStats.logger.log_level_action(action, {
+		"upgrade": _name
+	})
 
 func show() -> void:
 	_update_reserve_text()
@@ -157,7 +159,9 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	
 	upgrade.unlock()
 	print("Unlocked ", upgrade.name)
-	GameStats.logger.log_level_action(Logger.Actions.UpgradeBought)
+	GameStats.logger.log_level_action(Logger.Actions.UpgradeBought, {
+		"upgrade": upgrade.name
+	})
 	set_node_styles()
 	set_link_colors()
 	set_sidebar(upgrade.id)

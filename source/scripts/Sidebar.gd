@@ -169,8 +169,8 @@ func update_displays() -> void:
 	Called when the NextMonth button is clicked
 """
 func _on_Next_Month_gui_input(event):
-	GameStats.logger.log_level_action(Logger.Actions.NextMonthClicked)
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
+		GameStats.logger.log_level_action(Logger.Actions.NextMonthClicked)
 		# TODO(vishal)
 		# print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:

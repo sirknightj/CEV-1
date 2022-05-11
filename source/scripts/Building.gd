@@ -303,6 +303,9 @@ func purchase_building():
 		# Automatically enable on purchase
 		enabled = true
 		emit_signal("building_hovered", self)
+		GameStats.logger.log_level_action(Logger.Actions.BuildingPlaced, {
+			"building_id": building_id
+		})
 
 func check_trash():
 	if is_in_trash_area():
@@ -399,6 +402,9 @@ func destroy():
 	remove_from_group("buildings")
 	emit_signal("building_destroy")
 	emit_signal("building_hovered_off", self)
+	GameStats.logger.log_level_action(Logger.Actions.BuildingDeleted, {
+		"building_id": building_id
+	})
 	GameStats.current_selected_building = null
 	Input.set_custom_mouse_cursor(null)
 	queue_free()
@@ -445,11 +451,21 @@ func _on_building_grab():
 	_original_pos = _main.global_position
 	_original_rot = _main.rotation
 	emit_signal("building_grabbed")
+	GameStats.logger.log_level_action(Logger.Actions.BuildingGrabbed, {
+		"building_id": building_id
+	})
 
 func _on_building_rotate():
 	rotate_around(get_global_mouse_position(), PI/2)
+	GameStats.logger.log_level_action(Logger.Actions.BuildingRotated, {
+		"building_id": building_id
+	})
 
 func _on_building_flip():
+	GameStats.logger.log_level_action(Logger.Actions.BuildingFlipped, {
+		"building_id": building_id,
+		"new_flip": !_main_flipped
+	})
 	set_building_flip(!_main_flipped)
 
 func _on_building_drag():

@@ -265,5 +265,5 @@ func load_buildings_json() -> void:
 			stats.cost[resource_type] = building[resource.to_lower() + "_cost"]
 			stats.effects[resource_type] = building[resource.to_lower() + "_effect"]
 		buildings_dict[building_type] = stats
-	print("Loaded the buildings: " + str(buildings_dict.keys()))
+	# ("Loaded the buildings: " + str(buildings_dict.keys()))
 	file.close()
