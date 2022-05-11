@@ -10,15 +10,25 @@ const RESOURCE_TYPE_TO_STRING: Dictionary = {
 	GameData.ResourceType.METAL: "Metal",
 }
 
+var hovered_building = null
+
 const ANIMATION_SPEED = 0.5
 
 var resource_dict : Dictionary
+
+var hover_durations : Dictionary = {}  # resource_type -> int (how long the bar was hovered over this turn)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	for type in RESOURCE_TYPE_TO_STRING.keys():
 		_set_color(type)
-	_on_hover_off()
+	reset_for_next_turn()
+
+func reset_for_next_turn() -> void:
+	for type in RESOURCE_TYPE_TO_STRING.keys():
+		hover_durations[type] = 0
+	$ProductionRect.hide()
+	$ConsumptionRect.hide()
 
 func _set_color(type: int) -> void:
 	assert(GameData.is_resource_type(type))
@@ -30,7 +40,7 @@ func _set_color(type: int) -> void:
 	node.get_node("ResourceStore").add_color_override("font_color", color)
 	
 	node.get_node("BackgroundHoverBar").connect("mouse_entered", self, "_on_hover_on", [type])
-	node.get_node("BackgroundHoverBar").connect("mouse_exited", self, "_on_hover_off")
+	node.get_node("BackgroundHoverBar").connect("mouse_exited", self, "_on_hover_off", [type])
 
 class BuildingEffectsSorter:
 	static func sort_descending(a, b):
@@ -43,7 +53,8 @@ func _on_hover_on(type: int) -> void:
 	assert(GameData.is_resource_type(type))
 	if not resource_dict:
 		return
-	var node_name = RESOURCE_TYPE_TO_STRING.get(type)	
+	hover_durations[type] -= OS.get_ticks_msec()
+	var node_name = RESOURCE_TYPE_TO_STRING.get(type)
 	
 	var production_texts = []
 	var consumption_texts = []
@@ -87,15 +98,74 @@ func _on_hover_on(type: int) -> void:
 	$ConsumptionRect.rect_size.x = $ConsumptionRect/ConsumptionLabel.rect_size.x + 20
 	
 	var graph_bar = get_node("HBoxContainer/" + node_name)
-	$ProductionRect.rect_position.x = graph_bar.rect_position.x + graph_bar.rect_size.x - 9
+	$ProductionRect.rect_position.x = graph_bar.rect_position.x + graph_bar.rect_size.x - 10
 	$ProductionRect.rect_position.y = graph_bar.rect_position.y + graph_bar.get_node("Bar").rect_position.y
 	
 	$ConsumptionRect.rect_position.x = graph_bar.rect_position.x - $ConsumptionRect.rect_size.x + 30
 	$ConsumptionRect.rect_position.y = graph_bar.rect_position.y + graph_bar.get_node("ReferenceLine").rect_position.y
 
-func _on_hover_off() -> void:
+func _on_hover_off(type: int) -> void:
+	assert(GameData.is_resource_type(type))
+	hover_durations[type] += OS.get_ticks_msec()
 	$ProductionRect.hide()
 	$ConsumptionRect.hide()
+
+func on_building_hover(building) -> void:
+	hovered_building = building
+	update_hovered_building_view()
+
+func update_hovered_building_view() -> void:
+	if hovered_building == null:
+		for type in RESOURCE_TYPE_TO_STRING.keys():
+			var node_name = RESOURCE_TYPE_TO_STRING.get(type)
+			var graph_bar = get_node("HBoxContainer/" + node_name)
+			graph_bar.get_node("HighlightProductionBar").rect_size.y = 0
+			graph_bar.get_node("HighlightConsumptionBar").rect_size.y = 0
+		return
+	
+	for type in RESOURCE_TYPE_TO_STRING.keys():
+		var node_name = RESOURCE_TYPE_TO_STRING.get(type)
+		var graph_bar = get_node("HBoxContainer/" + node_name)
+		var tween = graph_bar.get_node("Tween")
+		var prod_bar = graph_bar.get_node("HighlightProductionBar")
+		var cons_bar = graph_bar.get_node("HighlightConsumptionBar")
+		
+		var contribution = 0
+		if hovered_building is String and hovered_building == "colonists":
+			# TODO: account for upgrades changing people's resource consumption
+			var people = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
+			if type in GameData.PEOPLE_RESOURCE_CONSUMPTION:
+				contribution = -people * GameData.PEOPLE_RESOURCE_CONSUMPTION[type]
+		elif is_instance_valid(hovered_building):
+			contribution = hovered_building.building_effects[type]
+		if contribution > 0:
+			var income = GameStats.resources.get_income(type)
+			if income == 0:
+				continue
+			var percentage = contribution / income
+			var height = graph_bar.get_node("Bar").get_meta("actual_height") * max(0.01, percentage)
+			prod_bar.rect_size.y = height
+			prod_bar.rect_position.y = MAX_BAR_HEIGHT - height
+			cons_bar.rect_size.y = 0
+		elif contribution < 0:
+			var expense = GameStats.resources.get_expense(type)
+			if expense == 0:
+				continue
+			var percentage = -contribution / expense
+			var y = graph_bar.get_node("ReferenceLine").get_meta("actual_y")
+			var height = (MAX_BAR_HEIGHT - y) * percentage
+			cons_bar.rect_position.y = y
+			cons_bar.rect_size.y = height
+			prod_bar.rect_size.y = 0
+		else:
+			prod_bar.rect_size.y = 0
+			cons_bar.rect_size.y = 0
+
+func on_building_hover_off(building) -> void:
+	if building != hovered_building:
+		return
+	hovered_building = null
+	update_hovered_building_view()
 
 func _to_str(number: float, include_plus: bool, people : float = 0.0) -> String:
 	var prefix = "+" if number >= 0 and include_plus else ""
@@ -161,6 +231,7 @@ func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary)
 		var bar_ratio = production / max(consumption, 1)
 		bar_ratio = max(0.01, min(1, bar_ratio))
 		tween.interpolate_property(bar, "rect_size:y", bar.rect_size.y, MAX_BAR_HEIGHT * bar_ratio, ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		bar.set_meta("actual_height", MAX_BAR_HEIGHT * bar_ratio)
 		tween.interpolate_property(bar, "rect_position:y", bar.rect_position.y, MAX_BAR_HEIGHT * (1 - bar_ratio), ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
 		
 		# move reference line and diff label
@@ -169,6 +240,7 @@ func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary)
 			reference_y = MAX_BAR_HEIGHT * (1 - consumption / production)
 		var ref_line = graph_bar.get_node("ReferenceLine")
 		tween.interpolate_property(ref_line, "rect_position:y", ref_line.rect_position.y, reference_y, ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		ref_line.set_meta("actual_y", reference_y)
 		var diff_text = graph_bar.get_node("ResourceDiff")
 		tween.interpolate_property(diff_text, "rect_position:y", diff_text.rect_position.y, reference_y + (10 if reference_y < 10 else -20), ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
 		
@@ -187,5 +259,15 @@ func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary)
 	
 	$ColonistsDiff.text = _to_str(resources.get_income(GameData.ResourceType.PEOPLE), true, resources.get_reserve(GameData.ResourceType.PEOPLE)) + " / mo"
 	$ColonistsDead.text = _to_str(GameStats.dead, false) + " dead"
-
+	
 	tween.start()
+	
+	update_hovered_building_view()
+
+func _on_Colonists_hover() -> void:
+	hovered_building = "colonists"
+	update_hovered_building_view()
+
+func _on_Colonists_hover_off() -> void:
+	hovered_building = null
+	update_hovered_building_view()

@@ -169,6 +169,7 @@ func update_displays() -> void:
 	Called when the NextMonth button is clicked
 """
 func _on_Next_Month_gui_input(event):
+	GameStats.logger.log_level_action(Logger.Actions.NextMonthClicked)
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		# TODO(vishal)
 		# print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
@@ -183,6 +184,7 @@ func _on_Next_Month_gui_input(event):
 				get_parent().get_parent().get_node("UILayer/TextBox").text = "Please check out the Upgrades menu!"
 		else:
 			game.on_next_turn()
+			$Graph.reset_for_next_turn()
 			update_turn_display()
 			populate_sidebar_correctly()
 
@@ -192,17 +194,21 @@ func _on_Next_Month_gui_input(event):
 func _on_Undo_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		print("Undo was clicked!")
-		GameStats.logger.log_action_with_no_level(Logger.Actions.UndoClicked)
+		GameStats.logger.log_level_action(Logger.Actions.UndoClicked)
 
 """
 	Called when the Upgrades button is clicked
 """
 func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
+<<<<<<< HEAD
 		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuClicked)
 		if GameStats.turn == 10:
 			toggle_next_month_button(true)
 		
+=======
+		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuClicked)
+>>>>>>> b6439550a0e73c045ac367c20d40339fcf278c9a
 		if not ignore_upgrades_button:
 			$CanvasLayer/TechTree.show()
 

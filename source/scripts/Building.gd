@@ -5,6 +5,8 @@ signal building_changed
 signal building_grabbed
 signal building_released
 signal building_destroy
+signal building_hovered(building)
+signal building_hovered_off(building)
 
 const HOVER_MODULATE : Color = Color.white
 const DRAGGING_MODULATE : Color = Color.white
@@ -218,13 +220,15 @@ func setup_ghost_square(grid_square : GridSquare):
 	return grid_square
 
 func building_mouse_entered():
-	if (_mouse_state == MouseState.NONE
-			and GameStats.current_selected_building == null):
+	if _mouse_state == MouseState.NONE and not GameStats.current_selected_building:
 		_mouse_state = MouseState.HOVER
+	if purchased and enabled:  # TODO: also do City Center
+		emit_signal("building_hovered", self)
 
 func building_mouse_exited():
-	if (_mouse_state == MouseState.HOVER):
+	if _mouse_state == MouseState.HOVER:
 		_mouse_state = MouseState.NONE
+		emit_signal("building_hovered_off", self)
 
 func set_next_pos(pos : Vector2):
 	_global_pos_next = pos
@@ -298,6 +302,7 @@ func purchase_building():
 		purchased = true
 		# Automatically enable on purchase
 		enabled = true
+		emit_signal("building_hovered", self)
 
 func check_trash():
 	if is_in_trash_area():
@@ -393,6 +398,7 @@ func force_set(pos : Vector2, rot : float, flip : bool):
 func destroy():
 	remove_from_group("buildings")
 	emit_signal("building_destroy")
+	emit_signal("building_hovered_off", self)
 	GameStats.current_selected_building = null
 	Input.set_custom_mouse_cursor(null)
 	queue_free()
