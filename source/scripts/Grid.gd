@@ -15,6 +15,9 @@ func set_grid_size(size : int):
 	update()
 	_set_camera(GameStats.grid_size)
 
+func get_edge():
+	return GameStats.grid_size * (GameData.SQUARE_SIZE / 2)
+
 func _set_camera(grid_size : float):
 	var size : float = float(grid_size * GameData.SQUARE_SIZE)
 	var factor : float = (size / _screen_size.y) * 1.05

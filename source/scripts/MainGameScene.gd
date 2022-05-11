@@ -20,6 +20,7 @@ func _ready():
 	for building in get_tree().get_nodes_in_group("buildings"):
 		_on_SceneTree_node_added(building)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
+	get_tree().connect("node_removed", self, "_on_SceneTree_node_removed")
 	update_stats()
 	show_correct_text()
 	GameStats.resources.set_callback(funcref(self, "_on_Resources_changed"))
@@ -56,40 +57,43 @@ func show_correct_text():
 	elif turn == 1:
 		$UILayer/TextBox.text = "Each colonist consumes 1 water/month.\nPlace down some wells to ensure you don't run out of water!\nTip: use R to rotate the building."
 		$UILayer/Sidebar.toggle_next_month_button(false)
-		GameStats.resources.give(GameData.ResourceType.METAL, 30)
-		GameStats.restrictions = {GameData.BuildingType.WATER1: 5}
+		GameStats.resources.give(GameData.ResourceType.METAL, 12)
+		GameStats.restrictions = {GameData.BuildingType.WATER1: 2}
 	elif turn == 2:
 		$UILayer/TextBox.text = "Notice how another person has arrived to your colony.\nYou now need another well to support your growing population."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 6)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1}
 	elif turn == 3:
-		$UILayer/TextBox.text = "Each human also consumes 2 food/month.\nFEED THE HUMANS\nYou can also use T to flip the building!"
+		$UILayer/TextBox.text = "Each colonists also consumes 2 food/month.\nFEED THE HUMANS\nYou can also use T to flip the building!"
 		$UILayer/Sidebar.toggle_next_month_button(false)
-		GameStats.resources.give(GameData.ResourceType.METAL, 106)
-		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 5}
+		GameStats.resources.give(GameData.ResourceType.METAL, 40)
+		GameStats.restrictions = {GameData.BuildingType.FOOD1: 2}
 	elif turn == 4:
 		$UILayer/TextBox.text = "Keep expanding your colony! And keep your people alive!"
 	elif turn == 5:
 		$UILayer/Sidebar.toggle_next_month_button(false)
-		GameStats.resources.give(GameData.ResourceType.METAL, 32)
-		GameStats.restrictions = {GameData.BuildingType.WATER1: 2, GameData.BuildingType.FOOD1: 1}
+		GameStats.resources.give(GameData.ResourceType.METAL, 26)
+		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 1}
 	elif turn == 6:
 		$UILayer/TextBox.text = "Humans consume 1 oxygen/mo.\nMake sure you have enough!\nYour colony will need metal to building more buildings."
 		$UILayer/Sidebar.toggle_next_month_button(false)
-		GameStats.resources.give(GameData.ResourceType.METAL, 246)
-		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 2}
+		GameStats.resources.give(GameData.ResourceType.METAL, 146)
+		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 1}
 	elif turn == 7:
-		# $UILayer/TextBox.text = "Tip: You can use T to flip the building, in addition to R for rotating!"
-		pass
+		$UILayer/TextBox.text = "You can also move the buildings around!"
 	elif turn == 9:
 		$UILayer/TextBox.text = "Your mine needs energy to function.\nPlace down some solar panels."
 		$UILayer/Sidebar.toggle_next_month_button(false)
-		GameStats.resources.give(GameData.ResourceType.METAL, 32)
-		GameStats.restrictions = {GameData.BuildingType.ELEC1: 4}
+		GameStats.resources.give(GameData.ResourceType.METAL, 24)
+		GameStats.restrictions = {GameData.BuildingType.ELEC1: 3}
 	elif turn == 10:
 		$UILayer/TextBox.text = "Your city center has generated enough science for an upgrade! Spend your science points to unlock new building types and expand your colony!"
 		$UILayer/Sidebar.toggle_upgrades_button(true)
+	elif turn == 11:
+		$UILayer/TextBox.text = "You should aim to get a University down to speed up your research progress!"
+	elif turn == 12:
+		$UILayer/TextBox.text = "Your goal is to place down the Cryonic Chamber while minimizing colonist deaths."
 	else:
 		$UILayer/TextBox.text = ""
 	_on_Resources_changed()
@@ -152,8 +156,13 @@ func _on_Resources_changed():
 
 func _on_Building_hover(building):
 	graph.on_building_hover(building)
+
 func _on_Building_hover_off(building):
 	graph.on_building_hover_off(building)
+
+func _on_SceneTree_node_removed(_node):
+	if _node is Building:
+		_on_Resources_changed()
 
 func _on_SceneTree_node_added(_node):
 	if (not _node.is_in_group("buildings")

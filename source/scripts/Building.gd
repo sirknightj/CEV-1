@@ -4,6 +4,7 @@ class_name Building
 signal building_changed
 signal building_grabbed
 signal building_released
+signal building_destroy
 signal building_hovered(building)
 signal building_hovered_off(building)
 
@@ -65,6 +66,7 @@ var _mouse_state : int = MouseState.NONE
 var _mouse_enters : int = 0
 var _overlapping_areas : int = 0
 var square_scene = preload("res://scenes/GridSquare.tscn")
+var trash_icon = preload("res://assets/images/trash.png")
 
 """
 	These are needed because of the following Godot bug:
@@ -302,6 +304,12 @@ func purchase_building():
 		enabled = true
 		emit_signal("building_hovered", self)
 
+func check_trash():
+	if is_in_trash_area():
+		Input.set_custom_mouse_cursor(trash_icon)
+	else:
+		Input.set_custom_mouse_cursor(null)
+
 func _update_shadow():
 	_shadow_flipped_next = _ghost_flipped
 	_shadow.global_position = snapped(_ghost.global_position)
@@ -387,7 +395,20 @@ func force_set(pos : Vector2, rot : float, flip : bool):
 	_main_flipped = flip
 	reset_graphics()
 
+func destroy():
+	remove_from_group("buildings")
+	emit_signal("building_destroy")
+	emit_signal("building_hovered_off", self)
+	GameStats.current_selected_building = null
+	Input.set_custom_mouse_cursor(null)
+	queue_free()
+
 func _on_building_place():
+	if is_in_trash_area():
+		destroy()
+		return
+	else:
+		check_trash()
 	if has_moved():
 		purchase_building()
 	if purchased:
@@ -406,7 +427,12 @@ func _on_building_place():
 func force_update():
 	_last_mouse_pos = get_global_mouse_position()
 
+func is_in_trash_area():
+	return _shadow.visible and get_global_mouse_position().x > GameStats.grid.get_edge() * 1.10
+
 func _on_building_release():
+	if not is_instance_valid(self):
+		return
 	if GameStats.current_selected_building == self:
 		GameStats.current_selected_building = null
 	_emit_release_on_next_physics = true
@@ -427,11 +453,14 @@ func _on_building_flip():
 	set_building_flip(!_main_flipped)
 
 func _on_building_drag():
+	check_trash()
 	_global_pos_next += (get_global_mouse_position() - _last_mouse_pos)
 	_last_mouse_pos = get_global_mouse_position()
 
 func _unhandled_input(event : InputEvent):
 	if locked:
+		return
+	if not is_instance_valid(self):
 		return
 
 	if event.is_action_pressed("building_grab"):
