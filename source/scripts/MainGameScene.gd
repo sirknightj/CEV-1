@@ -89,6 +89,7 @@ func show_correct_text():
 		GameStats.restrictions = {GameData.BuildingType.ELEC1: 3}
 	elif turn == 10:
 		$UILayer/TextBox.text = "Your city center has generated enough science for an upgrade! Spend your science points to unlock new building types and expand your colony!"
+		$UILayer/Sidebar.toggle_next_month_button(false)
 		$UILayer/Sidebar.toggle_upgrades_button(true)
 	elif turn == 11:
 		$UILayer/TextBox.text = "You should aim to get a University down to speed up your research progress!"
