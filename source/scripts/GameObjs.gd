@@ -140,8 +140,11 @@ class Resources:
 		n : The number of times to update the reserves
 	"""
 	func step_n(n : int):
-		for resource in resources.values():
+		for type in resources:
+			var resource = resources[type]
 			resource.step_n(n)
+			resources_generated[type] += resource.income
+			resources_used[type] += resource.expense	
 
 class UpgradeTree:
 	var tree_dict : Dictionary = {} # upgrade ID -> upgrade data

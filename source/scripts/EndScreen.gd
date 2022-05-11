@@ -21,6 +21,9 @@ func set_condition(is_win: bool) -> void:
 	_set_stats()
 	# .show()
 
+func _get_gen(type: int) -> String:
+	return str(int(floor(GameStats.resources.resources_generated[type])))
+
 """
 Months
 Colonists born
@@ -37,7 +40,6 @@ Total science
 func _set_stats() -> void:
 	var months = GameStats.turn
 	var deaths = GameStats.dead
-	var colonists_born = GameStats.resources.resources_generated[GameData.ResourceType.PEOPLE]
 	var upgrades_purchased = GameStats.upgrade_tree.get_num_bought()
 	
 	var buildings_placed = -1  # do not count city center
@@ -45,13 +47,13 @@ func _set_stats() -> void:
 		buildings_placed += n
 	
 	$StatsRight.text = str(months) + "\n" + \
-	str(colonists_born) + "\n" + \
+	_get_gen(GameData.ResourceType.PEOPLE) + "\n" + \
 	str(deaths) + "\n" + \
 	str(upgrades_purchased) + "\n" + \
 	str(buildings_placed) + "\n" + \
-	str(GameStats.resources.resources_generated[GameData.ResourceType.WATER]) + "\n" + \
-	str(GameStats.resources.resources_generated[GameData.ResourceType.FOOD]) + "\n" + \
-	str(GameStats.resources.resources_generated[GameData.ResourceType.OXYGEN]) + "\n" + \
-	str(GameStats.resources.resources_generated[GameData.ResourceType.ELECTRICITY]) + "\n" + \
-	str(GameStats.resources.resources_generated[GameData.ResourceType.METAL]) + "\n" + \
-	str(GameStats.resources.resources_generated[GameData.ResourceType.SCIENCE])
+	_get_gen(GameData.ResourceType.WATER) + "\n" + \
+	_get_gen(GameData.ResourceType.FOOD) + "\n" + \
+	_get_gen(GameData.ResourceType.OXYGEN) + "\n" + \
+	_get_gen(GameData.ResourceType.ELECTRICITY) + "\n" + \
+	_get_gen(GameData.ResourceType.METAL) + "\n" + \
+	_get_gen(GameData.ResourceType.SCIENCE)
