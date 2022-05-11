@@ -7,4 +7,5 @@ cost = {
 5: 200.0
 }
 upgrade_name = "Terraforming"
+description = "Use new chemical engineering techniques and advanced manufactories to shape the local atmosphere and ecology near your habitat."
 size = 25

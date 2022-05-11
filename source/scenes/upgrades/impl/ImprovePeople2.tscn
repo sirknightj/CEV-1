@@ -7,8 +7,8 @@ cost = {
 5: 400.0
 }
 upgrade_name = "Cryogenics"
-description = "Freezing drying, combined with Mars' low ambient pressure, enables long-term preservation of food. With better preserved food, colonists decrease their food waste."
-effects = "Decreases food usage of population by 20%"
+description = "Preserve food for the long-term with freeze drying, which works well with Mars' low ambient pressure. With better preserved food, colonists decrease their food waste."
+effects = "Decreases food consumption of population by 20%."
 multipliers = {
 0: 0.8
 }

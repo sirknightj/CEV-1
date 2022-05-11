@@ -7,5 +7,5 @@ cost = {
 5: 400.0
 }
 upgrade_name = "Aeroponics"
-description = "A farming system that grows plants in misted air, not water or soil. Vertical farming makes this system more space-efficient."
+description = "Grow plants in misted air, not water or soil. Vertical farming makes this system more space-efficient."
 unlock_building_id = 7

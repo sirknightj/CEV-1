@@ -7,4 +7,5 @@ cost = {
 5: 0.0
 }
 upgrade_name = "Fabrication"
+description = "Mine iron, silicon, and aluminum straight from the Martian crust and process the elements to gain usable materials."
 unlock_building_id = 8

@@ -7,5 +7,5 @@ cost = {
 5: 100.0
 }
 upgrade_name = "Power of the wind"
-description = "Harness the power of the wind with huge-bladed turbines. Turbines have a small footprint, but turbines are ineffecient in Mars' thin atmosphere."
+description = "Harness the power of the wind with huge-bladed turbines. Turbines have a small footprint, but are inefficient in Mars' thin atmosphere."
 unlock_building_id = 2

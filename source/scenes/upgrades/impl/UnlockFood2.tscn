@@ -7,5 +7,5 @@ cost = {
 5: 100.0
 }
 upgrade_name = "Hydroponics"
-description = "A farming system that grows plants in liquid instead of soil. Hydroponics has a higher crop yield than traditional farming, but is harder to maintain."
+description = "Grow plants in liquid instead of soil. The hydroponic farming system has a higher crop yield than traditional farming, but is harder to maintain."
 unlock_building_id = 6

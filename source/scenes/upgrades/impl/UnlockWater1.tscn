@@ -7,5 +7,5 @@ cost = {
 5: 0.0
 }
 upgrade_name = "Rodwell"
-description = "A Rodriguez Well harvests water from glaciers."
+description = "Harvest your water from glaciers with a Rodriguez Well, originally invented to support ice-cap military outposts."
 unlock_building_id = 15

@@ -7,4 +7,5 @@ cost = {
 5: 75.0
 }
 upgrade_name = "Space research"
+description = "Build observatories to encourage famous astrophysicists to immigrate to Mars. By conducting their research here, they improve scientific output for all."
 unlock_building_id = 14

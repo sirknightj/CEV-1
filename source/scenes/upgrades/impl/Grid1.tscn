@@ -4,5 +4,5 @@
 
 [node name="Upgrade" instance=ExtResource( 1 )]
 upgrade_name = "Colonization"
-description = "Pioneers have settled the first colony on Mars. So far, the colony is just a small dome protected from the harsh conditions of the Martian atmosphere."
+description = "Settle the first colony on Mars. So far, the colony is just a small dome protecting the brave pioneers from the harsh conditions of the Martian atmosphere."
 size = 15

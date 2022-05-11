@@ -7,4 +7,5 @@ cost = {
 5: 100.0
 }
 upgrade_name = "Filtration"
+description = "Reuse your own water instead of just harvesting from Mars. A water recycler filters dirty water into clean, potable water."
 unlock_building_id = 16

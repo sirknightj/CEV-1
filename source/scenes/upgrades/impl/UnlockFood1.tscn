@@ -7,5 +7,5 @@ cost = {
 5: 0.0
 }
 upgrade_name = "Vivarium"
-description = "Plants from pioneer species are the first to be grown and establish greenhouses and convert Mars regolith into soil. They don't taste very good."
+description = "Establish greenhouses by growing plants from pioneer species. The plants are optimized for converting Mars regolith into soil, not for taste."
 unlock_building_id = 5

@@ -9,8 +9,8 @@ cost = {
 5: 10.0
 }
 upgrade_name = "Solar wires"
-description = "Improved electrical wiring makes adjacent solar panels more efficient."
-effects = "+10% energy output from each solar panel adjacent to another solar panel"
+description = "Improve electrical wiring between buildings to make adjacent solar panels more efficient."
+effects = "+10% energy output from each solar panel adjacent to another solar panel."
 multipliers = {
 3: 1.1
 }

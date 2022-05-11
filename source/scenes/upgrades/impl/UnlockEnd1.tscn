@@ -7,4 +7,5 @@ cost = {
 5: 2000.0
 }
 upgrade_name = "Cryonics"
+description = "Build a chamber to cryonically preserve your colonists. Frozen in time, they are forever protected from any threat. You have finally accomplished your objective function!"
 unlock_building_id = 4

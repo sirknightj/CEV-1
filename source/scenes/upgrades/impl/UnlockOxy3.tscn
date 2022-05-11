@@ -7,5 +7,5 @@ cost = {
 5: 400.0
 }
 upgrade_name = "Photolysis"
-description = "A highly efficient cyanobacteria converts water into oxygen just using sunlight."
+description = "Convert water into oxygen using sunlight and a highly efficient cyanobacteria."
 unlock_building_id = 12

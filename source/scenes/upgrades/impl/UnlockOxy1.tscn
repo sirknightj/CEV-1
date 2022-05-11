@@ -4,5 +4,5 @@
 
 [node name="BuildingUpgrade" instance=ExtResource( 1 )]
 upgrade_name = "Electrolysis"
-description = "An inefficient process for producing oxygen: 2H2O → O2 + 2H2."
+description = "Synthesize oxygen using electrolysis, an easy but inefficient chemical process. The oxygenerator turns 2H2O into O2 and 2H2."
 unlock_building_id = 10

@@ -7,5 +7,5 @@ cost = {
 5: 100.0
 }
 upgrade_name = "MOXIE"
-description = "The Mars Oxygen In-Situ Resource Utilization Experiment produces oxygen from the CO2 in Mars' atmosphere using solid oxide electrolysis."
+description = "Produce oxygen from the CO2 in Mars' atmosphere using solid oxide electrolysis. Originally proposed by NASA with the Mars Oxygen In-Situ Resource Utilization Experiment (MOXIE)."
 unlock_building_id = 11

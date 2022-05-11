@@ -8,7 +8,7 @@ cost = {
 }
 upgrade_name = "Pantropy"
 description = "Genetically modify humans to better survive in the Mars environment."
-effects = "Decreases water and oxygen usage of population by 20%"
+effects = "Decreases water and oxygen usage of population by 20%."
 multipliers = {
 1: 0.8,
 2: 0.8

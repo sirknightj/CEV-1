@@ -9,8 +9,8 @@ cost = {
 5: 400.0
 }
 upgrade_name = "Genetic modification"
-description = "Modify plants to better survive Mars conditions."
-effects = "Increases food output of all farms 50%"
+description = "Modify plants to better survive Mars conditions. Hardier plants means higher crop yields."
+effects = "Increases food output of all farms 50%."
 multipliers = {
 0: 1.5
 }

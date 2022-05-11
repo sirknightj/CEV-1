@@ -9,6 +9,7 @@ cost = {
 5: 10.0
 }
 upgrade_name = "Automated mine"
+description = "Deploy robots to automate the mining process. Removing all human intervention increases mine efficiency."
 effects = "+20% metal output from all mines."
 multipliers = {
 4: 1.2

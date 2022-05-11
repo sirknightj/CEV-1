@@ -7,5 +7,5 @@ cost = {
 5: 0.0
 }
 upgrade_name = "Higher education"
-description = "Establishing a new university lets you use undergrads to generate research."
+description = "Establish the first extraterrestrial universities and use undergrads to generate research."
 unlock_building_id = 13
