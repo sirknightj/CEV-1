@@ -46,21 +46,18 @@
         "id": "elec2",
         "shape":
         [
-            [false,true,false],
-            [true,true,true],
-            [false,true,false],
-            [false,false,false]
+            [true]
         ],
         "food_cost": 0,
         "water_cost": 0,
         "oxygen_cost": 0,
         "electricity_cost": 0,
-        "metal_cost": 16,
+        "metal_cost": 6,
         "science_cost": 0,
         "food_effect": 0,
         "water_effect": 0,
         "oxygen_effect": 0,
-        "electricity_effect": 13,
+        "electricity_effect": 2,
         "metal_effect": 0,
         "science_effect": 0
     },
@@ -80,7 +77,7 @@
         "food_effect": 0,
         "water_effect": 0,
         "oxygen_effect": 0,
-        "electricity_effect": 100,
+        "electricity_effect": 80,
         "metal_effect": 0,
         "science_effect": 0
     },
