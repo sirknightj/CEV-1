@@ -19,6 +19,7 @@ func set_condition(is_win: bool) -> void:
 	$Background.color = color
 	
 	_set_stats()
+	.show()
 
 """
 Months

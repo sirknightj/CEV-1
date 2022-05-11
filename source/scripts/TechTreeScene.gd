@@ -134,12 +134,16 @@ func _on_item_hover_off(_name: int) -> void:
 	set_link_colors()
 
 func _on_item_click(_name: int) -> void:
+	var action
 	if selected_upgrade == _name:
+		action = Logger.Actions.UpgradeClickOff
 		selected_upgrade = -1
 		clear_sidebar()
 	else:
+		action = Logger.Actions.UpgradeClickOn
 		selected_upgrade = _name
 		set_sidebar(_name)
+	GameStats.logger.log_level_action(action)
 
 func show() -> void:
 	_update_reserve_text()
@@ -153,6 +157,7 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	
 	upgrade.unlock()
 	print("Unlocked ", upgrade.name)
+	GameStats.logger.log_level_action(Logger.Actions.UpgradeBought)
 	set_node_styles()
 	set_link_colors()
 	set_sidebar(upgrade.id)
@@ -163,5 +168,5 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 """
 func _on_Back_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
-		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuBackClicked)
+		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuBackClicked)
 		self.hide()

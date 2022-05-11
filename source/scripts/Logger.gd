@@ -2,9 +2,13 @@ extends Object
 class_name Logger
 
 enum Actions {
+	NextMonthClicked = 12,
 	UndoClicked = 14,
 	UpgradeMenuClicked = 17,
 	UpgradeMenuBackClicked = 18,
+	UpgradeBought = 32,
+	UpgradeClickOn = 35,
+	UpgradeClickOff = 36,
 }
 
 class Log:
@@ -39,10 +43,10 @@ class Log:
 			return
 		self._logger.logLevelAction(action_id, details)
 	
-	func log_action_with_no_level(action_id: int, details=null) -> void:
-		if not self.enabled:
-			return
-		self._logger.logActionWithNoLevel(action_id, details)
+	#func log_action_with_no_level(action_id: int, details=null) -> void:
+	#	if not self.enabled:
+	#		return
+	#	self._logger.logActionWithNoLevel(action_id, details)
 	
 	func flush_buffered_level_actions() -> void:
 		if not self.enabled:

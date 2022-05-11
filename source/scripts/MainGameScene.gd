@@ -39,9 +39,13 @@ func update_stats():
 	Handles the logic for the next turn
 """
 func on_next_turn():
+	GameStats.logger.log_level_end({
+		"resource_hovers": graph.hover_durations,
+	})
 	GameStats.resources.step()
 	GameStats.turn += 1
 	emit_signal("next_turn")
+	GameStats.logger.log_level_start(GameStats.turn)
 	show_correct_text()
 
 func show_correct_text():
@@ -115,6 +119,7 @@ func update_resources() -> void:
 			GameStats.resources.add_effect(resource, building.get_effect(resource))
 	# Handle colonists dying
 	var dead_colonists : int = 0
+	# TODO: account for upgrades changing people's resource consumption
 	for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
 		if GameStats.resources.get_reserve(resource) < 0:
 			var colonists_unsupported : int = -ceil(GameStats.resources.get_reserve(resource) / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource])
@@ -145,10 +150,17 @@ func _on_Resources_changed():
 	sidebar.update_displays()
 	update_stats()
 
+func _on_Building_hover(building):
+	graph.on_building_hover(building)
+func _on_Building_hover_off(building):
+	graph.on_building_hover_off(building)
+
 func _on_SceneTree_node_added(_node):
 	if (not _node.is_in_group("buildings")
 			or _node.is_in_group("tracked")):
 		return
 	_node.add_to_group("tracked")
 	_node.connect("building_changed", self, "_on_Resources_changed")
+	_node.connect("building_hovered", self, "_on_Building_hover")
+	_node.connect("building_hovered_off", self, "_on_Building_hover_off")
 	emit_signal("building_added", _node)
