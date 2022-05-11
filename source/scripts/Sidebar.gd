@@ -201,14 +201,9 @@ func _on_Undo_gui_input(event):
 """
 func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
-<<<<<<< HEAD
 		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuClicked)
 		if GameStats.turn == 10:
 			toggle_next_month_button(true)
-		
-=======
-		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuClicked)
->>>>>>> b6439550a0e73c045ac367c20d40339fcf278c9a
 		if not ignore_upgrades_button:
 			$CanvasLayer/TechTree.show()
 
