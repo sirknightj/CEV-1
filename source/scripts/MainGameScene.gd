@@ -82,7 +82,9 @@ func show_correct_text():
 		GameStats.resources.give(GameData.ResourceType.METAL, 146)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 1}
 	elif turn == 7:
-		$UILayer/TextBox.text = "You can also move the buildings around!"
+		$UILayer/TextBox.text = "Tip: You can also move the buildings around!"
+	elif turn == 8:
+		$UILayer/TextBox.text = "If " + str(GameStats.colonist_death_threshold) + " colonists die, you lose. Make sure that doesn't happen!"
 	elif turn == 9:
 		$UILayer/TextBox.text = "Your mine needs energy to function.\nPlace down some solar panels."
 		$UILayer/Sidebar.toggle_next_month_button(false)
@@ -97,7 +99,10 @@ func show_correct_text():
 	elif turn == 12:
 		$UILayer/TextBox.text = "Your goal is to place down the Cryonic Chamber while minimizing colonist deaths."
 	else:
-		$UILayer/TextBox.text = ""
+		if $UILayer/Sidebar.how_many_people_will_die_next_turn() > 0:
+			$UILayer/TextBox.text = "Oh no! Some colonists died due to lack of resources! Only " + str(GameStats.colonist_death_threshold - GameStats.dead) + " more colonist deaths will be tolerated!"
+		else:
+			$UILayer/TextBox.text = ""
 	_on_Resources_changed()
 
 """

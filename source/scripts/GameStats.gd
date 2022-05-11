@@ -11,6 +11,7 @@ var game : Game
 
 var win_status : bool # true if the player won. false if they lost
 var selling_enabled : bool = false # true if selling is enabled. false if disabled
+var colonist_death_threshold : int
 
 var logger : Logger.Log
 
@@ -241,6 +242,7 @@ func _ready():
 	grid_size = 15
 	turn = 0
 	dead = 0
+	colonist_death_threshold = 100
 	resources = GameObjs.Resources.new()
 	resources.set_reserves(_initial_reserves)
 

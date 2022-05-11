@@ -40,6 +40,9 @@ func populate_sidebar_correctly() -> void:
 	elif GameStats.turn >= 12:
 		toggle_next_month_button(true)
 	
+	if GameStats.colonist_death_threshold <= GameStats.dead:
+		show_win_lose_screen(false)
+	
 	var turn = GameStats.turn
 	if turn <= 2:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.WATER1)
