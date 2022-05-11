@@ -36,11 +36,14 @@ func repopulate_sidebar():
 func populate_sidebar_correctly() -> void:
 	if not has_enough_electricity():
 		toggle_next_month_button(false)
-		get_parent().get_parent().get_node("UILayer/TextBox").text = "You don't have enough energy to keep your buildings running! You'll need to sell some buildings or generate more electricity!"
+		get_parent().get_parent().get_node("UILayer/TextBox").text = "You don't have enough energy to keep your buildings running! You'll need to sell some buildings or generate more energy!"
+	elif not has_enough_metal():
+		toggle_next_month_button(false)
+		get_parent().get_parent().get_node("UILayer/TextBox").text = "You don't have enough metal to keep your buildings running! You'll need to sell some buildings or generate more metal!"
 	elif GameStats.turn >= 12:
 		toggle_next_month_button(true)
 	
-	if GameStats.colonist_death_threshold <= GameStats.dead:
+	if GameStats.colonist_death_threshold <= GameStats.dead or GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 1:
 		show_win_lose_screen(false)
 	
 	var turn = GameStats.turn
@@ -249,6 +252,14 @@ func how_many_people_will_die_next_turn() -> int:
 		if 0 > resources_have:
 			dead_colonists = max(dead_colonists, ceil(-resources_have / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource]))
 	return dead_colonists
+
+"""
+	Returns true if we have enough metal for the next turn
+	false if we'll go negative
+"""
+func has_enough_metal() -> bool:
+	var metal_over : int = GameStats.resources.get_reserve(GameData.ResourceType.METAL) + GameStats.resources.get_income(GameData.ResourceType.METAL) - GameStats.resources.get_expense(GameData.ResourceType.METAL)
+	return metal_over >= 0
 
 """
 	Returns how much electricity you'll overdraw next turn
