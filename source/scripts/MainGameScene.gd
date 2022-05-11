@@ -133,7 +133,7 @@ func update_resources() -> void:
 	# TODO: account for upgrades changing people's resource consumption
 	for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
 		if GameStats.resources.get_reserve(resource) < 0:
-			var colonists_unsupported : int = -ceil(GameStats.resources.get_reserve(resource) / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource])
+			var colonists_unsupported : int = -floor(GameStats.resources.get_reserve(resource) / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource])
 			if dead_colonists < colonists_unsupported:
 				dead_colonists = colonists_unsupported
 	if dead_colonists:

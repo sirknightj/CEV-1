@@ -229,7 +229,7 @@ func placed_building(building : int):
 	elif GameStats.restrictions.has(building) and GameStats.restrictions[building] == 1:
 		GameStats.restrictions.erase(building)
 	
-	if GameStats.restrictions.keys().size() == 0:
+	if GameStats.restrictions.keys().size() == 0 and GameStats.turn != 10:
 		toggle_next_month_button(true)
 
 func pluralize(quantity : int, word : String) -> String:
