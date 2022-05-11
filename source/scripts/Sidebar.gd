@@ -179,6 +179,8 @@ func _on_Next_Month_gui_input(event):
 					required_placements += (str(GameStats.restrictions[building]) + " more " + pluralize(GameStats.restrictions[building], GameStats.buildings_dict[building].name) + ", ") # TODO: get the actual building name instead of printing out the building id
 				required_placements.erase(required_placements.length() - 2, 2)
 				get_parent().get_parent().get_node("UILayer/TextBox").text = required_placements + "."
+			elif GameStats.turn == 10:
+				get_parent().get_parent().get_node("UILayer/TextBox").text = "Please check out the Upgrades menu!"
 		else:
 			game.on_next_turn()
 			update_turn_display()
@@ -198,6 +200,9 @@ func _on_Undo_gui_input(event):
 func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_action_with_no_level(Logger.Actions.UpgradeMenuClicked)
+		if GameStats.turn == 10:
+			toggle_next_month_button(true)
+		
 		if not ignore_upgrades_button:
 			$CanvasLayer/TechTree.show()
 
