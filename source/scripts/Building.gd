@@ -438,6 +438,12 @@ func refund():
 	for resource in building_cost.keys():
 		if building_cost[resource] > 0:
 			GameStats.resources.give(resource, building_cost[resource])
+	
+	if not GameStats.restrictions.empty():
+		if GameStats.restrictions.has(building_id):
+			GameStats.restrictions[building_id] += 1
+		else:
+			GameStats.restrictions[building_id] = 1
 
 func destroy():
 	remove_from_group("buildings")
