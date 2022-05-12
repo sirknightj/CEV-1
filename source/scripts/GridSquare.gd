@@ -15,6 +15,8 @@ func set_collision_box_size(size : float):
 	shape.extents = Vector2(size / 2, size / 2)
 
 func get_adjacent_buildings():
+	#if not is_inside_tree():
+		#return
 	var buildings : Dictionary = {}
 	for area in get_overlapping_areas():
 		var parent = area.get_parent().get_parent()

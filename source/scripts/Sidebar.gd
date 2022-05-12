@@ -29,6 +29,26 @@ func _ready():
 	
 	populate_sidebar_correctly()
 
+func cheat():
+	GameStats.turn = 20
+	show_resources(GameData.ResourceType.values())
+	GameStats.buildings_unlocked.append_array(GameData.BuildingType.values())
+	GameStats.resources.set_reserves({
+		GameData.ResourceType.FOOD: 10000.0,
+		GameData.ResourceType.OXYGEN: 10000.0,
+		GameData.ResourceType.WATER: 10000.0,
+		GameData.ResourceType.METAL: 10000.0,
+		GameData.ResourceType.ELECTRICITY: 10000.0,
+		GameData.ResourceType.SCIENCE: 10000.0,
+		GameData.ResourceType.PEOPLE: 1.0
+	})
+	GameStats.selling_enabled = true
+	toggle_next_month_button(true)
+	toggle_upgrades_button(true)
+	GameStats.game.on_next_turn()
+	populate_sidebar_correctly()
+	GameStats.game.on_next_turn()
+
 func check_buttons() -> void:
 	if not has_enough_electricity():
 		toggle_next_month_button(false)
@@ -258,20 +278,20 @@ func how_many_people_will_die_next_turn() -> int:
 	false if we'll go negative
 """
 func has_enough_metal() -> bool:
-	var metal_over : int = GameStats.resources.get_reserve(GameData.ResourceType.METAL) + GameStats.resources.get_income(GameData.ResourceType.METAL) - GameStats.resources.get_expense(GameData.ResourceType.METAL)
+	var metal_over : float = GameStats.resources.get_reserve(GameData.ResourceType.METAL) + GameStats.resources.get_income(GameData.ResourceType.METAL) - GameStats.resources.get_expense(GameData.ResourceType.METAL)
 	return metal_over >= 0
 
 """
 	Returns how much electricity you'll overdraw next turn
 	0 if your electricity reserves are fine
 """
-func how_much_electricity_over() -> int:
-	var electricity_over : int = GameStats.resources.get_reserve(GameData.ResourceType.ELECTRICITY) + GameStats.resources.get_income(GameData.ResourceType.ELECTRICITY) - GameStats.resources.get_expense(GameData.ResourceType.ELECTRICITY)
+func how_much_electricity_over() -> float:
+	var electricity_over : float = GameStats.resources.get_reserve(GameData.ResourceType.ELECTRICITY) + GameStats.resources.get_income(GameData.ResourceType.ELECTRICITY) - GameStats.resources.get_expense(GameData.ResourceType.ELECTRICITY)
 	print(electricity_over)
 	if electricity_over < 0:
 		return -electricity_over
 	else:
-		return 0
+		return 0.0
 
 """
 	Returns true if we have enough electricity for next turn
@@ -328,7 +348,9 @@ func show_win_lose_screen(is_win : bool) -> void:
 
 const SCROLL_SPEED = 12
 func _unhandled_input(event : InputEvent):
-	if event is InputEventMouseButton:
+	if event.is_action_pressed("debug"):
+		cheat()
+	elif event is InputEventMouseButton:
 		if event.button_index == BUTTON_WHEEL_DOWN:
 			$ScrollContainer.scroll_vertical += SCROLL_SPEED
 		elif event.button_index == BUTTON_WHEEL_UP:

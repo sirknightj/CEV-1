@@ -10,6 +10,10 @@ func _ready():
 	GameStats.grid = self
 	_set_camera(GameStats.grid_size)
 
+func get_grid_position(pos : Vector2):
+	pos = pos.snapped(Vector2(GameData.SQUARE_SIZE, GameData.SQUARE_SIZE))
+	return pos / GameData.SQUARE_SIZE
+
 func set_grid_size(size : int):
 	GameStats.grid_size = size
 	update()
