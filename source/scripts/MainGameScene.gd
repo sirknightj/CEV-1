@@ -160,6 +160,7 @@ func _on_Resources_changed():
 	update_resources()
 	sidebar.update_displays()
 	update_stats()
+	sidebar.check_buttons()
 
 func _on_Building_hover(building):
 	graph.on_building_hover(building)
