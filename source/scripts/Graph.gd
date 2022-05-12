@@ -137,7 +137,7 @@ func update_hovered_building_view() -> void:
 			if type in GameData.PEOPLE_RESOURCE_CONSUMPTION:
 				contribution = -people * GameData.PEOPLE_RESOURCE_CONSUMPTION[type]
 		elif is_instance_valid(hovered_building):
-			contribution = hovered_building.building_effects[type]
+			contribution = hovered_building.get_effect(type)
 		if contribution > 0:
 			var income = GameStats.resources.get_income(type)
 			if income == 0:

@@ -100,6 +100,23 @@ export(Texture) var texture
 
 var building_effect_upgrades : Dictionary = {}
 
+func log_building_action(action, metadata = null):
+	var pos = get_grid_position()
+	var data = {
+		"building": {
+			"name": name,
+			"id": building_id,
+			"x": pos.x,
+			"y": pos.y,
+			"rotation": _main.rotation_degrees,
+			"flipped": _main_flipped,
+			"upgrades": building_effect_upgrades
+		}
+	}
+	if metadata != null:
+		data.action_data = metadata
+	GameStats.logger.log_level_action(action, data)
+
 func _setup_sprite(sprite : Sprite, flipped : bool):
 	var scale = Vector2(_size / SPRITE_BASE_SIZE, _size / SPRITE_BASE_SIZE)
 	sprite.texture = texture
@@ -141,6 +158,9 @@ func reset_graphics():
 	clear(_ghost)
 	clear(_shadow)
 	init_shape()
+
+func get_grid_position() -> Vector2:
+	return GameStats.grid.get_grid_position(_main.global_position)
 
 func setup_main(x : int, y : int):
 	setup_main_square(create_grid_square(x, y, _main))
@@ -222,8 +242,8 @@ func setup_ghost_square(grid_square : GridSquare):
 func building_mouse_entered():
 	if _mouse_state == MouseState.NONE and not GameStats.current_selected_building:
 		_mouse_state = MouseState.HOVER
-	if purchased and enabled:  # TODO: also do City Center
-		emit_signal("building_hovered", self)
+		if purchased and enabled:
+			emit_signal("building_hovered", self)
 
 func building_mouse_exited():
 	if _mouse_state == MouseState.HOVER:
@@ -303,15 +323,17 @@ func purchase_building():
 		# Automatically enable on purchase
 		enabled = true
 		emit_signal("building_hovered", self)
-		GameStats.logger.log_level_action(Logger.Actions.BuildingPlaced, {
-			"building_id": building_id
-		})
+		log_building_action(Logger.Actions.BuildingPlaced)
 
 func check_trash():
 	if is_in_trash_area():
-		Input.set_custom_mouse_cursor(trash_icon)
+		if has_moved() or purchased:
+			Input.set_custom_mouse_cursor(trash_icon)
+		_shadow.visible = false
 	else:
 		Input.set_custom_mouse_cursor(null)
+		if has_moved():
+			_shadow.visible = true
 
 func _update_shadow():
 	_shadow_flipped_next = _ghost_flipped
@@ -402,11 +424,10 @@ func destroy():
 	remove_from_group("buildings")
 	emit_signal("building_destroy")
 	emit_signal("building_hovered_off", self)
-	GameStats.logger.log_level_action(Logger.Actions.BuildingDeleted, {
-		"building_id": building_id
-	})
+	log_building_action(Logger.Actions.BuildingDeleted)
 	GameStats.current_selected_building = null
 	Input.set_custom_mouse_cursor(null)
+	_mouse_state = MouseState.NONE
 	queue_free()
 
 func _on_building_place():
@@ -438,7 +459,7 @@ func force_update():
 	_last_mouse_pos = get_global_mouse_position()
 
 func is_in_trash_area():
-	return _shadow.visible and get_global_mouse_position().x > GameStats.grid.get_edge() * 1.10
+	return get_global_mouse_position().x > GameStats.grid.get_edge() * 1.10
 
 func _on_building_release():
 	if not is_instance_valid(self):
@@ -455,21 +476,14 @@ func _on_building_grab():
 	_original_pos = _main.global_position
 	_original_rot = _main.rotation
 	emit_signal("building_grabbed")
-	GameStats.logger.log_level_action(Logger.Actions.BuildingGrabbed, {
-		"building_id": building_id
-	})
+	log_building_action(Logger.Actions.BuildingGrabbed)
 
 func _on_building_rotate():
 	rotate_around(get_global_mouse_position(), PI/2)
-	GameStats.logger.log_level_action(Logger.Actions.BuildingRotated, {
-		"building_id": building_id
-	})
+	log_building_action(Logger.Actions.BuildingRotated)
 
 func _on_building_flip():
-	GameStats.logger.log_level_action(Logger.Actions.BuildingFlipped, {
-		"building_id": building_id,
-		"new_flip": !_main_flipped
-	})
+	log_building_action(Logger.Actions.BuildingFlipped)
 	set_building_flip(!_main_flipped)
 
 func _on_building_drag():
