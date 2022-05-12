@@ -53,7 +53,7 @@ func show_correct_text():
 	var turn = GameStats.turn
 	var text = "" # bbcode
 	if turn == 0:
-		text = "Welcome to consciousness! You're an AI in charge of a Mars colony of 50 colonists.\nClick the \"Next Month\" button to start."
+		text = "Welcome to consciousness! You're an AI in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + " colonists.\nClick the \"Next Month\" button to start."
 		$UILayer/Sidebar.toggle_upgrades_button(false)
 	elif turn == 1:
 		text = "Each colonist drinks 1 unit of [color=%s]water[/color] every month.\nPlace down some [color=%s]Wells[/color] to ensure you don't run out of water and your humans stay alive!\nTip: use the \"R\" key to rotate the building." % [GameData.get_resource_color_as_hex(GameData.ResourceType.WATER), GameData.get_resource_color_as_hex(GameData.ResourceType.WATER)]
@@ -98,7 +98,7 @@ func show_correct_text():
 	elif turn == 11:
 		text = "You should aim to get a [color=%s]University[/color] down to speed up your research progress!" % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)
 	elif turn == 12:
-		text = "Your goal is to place down the Cryonic Chamber while minimizing colonist deaths."
+		text = "Your goal is to place down the Cryonic Chamber while minimizing colonist deaths. Note that you receive a refund if you destroy a building on the same turn you build it!"
 	else:
 		if $UILayer/Sidebar.how_many_people_will_die_next_turn() > 0:
 			# TODO: explain what they died from (food -> starvation, water -> dehydration, oxygen -> suffocation)
