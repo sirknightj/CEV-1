@@ -576,6 +576,8 @@ func get_effects_as_bbcode() -> String:
 	var texts: Array = []
 
 	for resource_type in building_effects:
+		if not GameStats.shown_resources.has(resource_type):
+			continue
 		var e = building_effects[resource_type]
 		for upgrade in building_effect_upgrades.keys():
 			e = upgrade.stack_effect(self, resource_type, e)
@@ -605,6 +607,8 @@ func get_costs_as_bbcode() -> String:
 	var texts: Array = []
 
 	for resource_type in building_cost:
+		if not GameStats.shown_resources.has(resource_type):
+			continue
 		var e = building_cost[resource_type]
 		if e == 0:
 			continue
@@ -619,4 +623,4 @@ func get_costs_as_bbcode() -> String:
 	var res: String = ""
 	for t in texts:
 		res += t[1]
-	return res.strip_edges()
+	return res.strip_edges() if res else "[color=#666]None[/color]"
