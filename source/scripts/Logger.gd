@@ -18,6 +18,9 @@ enum Actions {
 
 	BuildingRotated = 70,
 	BuildingFlipped = 71,
+
+	Lose = 666,
+	Win = 777,
 }
 
 class Log:

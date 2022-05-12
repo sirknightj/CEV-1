@@ -337,6 +337,7 @@ func toggle_upgrades_button(_clickable) -> void:
 func show_win_lose_screen(is_win : bool) -> void:
 	GameStats.win_status = is_win
 	get_tree().change_scene("res://scenes/EndScreen.tscn")
+	GameStats.logger.log_level_action(Logger.Actions.Win if is_win else Logger.Actions.Lose)
 
 const SCROLL_SPEED = 12
 func _unhandled_input(event : InputEvent):
