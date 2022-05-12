@@ -28,10 +28,6 @@ func _ready():
 		show_resources[resource] = false
 	
 	populate_sidebar_correctly()
-	
-
-func repopulate_sidebar():
-	populate_sidebar_correctly()
 
 func cheat():
 	GameStats.turn = 20
@@ -53,7 +49,7 @@ func cheat():
 	populate_sidebar_correctly()
 	GameStats.game.on_next_turn()
 
-func populate_sidebar_correctly() -> void:
+func check_buttons() -> void:
 	if not has_enough_electricity():
 		toggle_next_month_button(false)
 		get_parent().get_parent().get_node("UILayer/TextBox").text = "You don't have enough energy to keep your buildings running! You'll need to sell some buildings or generate more energy!"
@@ -62,7 +58,11 @@ func populate_sidebar_correctly() -> void:
 		get_parent().get_parent().get_node("UILayer/TextBox").text = "You don't have enough metal to keep your buildings running! You'll need to sell some buildings or generate more metal!"
 	elif GameStats.turn >= 12:
 		toggle_next_month_button(true)
-	
+
+func repopulate_sidebar():
+	populate_sidebar_correctly()
+
+func populate_sidebar_correctly() -> void:
 	if GameStats.colonist_death_threshold <= GameStats.dead or GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 1:
 		show_win_lose_screen(false)
 	
