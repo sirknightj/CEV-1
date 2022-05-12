@@ -6,6 +6,6 @@
 cost = {
 5: 400.0
 }
-upgrade_name = "Ice mines"
-description = "Harvest the ice from distant glaciers using the same technology as your automated mines."
+upgrade_name = "Polar drilling"
+description = "Harvest the ice from distant glaciers with large electrothermal drills."
 unlock_building_id = 17

@@ -8,8 +8,8 @@ script = ExtResource( 2 )
 cost = {
 5: 10.0
 }
-upgrade_name = "Automated mine"
-description = "Deploy robots to automate the mining process. Removing all human intervention increases mine efficiency."
+upgrade_name = "Prospecting"
+description = "Identify the optimal locations for metal mining using advanced prospecting techniques adapted for Mars' geology."
 effects = "+20% metal output from all mines."
 multipliers = {
 4: 1.2

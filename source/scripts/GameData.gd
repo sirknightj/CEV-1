@@ -54,6 +54,7 @@ enum UpgradeType {
 	UNLOCK_OXY2
 	UNLOCK_OXY3
 	UNLOCK_METAL1
+	UNLOCK_METAL2
 	UNLOCK_ELEC1
 	UNLOCK_ELEC2
 	UNLOCK_ELEC3
@@ -69,30 +70,6 @@ enum UpgradeType {
 	IMPROVE_PEOPLE1
 	IMPROVE_PEOPLE2
 	IMPROVE_ELEC1
-}
-
-"""
-	A map of buildings to the color they should be
-"""
-const BUILDING_TO_COLOR : Dictionary = {
-	BuildingType.CENTER: Color.black,
-	BuildingType.ELEC1: Color.yellow,
-	BuildingType.ELEC2: Color.yellow,
-	BuildingType.ELEC3: Color.yellow,
-	BuildingType.END1: Color.darkcyan,
-	BuildingType.FOOD1: Color.green,
-	BuildingType.FOOD2: Color.green,
-	BuildingType.FOOD3: Color.green,
-	BuildingType.METAL1: Color.red,
-	BuildingType.METAL2: Color.red,
-	BuildingType.OXY1: Color.pink,
-	BuildingType.OXY2: Color.pink,
-	BuildingType.OXY3: Color.pink,
-	BuildingType.SCI1: Color.purple,
-	BuildingType.SCI2: Color.purple,
-	BuildingType.WATER1: Color.blue,
-	BuildingType.WATER2: Color.blue,
-	BuildingType.WATER3: Color.blue
 }
 
 """

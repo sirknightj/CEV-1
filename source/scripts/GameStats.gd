@@ -38,8 +38,8 @@ var upgrades_data = {
 	},
 	GameData.UpgradeType.UNLOCK_WATER3: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockWater3.tscn"),
-		"position": Vector2(9.1, 6.3),
-		"prereqs": [GameData.UpgradeType.IMPROVE_MINE1],
+		"position": Vector2(9.1, 7.7),
+		"prereqs": [GameData.UpgradeType.UNLOCK_METAL2],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_FOOD1: {
@@ -113,6 +113,12 @@ var upgrades_data = {
 		"position": Vector2(9.1, 3.5),
 		"prereqs": [GameData.UpgradeType.UNLOCK_WATER1],
 		"starting": true
+	},
+	GameData.UpgradeType.UNLOCK_METAL2: {
+		"scene": preload("res://scenes/upgrades/impl/UnlockMetal2.tscn"),
+		"position": Vector2(9.1, 6.3),
+		"prereqs": [GameData.UpgradeType.IMPROVE_MINE1],
+		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_END1: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockEnd1.tscn"),
