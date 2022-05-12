@@ -52,46 +52,46 @@ func on_next_turn():
 func show_correct_text():
 	var turn = GameStats.turn
 	if turn == 0:
-		$UILayer/TextBox.text = "Welcome! You're in charge of a Mars colony of 50 colonists.\nClick the \"Next Month\" button to start."
+		$UILayer/TextBox.text = "Welcome to consciousness! You're an AI in charge of a Mars colony of 50 colonists.\nClick the \"Next Month\" button to start."
 		$UILayer/Sidebar.toggle_upgrades_button(false)
 	elif turn == 1:
-		$UILayer/TextBox.text = "Each colonist consumes 1 water/month.\nPlace down some wells to ensure you don't run out of water!\nTip: use R to rotate the building."
+		$UILayer/TextBox.text = "Each colonist drinks 1 unit of water every month.\nPlace down some Wells to ensure you don't run out of water and your humans stay alive!\nTip: use the \"R\" key to rotate the building."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 12)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 2}
 		GameStats.selling_enabled = true
 	elif turn == 2:
-		$UILayer/TextBox.text = "Notice how another person has arrived to your colony.\nYou now need another well to support your growing population."
+		$UILayer/TextBox.text = "Notice how another person has arrived to your colony.\nYou now need another Well to support your growing population."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 6)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1}
 	elif turn == 3:
-		$UILayer/TextBox.text = "Each colonists also consumes 2 food/month.\nFEED THE HUMANS\nYou can also use T to flip the building!"
+		$UILayer/TextBox.text = "Feed the humans!\nIn addition to water, each colonist also consumes 2 units of food per month.\nTip: Use the \"T\" key to flip a building."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 40)
 		GameStats.restrictions = {GameData.BuildingType.FOOD1: 2}
 	elif turn == 4:
-		$UILayer/TextBox.text = "Keep expanding your colony! And keep your people alive!"
+		$UILayer/TextBox.text = "Keep expanding your colony. And keep your people alive!"
 	elif turn == 5:
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 26)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.FOOD1: 1}
 	elif turn == 6:
-		$UILayer/TextBox.text = "Humans consume 1 oxygen/mo.\nMake sure you have enough!\nYour colony will need metal to building more buildings."
+		$UILayer/TextBox.text = "Humans consume 1 oxygen unit per month. Make sure you have enough or they'll suffocate!\nYour colony will also need metal to construct more buildings."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 146)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 1}
 	elif turn == 7:
 		$UILayer/TextBox.text = "Tip: You can also move the buildings around!"
 	elif turn == 8:
-		$UILayer/TextBox.text = "If " + str(GameStats.colonist_death_threshold) + " colonists die, you lose. Make sure that doesn't happen!"
+		$UILayer/TextBox.text = "If " + str(GameStats.colonist_death_threshold) + " colonists die, you will be shut down. Make sure that doesn't happen!"
 	elif turn == 9:
-		$UILayer/TextBox.text = "Your mine needs energy to function.\nPlace down some solar panels."
+		$UILayer/TextBox.text = "Your mine needs energy to function.\nBuild some Solar Panels."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 24)
 		GameStats.restrictions = {GameData.BuildingType.ELEC1: 3}
 	elif turn == 10:
-		$UILayer/TextBox.text = "Your city center has generated enough science for an upgrade! Spend your science points to unlock new building types and expand your colony!"
+		$UILayer/TextBox.text = "Your city has generated enough science for an upgrade! Spend your science points to unlock new building types and expand your colony."
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		$UILayer/Sidebar.toggle_upgrades_button(true)
 	elif turn == 11:
@@ -100,7 +100,8 @@ func show_correct_text():
 		$UILayer/TextBox.text = "Your goal is to place down the Cryonic Chamber while minimizing colonist deaths."
 	else:
 		if $UILayer/Sidebar.how_many_people_will_die_next_turn() > 0:
-			$UILayer/TextBox.text = "Oh no! Some colonists died due to lack of resources! Only " + str(GameStats.colonist_death_threshold - GameStats.dead) + " more colonist deaths will be tolerated!"
+			# TODO: explain what they died from (food -> starvation, water -> dehydration, oxygen -> suffocation)
+			$UILayer/TextBox.text = "Oh no! Some colonists died due to lack of resources. Only " + str(GameStats.colonist_death_threshold - GameStats.dead) + " more colonist deaths will be tolerated before you get shut down!"
 		else:
 			$UILayer/TextBox.text = ""
 	_on_Resources_changed()

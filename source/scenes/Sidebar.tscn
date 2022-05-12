@@ -98,14 +98,13 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="Undo" type="Polygon2D" parent="."]
-visible = false
+[node name="Stats" type="Polygon2D" parent="."]
 position = Vector2( 972, 282 )
 color = Color( 0.25098, 0.25098, 0.25098, 1 )
 offset = Vector2( -681, -261 )
-polygon = PoolVector2Array( 15, 0, 0, 30, 70, 30, 85, 0 )
+polygon = PoolVector2Array( 15, 0, 0, 30, 70, 30, 85, 0, 44.6362, 0 )
 
-[node name="Label" type="Label" parent="Undo"]
+[node name="Label" type="Label" parent="Stats"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -118,72 +117,100 @@ mouse_filter = 1
 mouse_default_cursor_shape = 2
 theme = ExtResource( 5 )
 custom_fonts/font = SubResource( 2 )
-text = "Undo"
+text = "Stats"
 align = 1
 valign = 1
 __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="ScrollTitle1" type="Label" parent="."]
+[node name="Node2D" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="ScrollTitle1" type="Label" parent="Node2D"]
 anchor_left = -0.00178571
 anchor_top = -0.0208333
 anchor_right = -0.00178571
 anchor_bottom = -0.0208333
-margin_left = 18.0
-margin_top = 376.0
-margin_right = 85.0
-margin_bottom = 395.0
+margin_left = 740.286
+margin_top = 379.0
+margin_right = 807.286
+margin_bottom = 398.0
 rect_pivot_offset = Vector2( 45, 17 )
 theme = ExtResource( 5 )
 custom_fonts/font = SubResource( 3 )
 text = "Building"
-__meta__ = {
-"_edit_use_anchors_": true
-}
 
-[node name="ScrollTitle2" type="Label" parent="."]
+[node name="ScrollTitle2" type="Label" parent="Node2D"]
 anchor_left = 0.189286
 anchor_top = -0.0208333
 anchor_right = 0.189286
 anchor_bottom = -0.0208333
-margin_left = 17.0
-margin_top = 376.0
-margin_right = 84.0
-margin_bottom = 395.0
+margin_left = 601.714
+margin_top = 379.0
+margin_right = 668.714
+margin_bottom = 398.0
 rect_pivot_offset = Vector2( 45, 17 )
 theme = ExtResource( 5 )
 custom_fonts/font = SubResource( 3 )
 text = "Cost"
 
-[node name="ScrollTitle3" type="Label" parent="."]
+[node name="ScrollTitle3" type="Label" parent="Node2D"]
 anchor_left = 0.358929
 anchor_top = -0.0208333
 anchor_right = 0.416071
 anchor_bottom = -0.0208333
-margin_left = 18.0
-margin_top = 376.0
-margin_right = 85.0
-margin_bottom = 395.0
+margin_left = 479.571
+margin_top = 379.0
+margin_right = 566.571
+margin_bottom = 398.0
 rect_pivot_offset = Vector2( 45, 17 )
 theme = ExtResource( 5 )
 custom_fonts/font = SubResource( 3 )
 text = "Effects / mo"
 
-[node name="ScrollTitle4" type="Label" parent="."]
+[node name="ScrollTitle4" type="Label" parent="Node2D"]
 anchor_left = 0.625
 anchor_top = -0.0208333
 anchor_right = 0.625
 anchor_bottom = -0.0208333
-margin_left = -33.0
-margin_top = 376.0
-margin_right = 163.0
-margin_bottom = 395.0
+margin_left = 237.0
+margin_top = 379.0
+margin_right = 433.0
+margin_bottom = 398.0
 rect_pivot_offset = Vector2( 45, 17 )
 theme = ExtResource( 5 )
 custom_fonts/font = SubResource( 3 )
 text = "Shape"
 align = 1
+
+[node name="Line2D" type="Line2D" parent="Node2D"]
+position = Vector2( 694, -194 )
+scale = Vector2( 2, 1.5 )
+points = PoolVector2Array( 22, 385, 50, 385 )
+width = 1.0
+default_color = Color( 1, 1, 1, 1 )
+
+[node name="Line2D2" type="Line2D" parent="Node2D"]
+position = Vector2( 819.9, -194 )
+scale = Vector2( 1.1, 1.5 )
+points = PoolVector2Array( 22, 385, 50, 385 )
+width = 1.0
+default_color = Color( 1, 1, 1, 1 )
+
+[node name="Line2D3" type="Line2D" parent="Node2D"]
+position = Vector2( 873.3, -194 )
+scale = Vector2( 3.03333, 1.5 )
+points = PoolVector2Array( 22, 385, 50, 385 )
+width = 1.0
+default_color = Color( 1, 1, 1, 1 )
+
+[node name="Line2D4" type="Line2D" parent="Node2D"]
+position = Vector2( 881.3, -194 )
+scale = Vector2( 7.03333, 1.5 )
+points = PoolVector2Array( 22, 385, 50, 385 )
+width = 1.0
+default_color = Color( 1, 1, 1, 1 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 margin_left = 18.0
@@ -202,34 +229,6 @@ anchor_bottom = 0.0
 margin_right = 0.0
 margin_bottom = 92.0
 
-[node name="Line2D" type="Line2D" parent="."]
-position = Vector2( -26, -194 )
-scale = Vector2( 2, 1.5 )
-points = PoolVector2Array( 22, 385, 50, 385 )
-width = 1.0
-default_color = Color( 1, 1, 1, 1 )
-
-[node name="Line2D2" type="Line2D" parent="."]
-position = Vector2( 99.9, -194 )
-scale = Vector2( 1.1, 1.5 )
-points = PoolVector2Array( 22, 385, 50, 385 )
-width = 1.0
-default_color = Color( 1, 1, 1, 1 )
-
-[node name="Line2D3" type="Line2D" parent="."]
-position = Vector2( 153.3, -194 )
-scale = Vector2( 3.03333, 1.5 )
-points = PoolVector2Array( 22, 385, 50, 385 )
-width = 1.0
-default_color = Color( 1, 1, 1, 1 )
-
-[node name="Line2D4" type="Line2D" parent="."]
-position = Vector2( 161.3, -194 )
-scale = Vector2( 7.03333, 1.5 )
-points = PoolVector2Array( 22, 385, 50, 385 )
-width = 1.0
-default_color = Color( 1, 1, 1, 1 )
-
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 128
 
@@ -242,4 +241,4 @@ margin_right = 0.0
 
 [connection signal="gui_input" from="NextMonth/Label" to="." method="_on_Next_Month_gui_input"]
 [connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Upgrades_gui_input"]
-[connection signal="gui_input" from="Undo/Label" to="." method="_on_Undo_gui_input"]
+[connection signal="gui_input" from="Stats/Label" to="." method="_on_Stats_gui_input"]

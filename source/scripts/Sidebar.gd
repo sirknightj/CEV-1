@@ -31,18 +31,19 @@ func _ready():
 
 func cheat():
 	GameStats.turn = 20
-	GameStats.shown_resources(GameData.ResourceType.values())
+	GameStats.shown_resources = GameData.ResourceType.values()
 	show_resources()
 	GameStats.buildings_unlocked.append_array(GameData.BuildingType.values())
 	GameStats.resources.set_reserves({
-		GameData.ResourceType.FOOD: 10000.0,
-		GameData.ResourceType.OXYGEN: 10000.0,
-		GameData.ResourceType.WATER: 10000.0,
-		GameData.ResourceType.METAL: 10000.0,
-		GameData.ResourceType.ELECTRICITY: 10000.0,
-		GameData.ResourceType.SCIENCE: 10000.0,
+		GameData.ResourceType.FOOD: 5000.0,
+		GameData.ResourceType.OXYGEN: 5000.0,
+		GameData.ResourceType.WATER: 5000.0,
+		GameData.ResourceType.METAL: 5000.0,
+		GameData.ResourceType.ELECTRICITY: 5000.0,
+		GameData.ResourceType.SCIENCE: 5000.0,
 		GameData.ResourceType.PEOPLE: 1.0
 	})
+	GameStats.restrictions.clear()
 	GameStats.selling_enabled = true
 	toggle_next_month_button(true)
 	toggle_upgrades_button(true)
@@ -114,8 +115,12 @@ func populate_sidebar_with_buildings(_buildings : Array) -> void:
 	populate_sidebar(buildings)
 
 func populate_sidebar(buildings : Dictionary) -> void:
-	for child in $ScrollContainer/BuildingEntries.get_children():
-		$ScrollContainer/BuildingEntries.remove_child(child)
+	var entry_container = $ScrollContainer/BuildingEntries
+	
+	# Remove any entries that are not in buildings
+	for child in entry_container.get_children():
+		if not child.get_meta("building_id") in buildings.keys():
+			entry_container.remove_child(child)
 	
 	var scroll_offset = $ScrollContainer.get_v_scrollbar().value
 	for building in buildings:
@@ -124,30 +129,41 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		if building_stats.name == "City center":
 			continue
 		
-		var entry : Node = row_scene.instance()
+		var entry = entry_container.get_node("BuildingRow" + str(building))
+		if not entry: # not in entry list
+			entry = row_scene.instance()
+			entry.set_name("BuildingRow" + str(building))
+			entry.set_meta("building_name", building_stats.name)
+			entry.set_meta("building_id", building)
+			entry_container.add_child(entry)
+		
 		entry.get_node("BuildingName").text = GameStats.buildings_dict[building].name
 		
 		# building icon
-		var _building = building_scene.instance()
-		_building.shape = building_stats.shape
-		_building.building_effects = building_stats.effects
-		_building.building_cost = building_stats.cost
-		_building.building_id = building
-		_building.texture = GameData.BUILDING_TO_TEXTURE[building]
+		var building_exists = entry.get_child_count() >= 4
+		var _building = entry.get_children().back() if building_exists else building_scene.instance()
+		if not building_exists:
+			# made a new node
+			_building.shape = building_stats.shape
+			_building.building_effects = building_stats.effects
+			_building.building_cost = building_stats.cost
+			_building.building_id = building
+			_building.texture = GameData.BUILDING_TO_TEXTURE[building]
+		
 		_building.set_locked(not available(building) or not GameStats.resources.enough_resources(building_stats.cost))
-		entry.add_child(_building)
+		if not building_exists:
+			entry.add_child(_building)
 		
 		# set cost and effect texts
 		var cost_text = _building.get_costs_as_bbcode()
 		var effects_text = _building.get_effects_as_bbcode()
 		entry.get_node("CostContainer/Text").bbcode_text = cost_text
 		entry.get_node("EffectsContainer/Text").bbcode_text = effects_text
-		
+	
 		# vertically center building with row
 		var building_pos = Vector2(1035, $ScrollContainer.rect_position.y - scroll_offset)
-		building_pos.y += entry.rect_min_size.y / 2 - _building.shape.size() * GameData.SQUARE_SIZE / 2
+		building_pos.y += entry.rect_position.y + entry.rect_min_size.y / 2 - _building.shape.size() * GameData.SQUARE_SIZE / 2
 		
-		$ScrollContainer/BuildingEntries.add_child(entry)
 		_building.set_physics_process(false)
 		_building.force_set(building_pos, 0.0, false)
 		_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
@@ -205,7 +221,7 @@ func _on_Next_Month_gui_input(event):
 			if GameStats.restrictions.keys().size() > 0:
 				var required_placements = "Please place down "
 				for building in GameStats.restrictions.keys():
-					required_placements += (str(GameStats.restrictions[building]) + " more " + pluralize(GameStats.restrictions[building], GameStats.buildings_dict[building].name) + ", ") # TODO: get the actual building name instead of printing out the building id
+					required_placements += (str(GameStats.restrictions[building]) + " more " + pluralize(GameStats.restrictions[building], GameStats.buildings_dict[building].name) + ", ")
 				required_placements.erase(required_placements.length() - 2, 2)
 				get_parent().get_parent().get_node("UILayer/TextBox").text = required_placements + "."
 			elif GameStats.turn == 10:
@@ -217,12 +233,12 @@ func _on_Next_Month_gui_input(event):
 			populate_sidebar_correctly()
 
 """
-	Called when the Undo button is clicked
+	Called when the Stats button is clicked
 """
-func _on_Undo_gui_input(event):
+func _on_Stats_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
-		print("Undo was clicked!")
-		GameStats.logger.log_level_action(Logger.Actions.UndoClicked)
+		print("Stats was clicked!")
+		GameStats.logger.log_level_action(Logger.Actions.StatsClicked)
 
 """
 	Called when the Upgrades button is clicked
@@ -279,7 +295,7 @@ func has_enough_metal() -> bool:
 """
 func how_much_electricity_over() -> float:
 	var electricity_over : float = GameStats.resources.get_reserve(GameData.ResourceType.ELECTRICITY) + GameStats.resources.get_income(GameData.ResourceType.ELECTRICITY) - GameStats.resources.get_expense(GameData.ResourceType.ELECTRICITY)
-	print(electricity_over)
+	# print(electricity_over)
 	if electricity_over < 0:
 		return -electricity_over
 	else:

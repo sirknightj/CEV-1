@@ -33,15 +33,16 @@ margin_left = 718.0
 mouse_filter = 2
 
 [node name="TextBox" type="Label" parent="UILayer"]
-margin_left = 11.0
-margin_top = 604.0
-margin_right = 336.0
-margin_bottom = 706.0
+margin_left = 18.0
+margin_top = 539.0
+margin_right = 386.0
+margin_bottom = 705.0
 theme = ExtResource( 5 )
 custom_fonts/font = SubResource( 1 )
 text = "TUTORIAL TEXT
 TUTORIAL TEXT
 TUTORIAL TEXT"
+valign = 2
 autowrap = true
 
 [node name="Grid" type="Node2D" parent="."]

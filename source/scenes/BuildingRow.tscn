@@ -18,13 +18,6 @@ margin_right = -760.0
 margin_bottom = -628.0
 rect_min_size = Vector2( 0, 92 )
 
-[node name="TestingBgRect" type="ColorRect" parent="."]
-visible = false
-margin_right = 520.0
-margin_bottom = 92.0
-mouse_filter = 2
-color = Color( 0.443137, 0.0117647, 0.839216, 0.568627 )
-
 [node name="BuildingName" type="Label" parent="."]
 margin_right = 90.0
 margin_bottom = 92.0
