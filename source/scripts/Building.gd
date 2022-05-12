@@ -101,15 +101,24 @@ export(Texture) var texture
 var building_effect_upgrades : Dictionary = {}
 
 func log_building_action(action, metadata = null):
-	var pos = get_grid_position()
+	var pos = get_grid_position(_main.global_position)
+	var original = get_grid_position(_original_pos)
 	var data = {
 		"building": {
 			"name": name,
 			"id": building_id,
-			"x": pos.x,
-			"y": pos.y,
-			"rotation": _main.rotation_degrees,
+			"current_pos": {
+				"x": pos.x,
+				"y": pos.y
+			},
+			"original_pos": {
+				"x": original.x,
+				"y": original.y
+			},
+			"rotation": _main.rotation,
+			"original_rotation": _original_rot,
 			"flipped": _main_flipped,
+			"original_flipped": _original_flipped,
 			"upgrades": building_effect_upgrades
 		}
 	}
@@ -159,8 +168,8 @@ func reset_graphics():
 	clear(_shadow)
 	init_shape()
 
-func get_grid_position() -> Vector2:
-	return GameStats.grid.get_grid_position(_main.global_position)
+func get_grid_position(pos : Vector2) -> Vector2:
+	return GameStats.grid.get_grid_position(pos)
 
 func setup_main(x : int, y : int):
 	setup_main_square(create_grid_square(x, y, _main))
