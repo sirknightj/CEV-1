@@ -31,7 +31,8 @@ func _ready():
 
 func cheat():
 	GameStats.turn = 20
-	show_resources(GameData.ResourceType.values())
+	GameStats.shown_resources(GameData.ResourceType.values())
+	show_resources()
 	GameStats.buildings_unlocked.append_array(GameData.BuildingType.values())
 	GameStats.resources.set_reserves({
 		GameData.ResourceType.FOOD: 10000.0,
@@ -69,27 +70,32 @@ func populate_sidebar_correctly() -> void:
 	var turn = GameStats.turn
 	if turn <= 2:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.WATER1)
-		show_resources([GameData.ResourceType.WATER])
+		GameStats.shown_resources = [GameData.ResourceType.WATER]
+		show_resources()
 	elif turn <= 5:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.FOOD1)
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1])
-		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD])
+		GameStats.shown_resources = [GameData.ResourceType.WATER, GameData.ResourceType.FOOD]
+		show_resources()
 	elif turn <= 8:
 		GameStats.buildings_unlocked.append_array([GameData.BuildingType.OXY1, GameData.BuildingType.METAL1])
-		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL])
+		GameStats.shown_resources = [GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL]
+		show_resources()
 	elif turn <= 9:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.ELEC1)
-		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY])
+		GameStats.shown_resources = [GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY]
+		show_resources()
 	elif turn <= 10:
 		GameStats.buildings_unlocked.append(GameData.BuildingType.SCI1)
-		show_resources([GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE])
+		GameStats.shown_resources = [GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE]
+		show_resources()
 	populate_sidebar_with_buildings(GameStats.buildings_unlocked)
 
-func show_resources(resources : Array) -> void:
+func show_resources() -> void:
 	for resource in GameData.ResourceType.values():
-		toggle(resource, resources.has(resource))
+		toggle_visibility(resource, GameStats.shown_resources.has(resource))
 
-func toggle(resource : int, hide : bool) -> void:
+func toggle_visibility(resource : int, hide : bool) -> void:
 	# Graph handles food, water, oxygen, metal, and energy
 	if $Graph.RESOURCE_TYPE_TO_STRING.has(resource):
 		var node = get_node("Graph/HBoxContainer/" + $Graph.RESOURCE_TYPE_TO_STRING[resource])
@@ -124,8 +130,10 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		# TODO: sort costs decreasing
 		var cost_text : String = ""
 		for stat in building_stats.cost:
-			if building_stats.cost[stat] > 0:
+			if building_stats.cost[stat] > 0 and GameStats.shown_resources.has(stat):
 				cost_text += str(building_stats.cost[stat]) + " " + GameData.ResourceType.keys()[stat].capitalize() + "\n"
+		if cost_text.length() == 0:
+			cost_text = "-"
 		entry.get_node("Cost").text = cost_text.strip_edges()
 		
 		# TODO: sort effects by abs(value) decreasing
@@ -135,10 +143,12 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			var key = GameData.ResourceType.keys()[stat].capitalize()
 			if key == "Electricity":
 				key = "Energy"
-			if e > 0:
+			if e > 0 and GameStats.shown_resources.has(stat):
 				effects_text += "+" + str(e) + " " + key + "\n"
-			elif e < 0:
+			elif e < 0 and GameStats.shown_resources.has(stat):
 				effects_text += "-" + str(-e) + " " + key + "\n"
+		if effects_text.length() == 0:
+			effects_text = "-"
 		entry.get_node("Effects").text = effects_text.strip_edges()
 		
 		# building icon

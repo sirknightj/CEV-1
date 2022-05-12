@@ -13,6 +13,8 @@ var win_status : bool # true if the player won. false if they lost
 var selling_enabled : bool = false # true if selling is enabled. false if disabled
 var colonist_death_threshold : int
 
+var shown_resources : Array # The resources to show. Resources in this array are shown.
+
 var logger : Logger.Log
 
 """
