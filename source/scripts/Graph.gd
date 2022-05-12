@@ -126,7 +126,6 @@ func update_hovered_building_view() -> void:
 	for type in RESOURCE_TYPE_TO_STRING.keys():
 		var node_name = RESOURCE_TYPE_TO_STRING.get(type)
 		var graph_bar = get_node("HBoxContainer/" + node_name)
-		var tween = graph_bar.get_node("Tween")
 		var prod_bar = graph_bar.get_node("HighlightProductionBar")
 		var cons_bar = graph_bar.get_node("HighlightConsumptionBar")
 		

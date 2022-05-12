@@ -557,3 +557,66 @@ func _on_GhostSquare_area_entered(area : Area2D):
 
 func _on_GhostSquare_area_exited(area : Area2D):
 	_overlapping_areas -= 1
+
+
+func _get_resource_color_as_hex(resource_type: int) -> String:
+	assert(GameData.is_resource_type(resource_type))
+	var color = GameData.COLORS[resource_type]
+	return "#%02X%02X%02X" % [color.r8, color.g8, color.b8]
+
+class FirstAbsSorter:
+	static func sort_descending(a, b):
+		a = a[0]
+		b = b[0]
+		if (a < 0) != (b < 0):
+			return a > b
+		return abs(a) > abs(b)
+
+func get_effects_as_bbcode() -> String:
+	var texts: Array = []
+
+	for resource_type in building_effects:
+		var e = building_effects[resource_type]
+		for upgrade in building_effect_upgrades.keys():
+			e = upgrade.stack_effect(self, resource_type, e)
+		
+		if e == 0:
+			continue
+
+		var key = GameData.ResourceType.keys()[resource_type].capitalize()
+		if key == "Electricity":
+			key = "Energy"
+		
+		var text = "[color=" + _get_resource_color_as_hex(resource_type) + "]"
+		if e > 0:
+			text += "+%s %s" % [str(e), key]
+		else:
+			text += "-%s %s" % [str(-e), key]
+		text += "[/color]\n"
+		texts.append([e, text])
+
+	texts.sort_custom(FirstAbsSorter, "sort_descending")
+	var res: String = ""
+	for t in texts:
+		res += t[1]
+	return res.strip_edges()
+
+func get_costs_as_bbcode() -> String:
+	var texts: Array = []
+
+	for resource_type in building_cost:
+		var e = building_cost[resource_type]
+		if e == 0:
+			continue
+
+		var key = GameData.ResourceType.keys()[resource_type].capitalize()
+		if key == "Electricity":
+			key = "Energy"
+
+		var text = "[color=%s]%s %s[/color]\n" % [_get_resource_color_as_hex(resource_type), str(e), key]
+		texts.append([e, text])
+	texts.sort_custom(FirstAbsSorter, "sort_descending")
+	var res: String = ""
+	for t in texts:
+		res += t[1]
+	return res.strip_edges()

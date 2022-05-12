@@ -121,26 +121,6 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		var entry : Node = row_scene.instance()
 		entry.get_node("BuildingName").text = GameStats.buildings_dict[building].name
 		
-		# TODO: sort costs decreasing
-		var cost_text : String = ""
-		for stat in building_stats.cost:
-			if building_stats.cost[stat] > 0:
-				cost_text += str(building_stats.cost[stat]) + " " + GameData.ResourceType.keys()[stat].capitalize() + "\n"
-		entry.get_node("Cost").text = cost_text.strip_edges()
-		
-		# TODO: sort effects by abs(value) decreasing
-		var effects_text : String = ""
-		for stat in building_stats.effects:
-			var e = building_stats.effects[stat]
-			var key = GameData.ResourceType.keys()[stat].capitalize()
-			if key == "Electricity":
-				key = "Energy"
-			if e > 0:
-				effects_text += "+" + str(e) + " " + key + "\n"
-			elif e < 0:
-				effects_text += "-" + str(-e) + " " + key + "\n"
-		entry.get_node("Effects").text = effects_text.strip_edges()
-		
 		# building icon
 		var _building = building_scene.instance()
 		_building.shape = building_stats.shape
@@ -150,6 +130,12 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		_building.texture = GameData.BUILDING_TO_TEXTURE[building]
 		_building.set_locked(not available(building) or not GameStats.resources.enough_resources(building_stats.cost))
 		entry.add_child(_building)
+		
+		# set cost and effect texts
+		var cost_text = _building.get_costs_as_bbcode()
+		var effects_text = _building.get_effects_as_bbcode()
+		entry.get_node("CostContainer/Text").bbcode_text = cost_text
+		entry.get_node("EffectsContainer/Text").bbcode_text = effects_text
 		
 		# vertically center building with row
 		var building_pos = Vector2(1035, $ScrollContainer.rect_position.y - scroll_offset)
