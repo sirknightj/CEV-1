@@ -98,6 +98,8 @@ export(int) var building_id = -1
 export(Color) var color
 export(Texture) var texture
 
+var purchase_turn = 0
+
 var building_effect_upgrades : Dictionary = {}
 
 func log_building_action(action, metadata = null):
@@ -119,7 +121,9 @@ func log_building_action(action, metadata = null):
 			"original_rotation": _original_rot,
 			"flipped": _main_flipped,
 			"original_flipped": _original_flipped,
-			"upgrades": building_effect_upgrades
+			"upgrades": building_effect_upgrades,
+			"purchased": purchased,
+			"enabled": enabled
 		}
 	}
 	if metadata != null:
@@ -329,6 +333,7 @@ func get_adjacent_buildings() -> Array:
 func purchase_building():
 	if not purchased and GameStats.resources.try_consume(building_cost):
 		purchased = true
+		purchase_turn = GameStats.turn
 		# Automatically enable on purchase
 		enabled = true
 		emit_signal("building_hovered", self)
@@ -429,15 +434,25 @@ func force_set(pos : Vector2, rot : float, flip : bool):
 	_main_flipped = flip
 	reset_graphics()
 
+func refund():
+	for resource in building_cost.keys():
+		if building_cost[resource] > 0:
+			GameStats.resources.give(resource, building_cost[resource])
+
 func destroy():
 	remove_from_group("buildings")
-	emit_signal("building_destroy")
-	emit_signal("building_hovered_off", self)
-	log_building_action(Logger.Actions.BuildingDeleted)
+	var refund = GameStats.turn == purchase_turn
+	log_building_action(Logger.Actions.BuildingDeleted, {
+		"refunded": refund
+	})
 	GameStats.current_selected_building = null
 	Input.set_custom_mouse_cursor(null)
 	_mouse_state = MouseState.NONE
 	queue_free()
+	if refund:
+		refund()
+	emit_signal("building_destroy")
+	emit_signal("building_hovered_off", self)
 
 func _on_building_place():
 	if is_in_trash_area():
