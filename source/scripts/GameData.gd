@@ -173,3 +173,8 @@ const COLORS : Dictionary = {
 	ResourceType.SCIENCE: Color("#cc66ff"),
 	ResourceType.PEOPLE: Color("#bdd7ee"),
 }
+
+static func get_resource_color_as_hex(resource_type: int) -> String:
+	assert(is_resource_type(resource_type))
+	var color = COLORS[resource_type]
+	return "#%02X%02X%02X" % [color.r8, color.g8, color.b8]

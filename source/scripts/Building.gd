@@ -595,7 +595,7 @@ func get_effects_as_bbcode() -> String:
 		if key == "Electricity":
 			key = "Energy"
 		
-		var text = "[color=" + _get_resource_color_as_hex(resource_type) + "]"
+		var text = "[color=" + GameData.get_resource_color_as_hex(resource_type) + "]"
 		if e > 0:
 			text += "+%s %s" % [str(e), key]
 		else:
@@ -623,7 +623,7 @@ func get_costs_as_bbcode() -> String:
 		if key == "Electricity":
 			key = "Energy"
 
-		var text = "[color=%s]%s %s[/color]\n" % [_get_resource_color_as_hex(resource_type), str(e), key]
+		var text = "[color=%s]%s %s[/color]\n" % [GameData.get_resource_color_as_hex(resource_type), str(e), key]
 		texts.append([e, text])
 	texts.sort_custom(FirstAbsSorter, "sort_descending")
 	var res: String = ""

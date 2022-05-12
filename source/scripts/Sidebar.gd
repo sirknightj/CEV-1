@@ -54,10 +54,10 @@ func cheat():
 func check_buttons() -> void:
 	if not has_enough_electricity():
 		toggle_next_month_button(false)
-		get_parent().get_parent().get_node("UILayer/TextBox").text = "You don't have enough energy to keep your buildings running! You'll need to sell some buildings or generate more energy!"
+		get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = "You don't have enough [color=%s]energy[/color] to keep your buildings running! You'll need to sell some buildings or generate more energy!" % GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)
 	elif not has_enough_metal():
 		toggle_next_month_button(false)
-		get_parent().get_parent().get_node("UILayer/TextBox").text = "You don't have enough metal to keep your buildings running! You'll need to sell some buildings or generate more metal!"
+		get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = "You don't have enough [color=%s]metal[/color] to keep your buildings running! You'll need to sell some buildings or generate more metal!" % GameData.get_resource_color_as_hex(GameData.ResourceType.METAL)
 	elif GameStats.turn >= 12:
 		toggle_next_month_button(true)
 
@@ -221,11 +221,11 @@ func _on_Next_Month_gui_input(event):
 			if GameStats.restrictions.keys().size() > 0:
 				var required_placements = "Please place down "
 				for building in GameStats.restrictions.keys():
-					required_placements += (str(GameStats.restrictions[building]) + " more " + pluralize(GameStats.restrictions[building], GameStats.buildings_dict[building].name) + ", ")
+					required_placements += "%s more %s, " % [str(GameStats.restrictions[building]), pluralize(GameStats.restrictions[building], GameStats.buildings_dict[building].name)]
 				required_placements.erase(required_placements.length() - 2, 2)
-				get_parent().get_parent().get_node("UILayer/TextBox").text = required_placements + "."
+				get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = required_placements + "."
 			elif GameStats.turn == 10:
-				get_parent().get_parent().get_node("UILayer/TextBox").text = "Please check out the Upgrades menu!"
+				get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = "Please check out the Upgrades menu!"
 		else:
 			game.on_next_turn()
 			$Graph.reset_for_next_turn()
