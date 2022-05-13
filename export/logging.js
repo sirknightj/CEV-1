@@ -1,49 +1,167 @@
 function md5(inputString) {
 	let hc = "0123456789abcdef";
-	function rh(n) { let j, s = ""; for (j = 0; j <= 3; j++) s += hc.charAt((n >> (j * 8 + 4)) & 0x0F) + hc.charAt((n >> (j * 8)) & 0x0F); return s; }
-	function ad(x, y) { let l = (x & 0xFFFF) + (y & 0xFFFF); let m = (x >> 16) + (y >> 16) + (l >> 16); return (m << 16) | (l & 0xFFFF); }
-	function rl(n, c) { return (n << c) | (n >>> (32 - c)); }
-	function cm(q, a, b, x, s, t) { return ad(rl(ad(ad(a, q), ad(x, t)), s), b); }
-	function ff(a, b, c, d, x, s, t) { return cm((b & c) | ((~b) & d), a, b, x, s, t); }
-	function gg(a, b, c, d, x, s, t) { return cm((b & d) | (c & (~d)), a, b, x, s, t); }
-	function hh(a, b, c, d, x, s, t) { return cm(b ^ c ^ d, a, b, x, s, t); }
-	function ii(a, b, c, d, x, s, t) { return cm(c ^ (b | (~d)), a, b, x, s, t); }
-	function sb(x) {
-		let i; let nblk = ((x.length + 8) >> 6) + 1; let blks = new Array(nblk * 16); for (i = 0; i < nblk * 16; i++) blks[i] = 0;
-		for (i = 0; i < x.length; i++) blks[i >> 2] |= x.charCodeAt(i) << ((i % 4) * 8);
-		blks[i >> 2] |= 0x80 << ((i % 4) * 8); blks[nblk * 16 - 2] = x.length * 8; return blks;
+	function rh(n) {
+		let j,
+			s = "";
+		for (j = 0; j <= 3; j++)
+			s +=
+				hc.charAt((n >> (j * 8 + 4)) & 0x0f) + hc.charAt((n >> (j * 8)) & 0x0f);
+		return s;
 	}
-	let i, x = sb(inputString), a = 1732584193, b = -271733879, c = -1732584194, d = 271733878, olda, oldb, oldc, oldd;
+	function ad(x, y) {
+		let l = (x & 0xffff) + (y & 0xffff);
+		let m = (x >> 16) + (y >> 16) + (l >> 16);
+		return (m << 16) | (l & 0xffff);
+	}
+	function rl(n, c) {
+		return (n << c) | (n >>> (32 - c));
+	}
+	function cm(q, a, b, x, s, t) {
+		return ad(rl(ad(ad(a, q), ad(x, t)), s), b);
+	}
+	function ff(a, b, c, d, x, s, t) {
+		return cm((b & c) | (~b & d), a, b, x, s, t);
+	}
+	function gg(a, b, c, d, x, s, t) {
+		return cm((b & d) | (c & ~d), a, b, x, s, t);
+	}
+	function hh(a, b, c, d, x, s, t) {
+		return cm(b ^ c ^ d, a, b, x, s, t);
+	}
+	function ii(a, b, c, d, x, s, t) {
+		return cm(c ^ (b | ~d), a, b, x, s, t);
+	}
+	function sb(x) {
+		let i;
+		let nblk = ((x.length + 8) >> 6) + 1;
+		let blks = new Array(nblk * 16);
+		for (i = 0; i < nblk * 16; i++) blks[i] = 0;
+		for (i = 0; i < x.length; i++)
+			blks[i >> 2] |= x.charCodeAt(i) << ((i % 4) * 8);
+		blks[i >> 2] |= 0x80 << ((i % 4) * 8);
+		blks[nblk * 16 - 2] = x.length * 8;
+		return blks;
+	}
+	let i,
+		x = sb(inputString),
+		a = 1732584193,
+		b = -271733879,
+		c = -1732584194,
+		d = 271733878,
+		olda,
+		oldb,
+		oldc,
+		oldd;
 	for (i = 0; i < x.length; i += 16) {
-		olda = a; oldb = b; oldc = c; oldd = d;
-		a = ff(a, b, c, d, x[i + 0], 7, -680876936); d = ff(d, a, b, c, x[i + 1], 12, -389564586); c = ff(c, d, a, b, x[i + 2], 17, 606105819);
-		b = ff(b, c, d, a, x[i + 3], 22, -1044525330); a = ff(a, b, c, d, x[i + 4], 7, -176418897); d = ff(d, a, b, c, x[i + 5], 12, 1200080426);
-		c = ff(c, d, a, b, x[i + 6], 17, -1473231341); b = ff(b, c, d, a, x[i + 7], 22, -45705983); a = ff(a, b, c, d, x[i + 8], 7, 1770035416);
-		d = ff(d, a, b, c, x[i + 9], 12, -1958414417); c = ff(c, d, a, b, x[i + 10], 17, -42063); b = ff(b, c, d, a, x[i + 11], 22, -1990404162);
-		a = ff(a, b, c, d, x[i + 12], 7, 1804603682); d = ff(d, a, b, c, x[i + 13], 12, -40341101); c = ff(c, d, a, b, x[i + 14], 17, -1502002290);
-		b = ff(b, c, d, a, x[i + 15], 22, 1236535329); a = gg(a, b, c, d, x[i + 1], 5, -165796510); d = gg(d, a, b, c, x[i + 6], 9, -1069501632);
-		c = gg(c, d, a, b, x[i + 11], 14, 643717713); b = gg(b, c, d, a, x[i + 0], 20, -373897302); a = gg(a, b, c, d, x[i + 5], 5, -701558691);
-		d = gg(d, a, b, c, x[i + 10], 9, 38016083); c = gg(c, d, a, b, x[i + 15], 14, -660478335); b = gg(b, c, d, a, x[i + 4], 20, -405537848);
-		a = gg(a, b, c, d, x[i + 9], 5, 568446438); d = gg(d, a, b, c, x[i + 14], 9, -1019803690); c = gg(c, d, a, b, x[i + 3], 14, -187363961);
-		b = gg(b, c, d, a, x[i + 8], 20, 1163531501); a = gg(a, b, c, d, x[i + 13], 5, -1444681467); d = gg(d, a, b, c, x[i + 2], 9, -51403784);
-		c = gg(c, d, a, b, x[i + 7], 14, 1735328473); b = gg(b, c, d, a, x[i + 12], 20, -1926607734); a = hh(a, b, c, d, x[i + 5], 4, -378558);
-		d = hh(d, a, b, c, x[i + 8], 11, -2022574463); c = hh(c, d, a, b, x[i + 11], 16, 1839030562); b = hh(b, c, d, a, x[i + 14], 23, -35309556);
-		a = hh(a, b, c, d, x[i + 1], 4, -1530992060); d = hh(d, a, b, c, x[i + 4], 11, 1272893353); c = hh(c, d, a, b, x[i + 7], 16, -155497632);
-		b = hh(b, c, d, a, x[i + 10], 23, -1094730640); a = hh(a, b, c, d, x[i + 13], 4, 681279174); d = hh(d, a, b, c, x[i + 0], 11, -358537222);
-		c = hh(c, d, a, b, x[i + 3], 16, -722521979); b = hh(b, c, d, a, x[i + 6], 23, 76029189); a = hh(a, b, c, d, x[i + 9], 4, -640364487);
-		d = hh(d, a, b, c, x[i + 12], 11, -421815835); c = hh(c, d, a, b, x[i + 15], 16, 530742520); b = hh(b, c, d, a, x[i + 2], 23, -995338651);
-		a = ii(a, b, c, d, x[i + 0], 6, -198630844); d = ii(d, a, b, c, x[i + 7], 10, 1126891415); c = ii(c, d, a, b, x[i + 14], 15, -1416354905);
-		b = ii(b, c, d, a, x[i + 5], 21, -57434055); a = ii(a, b, c, d, x[i + 12], 6, 1700485571); d = ii(d, a, b, c, x[i + 3], 10, -1894986606);
-		c = ii(c, d, a, b, x[i + 10], 15, -1051523); b = ii(b, c, d, a, x[i + 1], 21, -2054922799); a = ii(a, b, c, d, x[i + 8], 6, 1873313359);
-		d = ii(d, a, b, c, x[i + 15], 10, -30611744); c = ii(c, d, a, b, x[i + 6], 15, -1560198380); b = ii(b, c, d, a, x[i + 13], 21, 1309151649);
-		a = ii(a, b, c, d, x[i + 4], 6, -145523070); d = ii(d, a, b, c, x[i + 11], 10, -1120210379); c = ii(c, d, a, b, x[i + 2], 15, 718787259);
-		b = ii(b, c, d, a, x[i + 9], 21, -343485551); a = ad(a, olda); b = ad(b, oldb); c = ad(c, oldc); d = ad(d, oldd);
+		olda = a;
+		oldb = b;
+		oldc = c;
+		oldd = d;
+		a = ff(a, b, c, d, x[i + 0], 7, -680876936);
+		d = ff(d, a, b, c, x[i + 1], 12, -389564586);
+		c = ff(c, d, a, b, x[i + 2], 17, 606105819);
+		b = ff(b, c, d, a, x[i + 3], 22, -1044525330);
+		a = ff(a, b, c, d, x[i + 4], 7, -176418897);
+		d = ff(d, a, b, c, x[i + 5], 12, 1200080426);
+		c = ff(c, d, a, b, x[i + 6], 17, -1473231341);
+		b = ff(b, c, d, a, x[i + 7], 22, -45705983);
+		a = ff(a, b, c, d, x[i + 8], 7, 1770035416);
+		d = ff(d, a, b, c, x[i + 9], 12, -1958414417);
+		c = ff(c, d, a, b, x[i + 10], 17, -42063);
+		b = ff(b, c, d, a, x[i + 11], 22, -1990404162);
+		a = ff(a, b, c, d, x[i + 12], 7, 1804603682);
+		d = ff(d, a, b, c, x[i + 13], 12, -40341101);
+		c = ff(c, d, a, b, x[i + 14], 17, -1502002290);
+		b = ff(b, c, d, a, x[i + 15], 22, 1236535329);
+		a = gg(a, b, c, d, x[i + 1], 5, -165796510);
+		d = gg(d, a, b, c, x[i + 6], 9, -1069501632);
+		c = gg(c, d, a, b, x[i + 11], 14, 643717713);
+		b = gg(b, c, d, a, x[i + 0], 20, -373897302);
+		a = gg(a, b, c, d, x[i + 5], 5, -701558691);
+		d = gg(d, a, b, c, x[i + 10], 9, 38016083);
+		c = gg(c, d, a, b, x[i + 15], 14, -660478335);
+		b = gg(b, c, d, a, x[i + 4], 20, -405537848);
+		a = gg(a, b, c, d, x[i + 9], 5, 568446438);
+		d = gg(d, a, b, c, x[i + 14], 9, -1019803690);
+		c = gg(c, d, a, b, x[i + 3], 14, -187363961);
+		b = gg(b, c, d, a, x[i + 8], 20, 1163531501);
+		a = gg(a, b, c, d, x[i + 13], 5, -1444681467);
+		d = gg(d, a, b, c, x[i + 2], 9, -51403784);
+		c = gg(c, d, a, b, x[i + 7], 14, 1735328473);
+		b = gg(b, c, d, a, x[i + 12], 20, -1926607734);
+		a = hh(a, b, c, d, x[i + 5], 4, -378558);
+		d = hh(d, a, b, c, x[i + 8], 11, -2022574463);
+		c = hh(c, d, a, b, x[i + 11], 16, 1839030562);
+		b = hh(b, c, d, a, x[i + 14], 23, -35309556);
+		a = hh(a, b, c, d, x[i + 1], 4, -1530992060);
+		d = hh(d, a, b, c, x[i + 4], 11, 1272893353);
+		c = hh(c, d, a, b, x[i + 7], 16, -155497632);
+		b = hh(b, c, d, a, x[i + 10], 23, -1094730640);
+		a = hh(a, b, c, d, x[i + 13], 4, 681279174);
+		d = hh(d, a, b, c, x[i + 0], 11, -358537222);
+		c = hh(c, d, a, b, x[i + 3], 16, -722521979);
+		b = hh(b, c, d, a, x[i + 6], 23, 76029189);
+		a = hh(a, b, c, d, x[i + 9], 4, -640364487);
+		d = hh(d, a, b, c, x[i + 12], 11, -421815835);
+		c = hh(c, d, a, b, x[i + 15], 16, 530742520);
+		b = hh(b, c, d, a, x[i + 2], 23, -995338651);
+		a = ii(a, b, c, d, x[i + 0], 6, -198630844);
+		d = ii(d, a, b, c, x[i + 7], 10, 1126891415);
+		c = ii(c, d, a, b, x[i + 14], 15, -1416354905);
+		b = ii(b, c, d, a, x[i + 5], 21, -57434055);
+		a = ii(a, b, c, d, x[i + 12], 6, 1700485571);
+		d = ii(d, a, b, c, x[i + 3], 10, -1894986606);
+		c = ii(c, d, a, b, x[i + 10], 15, -1051523);
+		b = ii(b, c, d, a, x[i + 1], 21, -2054922799);
+		a = ii(a, b, c, d, x[i + 8], 6, 1873313359);
+		d = ii(d, a, b, c, x[i + 15], 10, -30611744);
+		c = ii(c, d, a, b, x[i + 6], 15, -1560198380);
+		b = ii(b, c, d, a, x[i + 13], 21, 1309151649);
+		a = ii(a, b, c, d, x[i + 4], 6, -145523070);
+		d = ii(d, a, b, c, x[i + 11], 10, -1120210379);
+		c = ii(c, d, a, b, x[i + 2], 15, 718787259);
+		b = ii(b, c, d, a, x[i + 9], 21, -343485551);
+		a = ad(a, olda);
+		b = ad(b, oldb);
+		c = ad(c, oldc);
+		d = ad(d, oldd);
 	}
 	return rh(a) + rh(b) + rh(c) + rh(d);
 }
 
+// Mutual exclusion lock, used for ensuring network requests get sent in order
+class Mutex {
+	constructor() {
+		this.queue = [];
+		this.locked = false;
+	}
+
+	lock() {
+		let res = new Promise((resolve, reject) => {
+			this.queue.push(resolve);
+		});
+		this._poll();
+		return res;
+	}
+
+	_poll() {
+		if (!this.locked && this.queue.length) {
+			const resolve = this.queue.shift();
+			this.locked = true;
+			resolve();
+		}
+	}
+
+	unlock() {
+		this.locked = false;
+		this._poll();
+	}
+}
+
 class CapstoneLogger {
-	prdUrl = "https://integration.centerforgamescience.org/cgs/apps/games/v2/index.php/";
+	prdUrl =
+		"https://integration.centerforgamescience.org/cgs/apps/games/v2/index.php/";
+	BUFFER_DURATION = 3000; // milliseconds for buffering level actions
 
 	constructor(gameId, gameName, gameKey, categoryId) {
 		this.gameId = gameId;
@@ -54,47 +172,12 @@ class CapstoneLogger {
 		// Need to keep this at one (another table entry defines the valid version number)
 		// To keep things simple, only modify the categoryId to filter data
 		this.versionNumber = 1;
-        this.requestBuffer = [];
+
+		this.mutex = new Mutex();
 	}
 
-	// Generate a guid for a user, use this to track their actions
-	generateUuid() {
-		return Array(32).fill().map((_, i) => ([8, 12, 16, 20].includes(i) ? "-" : "") + Math.floor(Math.random() * 16).toString(16)).join("")
-	}
-
-	getSavedUserId() {
-		return window.localStorage.getItem("saved_userid");
-	}
-
-	setSavedUserId(uuid) {
-		window.localStorage.setItem("saved_userid", uuid);
-	}
-
-    _queue_request(url, data) {
-        return new Promise((resolve, reject) => {
-            this.requestBuffer.push({ url, data, resolve, reject });
-            if (this.requestBuffer.length == 1) {
-                this._pop();
-            }
-        });
-    }
-
-    async _pop() {
-        if (this.requestBuffer.length == 0) {
-            return;
-        }
-        const item = this.requestBuffer[0];
-        try {
-            item.resolve(await this._force_request(item.url, item.data));
-        } catch (e) {
-            item.reject(e);
-        } finally {
-            this.requestBuffer.shift();
-            this._pop();
-        }
-    }
-
-	_force_request(url, data) {
+	// sends a network request to the given URL with the given data
+	_request(url, data) {
 		// Standard template data sent for every request
 		const stringifiedData = data ? JSON.stringify(data) : null;
 		const encodedData = md5((stringifiedData || "") + this.gameKey);
@@ -118,11 +201,36 @@ class CapstoneLogger {
 		return fetch(this.prdUrl + url, {
 			method: "POST",
 			headers: {
-				"Accept": "*/*",
+				Accept: "*/*",
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams(formData),
 		});
+	}
+
+	// Generate a guid for a user, use this to track their actions
+	generateUuid() {
+		return Array(32)
+			.fill()
+			.map(
+				(_, i) =>
+					([8, 12, 16, 20].includes(i) ? "-" : "") +
+					Math.floor(Math.random() * 16).toString(16)
+			)
+			.join("");
+	}
+
+	getSavedUserId() {
+		return window.localStorage.getItem("saved_userid");
+	}
+
+	setSavedUserId(uuid) {
+		window.localStorage.setItem("saved_userid", uuid);
+	}
+
+	// return parsed JSON if argument is not-null, else null
+	parseArgs(jsonString) {
+		return jsonString ? JSON.parse(jsonString) : null;
 	}
 
 	startNewSession() {
@@ -135,7 +243,8 @@ class CapstoneLogger {
 	}
 
 	async startNewSessionWithUuid(userId) {
-		console.log("[START NEW SESSION]", userId)
+		console.log("[START NEW SESSION] uid=", userId);
+		await this.mutex.lock();
 		this.currentUserId = userId;
 		this.currentLevelSeqInSession = 0;
 		this.currentActionSeqInSession = 0;
@@ -162,19 +271,23 @@ class CapstoneLogger {
 				sessionSuccess = true;
 			}
 		}
+		this.mutex.unlock();
 		console.log("sessionSuccess", sessionSuccess);
+		console.log("sessionid", this.currentSessionId);
 	}
 
 	async logLevelStart(levelId, details) {
+		await this.mutex.lock();
 		details = this.parseArgs(details);
 		console.log("[LOG LEVEL START]", levelId, details);
+
 		this.flushBufferedLevelActions();
 		if (this.levelActionTimer) {
 			clearInterval(this.levelActionTimer);
 		}
 		this.levelActionTimer = setInterval(() => {
 			this.flushBufferedLevelActions();
-		}, 3000);
+		}, this.BUFFER_DURATION);
 
 		this.timestampOfPrevLevelStart = Date.now();
 		this.currentActionSeqInLevel = 0;
@@ -196,11 +309,14 @@ class CapstoneLogger {
 		if (data) {
 			this.currentDqid = JSON.parse(data.substring(5)).dqid;
 		}
+		this.mutex.unlock();
 	}
 
 	async logLevelEnd(details) {
+		await this.mutex.lock();
 		details = this.parseArgs(details);
 		console.log("[LOG LEVEL END]", details);
+
 		this.flushBufferedLevelActions();
 		if (this.levelActionTimer) {
 			clearInterval(this.levelActionTimer);
@@ -217,13 +333,16 @@ class CapstoneLogger {
 			session_seqid: ++this.currentActionSeqInSession,
 		});
 		this.currentDqid = null;
+		this.mutex.unlock();
 	}
 
 	// Actions should be buffered and sent at a limited rate
 	// (immediately flush if an end occurs or new quest start)
-	logLevelAction(actionId, details) {
+	async logLevelAction(actionId, details) {
+		await this.mutex.lock();
 		details = this.parseArgs(details);
 		console.log("[LOG LEVEL ACTION]", actionId, details);
+
 		// Per action, figure out the time since the start of the level
 		const timestampOfAction = Date.now();
 		const relativeTime = timestampOfAction - this.timestampOfPrevLevelStart;
@@ -234,14 +353,17 @@ class CapstoneLogger {
 			te: relativeTime,
 			session_seqid: ++this.currentActionSeqInSession,
 			qaction_seqid: ++this.currentActionSeqInLevel,
-			aid: actionId
+			aid: actionId,
 		});
+		this.mutex.unlock();
 	}
 
-	logActionWithNoLevel(actionId, details) {
+	async logActionWithNoLevel(actionId, details) {
+		await this.mutex.lock();
 		details = this.parseArgs(details);
 		console.log("[LOG ACTION NO LEVEL]", actionId, details);
-		this._queue_request("loggingactionnoquest/set/", {
+
+		this._request("loggingactionnoquest/set/", {
 			session_seqid: ++this.currentActionSeqInSession,
 			cid: this.categoryId,
 			client_ts: Date.now(),
@@ -254,6 +376,7 @@ class CapstoneLogger {
 			svid: 2,
 			sessionid: this.currentSessionId,
 		});
+		this.mutex.unlock();
 	}
 
 	async flushBufferedLevelActions() {
@@ -282,15 +405,18 @@ class CapstoneLogger {
 			uid: this.currentUserId,
 			g_s_id: this.gameId,
 			tid: 0,
-			gid: this.gameId
+			gid: this.gameId,
 		};
-	}
-
-	parseArgs(jsonString) {
-		return jsonString ? JSON.parse(jsonString) : null
 	}
 }
 
-function getLogger(categoryId = 124) {
-	return new CapstoneLogger(202206, "cev", "b626a818a8fc1905b23b3cb9f3fcdf23", categoryId);
+function getLogger(categoryId = 1) {
+	window.logger = new CapstoneLogger(
+		202206,
+		"cev",
+		"b626a818a8fc1905b23b3cb9f3fcdf23",
+		categoryId
+	);
+	// window.logger = new CapstoneLogger(202206, "your-game-name", "your-game-key", categoryId);
+	return window.logger;
 }
