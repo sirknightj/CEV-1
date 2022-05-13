@@ -125,20 +125,23 @@ func populate_sidebar(buildings : Dictionary) -> void:
 	var scroll_offset = $ScrollContainer.get_v_scrollbar().value
 	for building in buildings:
 		var building_stats = GameStats.buildings_dict[building]
-		
+
 		if building_stats.name == "City center":
 			continue
-		
-		var entry = entry_container.get_node("BuildingRow" + str(building))
-		if not entry: # not in entry list
+
+		var entry_name = "BuildingRow" + str(building)
+		var entry
+		if not entry_container.has_node(entry_name): # not in entry list
 			entry = row_scene.instance()
-			entry.set_name("BuildingRow" + str(building))
+			entry.set_name(entry_name)
 			entry.set_meta("building_name", building_stats.name)
 			entry.set_meta("building_id", building)
 			entry_container.add_child(entry)
-		
+		else:
+			entry = entry_container.get_node(entry_name)
+
 		entry.get_node("BuildingName").text = GameStats.buildings_dict[building].name
-		
+
 		# building icon
 		var building_exists = entry.get_child_count() >= 4
 		var _building = entry.get_children().back() if building_exists else building_scene.instance()
@@ -149,25 +152,24 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			_building.building_cost = building_stats.cost
 			_building.building_id = building
 			_building.texture = GameData.BUILDING_TO_TEXTURE[building]
-		
+
+		# vertically center building with row
+		var building_pos = Vector2(1035, $ScrollContainer.rect_position.y - scroll_offset)
+		building_pos.y += entry.rect_position.y + entry.rect_min_size.y / 2 - _building.shape.size() * GameData.SQUARE_SIZE / 2
+
 		_building.set_locked(not available(building) or not GameStats.resources.enough_resources(building_stats.cost))
 		if not building_exists:
 			entry.add_child(_building)
-		
+			_building.set_physics_process(false)
+			_building.force_set(building_pos, 0.0, false)
+			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
+			_building.connect("building_destroy", self, "repopulate_sidebar")
+
 		# set cost and effect texts
 		var cost_text = _building.get_costs_as_bbcode()
 		var effects_text = _building.get_effects_as_bbcode()
 		entry.get_node("CostContainer/Text").bbcode_text = cost_text
 		entry.get_node("EffectsContainer/Text").bbcode_text = effects_text
-	
-		# vertically center building with row
-		var building_pos = Vector2(1035, $ScrollContainer.rect_position.y - scroll_offset)
-		building_pos.y += entry.rect_position.y + entry.rect_min_size.y / 2 - _building.shape.size() * GameData.SQUARE_SIZE / 2
-		
-		_building.set_physics_process(false)
-		_building.force_set(building_pos, 0.0, false)
-		_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
-		_building.connect("building_destroy", self, "repopulate_sidebar")
 
 func available(building) -> bool:
 	return GameStats.restrictions.empty() or GameStats.restrictions.has(building)
