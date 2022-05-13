@@ -54,6 +54,7 @@ class CapstoneLogger {
 		// Need to keep this at one (another table entry defines the valid version number)
 		// To keep things simple, only modify the categoryId to filter data
 		this.versionNumber = 1;
+        this.requestBuffer = [];
 	}
 
 	// Generate a guid for a user, use this to track their actions
@@ -69,7 +70,31 @@ class CapstoneLogger {
 		window.localStorage.setItem("saved_userid", uuid);
 	}
 
-	_request(url, data) {
+    _queue_request(url, data) {
+        return new Promise((resolve, reject) => {
+            this.requestBuffer.push({ url, data, resolve, reject });
+            if (this.requestBuffer.length == 1) {
+                this._pop();
+            }
+        });
+    }
+
+    async _pop() {
+        if (this.requestBuffer.length == 0) {
+            return;
+        }
+        const item = this.requestBuffer[0];
+        try {
+            item.resolve(await this._force_request(item.url, item.data));
+        } catch (e) {
+            item.reject(e);
+        } finally {
+            this.requestBuffer.shift();
+            this._pop();
+        }
+    }
+
+	_force_request(url, data) {
 		// Standard template data sent for every request
 		const stringifiedData = data ? JSON.stringify(data) : null;
 		const encodedData = md5((stringifiedData || "") + this.gameKey);
@@ -115,7 +140,7 @@ class CapstoneLogger {
 		this.currentLevelSeqInSession = 0;
 		this.currentActionSeqInSession = 0;
 
-		const res = await this._request("loggingpageload/set/", {
+		const res = await this._queue_request("loggingpageload/set/", {
 			eid: 0,
 			cid: this.categoryId,
 			pl_detail: {},
@@ -156,7 +181,7 @@ class CapstoneLogger {
 		this.currentLevelId = levelId;
 		this.currentDqid = null;
 
-		const res = await this._request("quest/start", {
+		const res = await this._queue_request("quest/start", {
 			...this.getCommonData(),
 			sessionid: this.currentSessionId,
 			sid: this.currentSessionId,
@@ -181,7 +206,7 @@ class CapstoneLogger {
 			clearInterval(this.levelActionTimer);
 		}
 
-		await this._request("quest/end", {
+		await this._queue_request("quest/end", {
 			...this.getCommonData(),
 			sessionid: this.currentSessionId,
 			sid: this.currentSessionId,
@@ -216,7 +241,7 @@ class CapstoneLogger {
 	logActionWithNoLevel(actionId, details) {
 		details = this.parseArgs(details);
 		console.log("[LOG ACTION NO LEVEL]", actionId, details);
-		this._request("loggingactionnoquest/set/", {
+		this._queue_request("loggingactionnoquest/set/", {
 			session_seqid: ++this.currentActionSeqInSession,
 			cid: this.categoryId,
 			client_ts: Date.now(),
@@ -234,7 +259,7 @@ class CapstoneLogger {
 	async flushBufferedLevelActions() {
 		// Don't log any actions until a dqid has been set
 		if (this.levelActionBuffer.length > 0 && this.currentDqid != null) {
-			await this._request("logging/set", {
+			await this._queue_request("logging/set", {
 				...this.getCommonData(),
 				actions: this.levelActionBuffer,
 				dqid: this.currentDqid,
