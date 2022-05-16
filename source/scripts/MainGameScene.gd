@@ -49,6 +49,8 @@ func on_next_turn():
 	GameStats.logger.log_level_start(GameStats.turn)
 	show_correct_text()
 
+var someone_died : bool = false
+
 func show_correct_text():
 	var turn = GameStats.turn
 	var text = "" # bbcode
@@ -100,9 +102,10 @@ func show_correct_text():
 	elif turn == 12:
 		text = "Your goal is to place down the Cryonic Chamber while minimizing colonist deaths. Note that you receive a refund if you destroy a building on the same turn you build it!"
 	else:
-		if $UILayer/Sidebar.how_many_people_will_die_next_turn() > 0:
+		if someone_died:
 			# TODO: explain what they died from (food -> starvation, water -> dehydration, oxygen -> suffocation)
 			text = "Oh no! Some colonists died due to lack of resources. Only " + str(GameStats.colonist_death_threshold - GameStats.dead) + " more colonist deaths will be tolerated before you get shut down!"
+			someone_died = false
 		else:
 			text = ""
 	$UILayer/TextBox.bbcode_text = text
@@ -144,6 +147,7 @@ func update_resources() -> void:
 		GameStats.dead += dead_colonists
 		for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
 			GameStats.resources.give(resource, GameData.PEOPLE_RESOURCE_CONSUMPTION[resource] * dead_colonists)
+		someone_died = true
 		print(str(dead_colonists) + " people died!")
 
 	GameStats.resources.set_callback(cb)
