@@ -163,6 +163,10 @@ func aggregate_resources() -> Dictionary:
 			dict[resource][building.building_id] += building.get_effect(resource)
 	return dict
 
+func _unhandled_input(event):
+	if event.is_action_pressed("toggle_fullscreen"):
+		OS.window_fullscreen = !OS.window_fullscreen
+
 func _on_Resources_changed():
 	update_resources()
 	sidebar.update_displays()
