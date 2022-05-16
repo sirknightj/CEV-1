@@ -9,6 +9,7 @@
 
 [sub_resource type="DynamicFont" id=1]
 size = 20
+use_filter = true
 font_data = ExtResource( 6 )
 
 [node name="MainGameScene" type="Node2D"]

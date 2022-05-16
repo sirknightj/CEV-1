@@ -8,14 +8,17 @@
 [ext_resource path="res://BAHNSCHRIFT.TTF" type="DynamicFontData" id=7]
 
 [sub_resource type="DynamicFont" id=1]
+use_filter = true
 size = 30
 font_data = ExtResource( 7 )
 
 [sub_resource type="DynamicFont" id=2]
+use_filter = true
 size = 18
 font_data = ExtResource( 7 )
 
 [sub_resource type="DynamicFont" id=3]
+use_filter = true
 font_data = ExtResource( 7 )
 
 [node name="Sidebar" type="Control"]

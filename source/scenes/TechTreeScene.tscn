@@ -13,18 +13,22 @@ gradient = SubResource( 2 )
 
 [sub_resource type="DynamicFont" id=1]
 size = 48
+use_filter = true
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=4]
 size = 30
+use_filter = true
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=5]
 size = 18
+use_filter = true
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=6]
 size = 18
+use_filter = true
 font_data = ExtResource( 2 )
 
 [node name="Control" type="Control"]
