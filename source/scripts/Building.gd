@@ -527,25 +527,22 @@ func _unhandled_input(event : InputEvent):
 	if not is_instance_valid(self):
 		return
 
-	if event.is_action_pressed("building_grab"):
-		if _mouse_state == MouseState.HOVER:
-			_mouse_state = MouseState.DRAGGING
-			_on_building_grab()
+	if event.is_action_pressed("building_grab") and _mouse_state == MouseState.HOVER:
+		_mouse_state = MouseState.DRAGGING
+		_on_building_grab()
 
-	if event.is_action_released("building_grab"):
-		if _mouse_state == MouseState.DRAGGING:
-			_on_building_place()
+	if event.is_action_released("building_grab") and _mouse_state == MouseState.DRAGGING:
+		_on_building_place()
+		if event.device == -1: # touch
+			_mouse_state = MouseState.NONE
 
-	if (event.is_action_pressed("building_rotate")
-			and _mouse_state == MouseState.DRAGGING):
+	if event.is_action_pressed("building_rotate") and _mouse_state == MouseState.DRAGGING:
 		_on_building_rotate()
 
-	if (event.is_action_pressed("building_flip")
-			and _mouse_state == MouseState.DRAGGING):
+	if event.is_action_pressed("building_flip") and _mouse_state == MouseState.DRAGGING:
 		_on_building_flip()
 
-	if (event is InputEventMouseMotion
-			and _mouse_state == MouseState.DRAGGING):
+	if event is InputEventMouseMotion and _mouse_state == MouseState.DRAGGING:
 		_on_building_drag()
 
 func _on_MainSquare_mouse_entered():

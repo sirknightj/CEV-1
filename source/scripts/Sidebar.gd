@@ -221,13 +221,26 @@ func _on_Next_Month_gui_input(event):
 		# print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:
 			if GameStats.restrictions.keys().size() > 0:
-				var required_placements = "Please place down "
+				var required_placements = "Please place "
+				var num_restrictions = GameStats.restrictions.keys().size()
+				var i = num_restrictions
 				for building in GameStats.restrictions.keys():
-					required_placements += "%s more %s, " % [str(GameStats.restrictions[building]), pluralize(GameStats.restrictions[building], GameStats.buildings_dict[building].name)]
+					i -= 1
+					if i == 0 and num_restrictions > 1:
+						if num_restrictions == 2:
+							required_placements.erase(required_placements.length() - 2, 2)
+							required_placements += " "
+						required_placements += "and "
+					var quantity = GameStats.restrictions[building]
+					if quantity == 1:
+						required_placements += "a "
+					else:
+						required_placements += str(quantity) + " more "
+					required_placements += GameStats.buildings_dict[building].format_str(quantity) + ", "
 				required_placements.erase(required_placements.length() - 2, 2)
 				get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = required_placements + "."
 			elif GameStats.turn == 10:
-				get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = "Please check out the Upgrades menu!"
+				get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = "Please check out the [color=%s]Upgrades[/color] menu!" % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)
 		else:
 			game.on_next_turn()
 			$Graph.reset_for_next_turn()
@@ -264,12 +277,6 @@ func placed_building(building : int):
 	
 	if GameStats.restrictions.keys().size() == 0 and GameStats.turn != 10:
 		toggle_next_month_button(true)
-
-func pluralize(quantity : int, word : String) -> String:
-	if quantity == 1:
-		return word
-	else:
-		return word + "s"
 
 """
 	Returns how many people will die next turn
@@ -332,9 +339,11 @@ func resources_needed(_building) -> Dictionary:
 func toggle_next_month_button(_clickable : bool) -> void:
 	ignore_next_month = not _clickable
 	if _clickable:
+		$NextMonth.color = Color("#5421d1")
 		$NextMonth/Label.set("custom_colors/font_color", Color("#FFFFFF"))
 	else:
-		$NextMonth/Label.set("custom_colors/font_color", Color("#808080"))
+		$NextMonth.color = Color("#404040")
+		$NextMonth/Label.set("custom_colors/font_color", Color("#AAAAAA"))
 
 """
 	Lets the "upgrades" button be clicked

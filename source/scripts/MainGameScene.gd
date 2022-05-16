@@ -49,22 +49,23 @@ func on_next_turn():
 	GameStats.logger.log_level_start(GameStats.turn)
 	show_correct_text()
 
-var someone_died : bool = false
+var num_died : int = 0
+var death_reasons : Array = []
 
 func show_correct_text():
 	var turn = GameStats.turn
 	var text = "" # bbcode
 	if turn == 0:
-		text = "Welcome to consciousness! You're an AI in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + " colonists.\nClick the \"Next Month\" button to start."
+		text = "Welcome to consciousness! You're an AI that's been put in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + " colonists. Your objective: keep the humans alive. \nClick the \"Next Month\" button to start."
 		$UILayer/Sidebar.toggle_upgrades_button(false)
 	elif turn == 1:
-		text = "Each colonist drinks 1 unit of [color=%s]water[/color] every month.\nPlace down some [color=%s]Wells[/color] to ensure you don't run out of water and your humans stay alive!\nTip: use the \"R\" key to rotate the building." % [GameData.get_resource_color_as_hex(GameData.ResourceType.WATER), GameData.get_resource_color_as_hex(GameData.ResourceType.WATER)]
+		text = "Each colonist drinks 1 unit of [color=%s]water[/color] every month.\nPlace down some %s to ensure you don't run out of water and your humans stay alive!\nTip: use the \"R\" key while dragging a building to rotate it." % [GameData.get_resource_color_as_hex(GameData.ResourceType.WATER), GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(2)]
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 12)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 2}
 		GameStats.selling_enabled = true
 	elif turn == 2:
-		text = "Notice how another person has arrived to your colony.\nYou now need another [color=%s]Well[/color] to support your growing population." % GameData.get_resource_color_as_hex(GameData.ResourceType.WATER)
+		text = "Another person has arrived to your colony!\nYou need another %s to support the growing population." % GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(1)
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 6)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1}
@@ -85,11 +86,11 @@ func show_correct_text():
 		GameStats.resources.give(GameData.ResourceType.METAL, 146)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 1}
 	elif turn == 7:
-		text = "Tip: You can also move the buildings around!"
+		text = "Tip: You can also move any placed buildings"
 	elif turn == 8:
-		text = "If " + str(GameStats.colonist_death_threshold) + " colonists die, you'll be shut down. Make sure that doesn't happen!"
+		text = "If " + str(GameStats.colonist_death_threshold) + " colonists die, you'll be shut down. Protect your humans by any means necessary to make sure that doesn't happen!"
 	elif turn == 9:
-		text = "Your mine needs [color=%s]energy[/color] to function.\nBuild some [color=%s]Solar Panel[/color]s." % [GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY), GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)]
+		text = "Your mine needs [color=%s]energy[/color] to function.\nBuild some %s." % [GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY), GameStats.buildings_dict[GameData.BuildingType.ELEC1].format_str(2)]
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 24)
 		GameStats.restrictions = {GameData.BuildingType.ELEC1: 3}
@@ -98,14 +99,19 @@ func show_correct_text():
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		$UILayer/Sidebar.toggle_upgrades_button(true)
 	elif turn == 11:
-		text = "You should aim to get a [color=%s]University[/color] down to speed up your research progress!" % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)
+		text = "Building a %s will significantly speed up your research progress." % GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(2)
 	elif turn == 12:
-		text = "Your goal is to place down the Cryonic Chamber while minimizing colonist deaths. Note that you receive a refund if you destroy a building on the same turn you build it!"
+		text = "Your goal is to place down the [color=#FFFFFF]Cryonic Chamber[/color] while minimizing colonist deaths."
+	elif turn == 13:
+		text = "Note that you receive a refund if you destroy a building on the same turn you build it!"
 	else:
-		if someone_died:
-			# TODO: explain what they died from (food -> starvation, water -> dehydration, oxygen -> suffocation)
-			text = "Oh no! Some colonists died due to lack of resources. Only " + str(GameStats.colonist_death_threshold - GameStats.dead) + " more colonist deaths will be tolerated before you get shut down!"
-			someone_died = false
+		if num_died:
+			var deaths_left = GameStats.colonist_death_threshold - GameStats.dead
+			var plural_colonists = "colonist" if num_died == 1 else "colonists"
+			plural_colonists = str(num_died) + " " + plural_colonists
+			var plural_deaths = "death" if deaths_left == 1 else "deaths"
+			text = "Oh no! %s died from %s. Only %s more %s will be tolerated before you get shut down!" % [plural_colonists, format_death_reasons_as_bbcode(death_reasons), deaths_left, plural_deaths]
+			num_died = 0
 		else:
 			text = ""
 	$UILayer/TextBox.bbcode_text = text
@@ -136,21 +142,40 @@ func update_resources() -> void:
 			GameStats.resources.add_effect(resource, building.get_effect(resource))
 	# Handle colonists dying
 	var dead_colonists : int = 0
+	death_reasons = []
 	# TODO: account for upgrades changing people's resource consumption
 	for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
 		if GameStats.resources.get_reserve(resource) < 0:
 			var colonists_unsupported : int = -floor(GameStats.resources.get_reserve(resource) / GameData.PEOPLE_RESOURCE_CONSUMPTION[resource])
-			if dead_colonists < colonists_unsupported:
-				dead_colonists = colonists_unsupported
+			if colonists_unsupported > 0:
+				death_reasons.append(resource)
+				if dead_colonists < colonists_unsupported:
+					dead_colonists = colonists_unsupported
 	if dead_colonists:
 		GameStats.resources.consume(GameData.ResourceType.PEOPLE, dead_colonists)
 		GameStats.dead += dead_colonists
 		for resource in GameData.PEOPLE_RESOURCE_CONSUMPTION:
 			GameStats.resources.give(resource, GameData.PEOPLE_RESOURCE_CONSUMPTION[resource] * dead_colonists)
-		someone_died = true
+		num_died = dead_colonists
 		print(str(dead_colonists) + " people died!")
 
 	GameStats.resources.set_callback(cb)
+
+func format_death_reasons_as_bbcode(reasons: Array) -> String:
+	var res = ""
+	for resource_type in reasons:
+		assert(GameData.is_resource_type(resource_type))
+		var death = "lack of resources"
+		if resource_type == GameData.ResourceType.FOOD:
+			death = "starvation"
+		elif resource_type == GameData.ResourceType.WATER:
+			death = "dehydration"
+		elif resource_type == GameData.ResourceType.OXYGEN:
+			death = "suffocation"
+		var color = GameData.get_resource_color_as_hex(resource_type)
+		res += "[color=%s]%s[/color] and " % [color, death]
+	res.erase(res.length() - 5, 5)
+	return res
 
 func aggregate_resources() -> Dictionary:
 	var dict : Dictionary = {}

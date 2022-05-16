@@ -47,7 +47,7 @@ margin_bottom = 338.0
 
 [node name="NextMonth" type="Polygon2D" parent="."]
 position = Vector2( 845, 282 )
-color = Color( 0.25098, 0.25098, 0.25098, 1 )
+color = Color( 0.329412, 0.129412, 0.819608, 1 )
 offset = Vector2( -681, -261 )
 polygon = PoolVector2Array( 15, 0, 0, 30, 115, 30, 130, 0 )
 

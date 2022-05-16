@@ -225,6 +225,16 @@ class BuildingStats:
 	func _init():
 		effects = {}
 		cost = {}
+	
+	func format_str(quantity: int) -> String:
+		var main_resource = 0
+		var main_resource_amount = 0
+		for e in effects:
+			if effects[e] > main_resource_amount:
+				main_resource_amount = effects[e]
+				main_resource = e
+		var plural = "s" if quantity > 1 else ""
+		return "[color=%s]%s%s[/color]" % [GameData.get_resource_color_as_hex(main_resource), name, plural]
 
 # File path of buildings.json
 var buildings_json = "res://assets/data/buildings.json"
