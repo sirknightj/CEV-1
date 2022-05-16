@@ -58,11 +58,11 @@ class Log:
 		var j = JSON.print(details) if details.size() else null
 		self._logger.logLevelAction(action_id, j)
 	
-	#func log_action_with_no_level(action_id: int, details: Dictionary={}) -> void:
-	#	if not self.enabled:
-	#		return
-	#	var j = JSON.print(details) if details.size() else null
-	#	self._logger.logActionWithNoLevel(action_id, j)
+	func log_action_with_no_level(action_id: int, details: Dictionary={}) -> void:
+		if not self.enabled:
+			return
+		var j = JSON.print(details) if details.size() else null
+		self._logger.logActionWithNoLevel(action_id, j)
 	
 	func flush_buffered_level_actions() -> void:
 		if not self.enabled:

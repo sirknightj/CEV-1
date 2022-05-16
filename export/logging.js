@@ -249,7 +249,7 @@ class CapstoneLogger {
 		this.currentLevelSeqInSession = 0;
 		this.currentActionSeqInSession = 0;
 
-		const res = await this._queue_request("loggingpageload/set/", {
+		const res = await this._request("loggingpageload/set/", {
 			eid: 0,
 			cid: this.categoryId,
 			pl_detail: {},
@@ -294,7 +294,7 @@ class CapstoneLogger {
 		this.currentLevelId = levelId;
 		this.currentDqid = null;
 
-		const res = await this._queue_request("quest/start", {
+		const res = await this._request("quest/start", {
 			...this.getCommonData(),
 			sessionid: this.currentSessionId,
 			sid: this.currentSessionId,
@@ -322,7 +322,7 @@ class CapstoneLogger {
 			clearInterval(this.levelActionTimer);
 		}
 
-		await this._queue_request("quest/end", {
+		await this._request("quest/end", {
 			...this.getCommonData(),
 			sessionid: this.currentSessionId,
 			sid: this.currentSessionId,
@@ -382,7 +382,7 @@ class CapstoneLogger {
 	async flushBufferedLevelActions() {
 		// Don't log any actions until a dqid has been set
 		if (this.levelActionBuffer.length > 0 && this.currentDqid != null) {
-			await this._queue_request("logging/set", {
+			await this._request("logging/set", {
 				...this.getCommonData(),
 				actions: this.levelActionBuffer,
 				dqid: this.currentDqid,
