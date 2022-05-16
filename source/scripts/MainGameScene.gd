@@ -99,7 +99,7 @@ func show_correct_text():
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		$UILayer/Sidebar.toggle_upgrades_button(true)
 	elif turn == 11:
-		text = "Building a %s will significantly speed up your research progress." % GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(2)
+		text = "Building a %s will significantly speed up your research progress." % GameStats.buildings_dict[GameData.BuildingType.SCI1].format_str(2)
 	elif turn == 12:
 		text = "Your goal is to place down the [color=#FFFFFF]Cryonic Chamber[/color] while minimizing colonist deaths."
 	elif turn == 13:
