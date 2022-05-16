@@ -499,6 +499,7 @@ func _on_building_release():
 	_emit_release_on_next_physics = true
 	if (_mouse_enters == 0):
 		building_mouse_exited()
+	log_building_action(Logger.Actions.BuildingReleased)
 
 func _on_building_grab():
 	GameStats.current_selected_building = self
