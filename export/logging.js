@@ -158,10 +158,16 @@ class Mutex {
 	}
 }
 
+function sleep(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 class CapstoneLogger {
 	prdUrl =
 		"https://integration.centerforgamescience.org/cgs/apps/games/v2/index.php/";
 	BUFFER_DURATION = 3000; // milliseconds for buffering level actions
+	MAX_RETRIES = 3; // maximum times to retry a failed fetch request
+	RETRY_DELAY = 1500; // milliseconds to delay between fetch retries
 
 	constructor(gameId, gameName, gameKey, categoryId) {
 		this.gameId = gameId;
@@ -177,7 +183,7 @@ class CapstoneLogger {
 	}
 
 	// sends a network request to the given URL with the given data
-	_request(url, data) {
+	async _request(url, data) {
 		// Standard template data sent for every request
 		const stringifiedData = data ? JSON.stringify(data) : null;
 		const encodedData = md5((stringifiedData || "") + this.gameKey);
@@ -198,14 +204,25 @@ class CapstoneLogger {
 			formData.append(k, v);
 		}
 
-		return fetch(this.prdUrl + url, {
+		const payload = {
 			method: "POST",
 			headers: {
 				Accept: "*/*",
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams(formData),
-		});
+		};
+
+		for (let i = 0; i < this.MAX_RETRIES; i++) {
+			try {
+				return await fetch(this.prdUrl + url, payload);
+			} catch (e) {
+				console.error(e);
+			}
+			await sleep(this.RETRY_DELAY);
+		}
+		// failed to fetch
+		return;
 	}
 
 	// Generate a guid for a user, use this to track their actions
@@ -249,31 +266,37 @@ class CapstoneLogger {
 		this.currentLevelSeqInSession = 0;
 		this.currentActionSeqInSession = 0;
 
-		const res = await this._request("loggingpageload/set/", {
-			eid: 0,
-			cid: this.categoryId,
-			pl_detail: {},
-			client_ts: Date.now(),
-			uid: this.currentUserId,
-			g_name: this.gameName,
-			gid: this.gameId,
-			svid: 2,
-			vid: this.versionNumber,
-		});
-		const data = await res.text();
+		try {
+			const res = await this._request("loggingpageload/set/", {
+				eid: 0,
+				cid: this.categoryId,
+				pl_detail: {},
+				client_ts: Date.now(),
+				uid: this.currentUserId,
+				g_name: this.gameName,
+				gid: this.gameId,
+				svid: 2,
+				vid: this.versionNumber,
+			});
+			const data = await res.text();
 
-		// Part of the response data should be the session id
-		let sessionSuccess = false;
-		if (data) {
-			const parsedResults = JSON.parse(data.substring(5));
-			if (parsedResults.tstatus === "t") {
-				this.currentSessionId = parsedResults.r_data.sessionid;
-				sessionSuccess = true;
+			// Part of the response data should be the session id
+			let sessionSuccess = false;
+			if (data) {
+				const parsedResults = JSON.parse(data.substring(5));
+				if (parsedResults.tstatus === "t") {
+					this.currentSessionId = parsedResults.r_data.sessionid;
+					sessionSuccess = true;
+				}
 			}
+			console.log("sessionSuccess", sessionSuccess);
+			console.log("sessionid", this.currentSessionId);
+		} catch (e) {
+			console.error(e);
+		} finally {
+			this.mutex.unlock();
 		}
-		this.mutex.unlock();
-		console.log("sessionSuccess", sessionSuccess);
-		console.log("sessionid", this.currentSessionId);
+
 	}
 
 	async logLevelStart(levelId, details) {
@@ -281,35 +304,40 @@ class CapstoneLogger {
 		details = this.parseArgs(details);
 		console.log("[LOG LEVEL START]", levelId, details);
 
-		this.flushBufferedLevelActions();
-		if (this.levelActionTimer) {
-			clearInterval(this.levelActionTimer);
-		}
-		this.levelActionTimer = setInterval(() => {
+		try {
 			this.flushBufferedLevelActions();
-		}, this.BUFFER_DURATION);
+			if (this.levelActionTimer) {
+				clearInterval(this.levelActionTimer);
+			}
+			this.levelActionTimer = setInterval(() => {
+				this.flushBufferedLevelActions();
+			}, this.BUFFER_DURATION);
 
-		this.timestampOfPrevLevelStart = Date.now();
-		this.currentActionSeqInLevel = 0;
-		this.currentLevelId = levelId;
-		this.currentDqid = null;
+			this.timestampOfPrevLevelStart = Date.now();
+			this.currentActionSeqInLevel = 0;
+			this.currentLevelId = levelId;
+			this.currentDqid = null;
 
-		const res = await this._request("quest/start", {
-			...this.getCommonData(),
-			sessionid: this.currentSessionId,
-			sid: this.currentSessionId,
-			quest_seqid: ++this.currentLevelSeqInSession,
-			qaction_seqid: ++this.currentActionSeqInLevel,
-			q_detail: details,
-			q_s_id: 1,
-			session_seqid: ++this.currentActionSeqInSession,
-		});
-		const data = await res.text();
+			const res = await this._request("quest/start", {
+				...this.getCommonData(),
+				sessionid: this.currentSessionId,
+				sid: this.currentSessionId,
+				quest_seqid: ++this.currentLevelSeqInSession,
+				qaction_seqid: ++this.currentActionSeqInLevel,
+				q_detail: details,
+				q_s_id: 1,
+				session_seqid: ++this.currentActionSeqInSession,
+			});
+			const data = await res.text();
 
-		if (data) {
-			this.currentDqid = JSON.parse(data.substring(5)).dqid;
+			if (data) {
+				this.currentDqid = JSON.parse(data.substring(5)).dqid;
+			}
+		} catch {
+		} finally {
+			this.mutex.unlock();
 		}
-		this.mutex.unlock();
+
 	}
 
 	async logLevelEnd(details) {
@@ -317,23 +345,28 @@ class CapstoneLogger {
 		details = this.parseArgs(details);
 		console.log("[LOG LEVEL END]", details);
 
-		this.flushBufferedLevelActions();
-		if (this.levelActionTimer) {
-			clearInterval(this.levelActionTimer);
-		}
+		try {
 
-		await this._request("quest/end", {
-			...this.getCommonData(),
-			sessionid: this.currentSessionId,
-			sid: this.currentSessionId,
-			qaction_seqid: ++this.currentActionSeqInLevel,
-			q_detail: details,
-			q_s_id: 0,
-			dqid: this.currentDqid,
-			session_seqid: ++this.currentActionSeqInSession,
-		});
-		this.currentDqid = null;
-		this.mutex.unlock();
+			this.flushBufferedLevelActions();
+			if (this.levelActionTimer) {
+				clearInterval(this.levelActionTimer);
+			}
+
+			await this._request("quest/end", {
+				...this.getCommonData(),
+				sessionid: this.currentSessionId,
+				sid: this.currentSessionId,
+				qaction_seqid: ++this.currentActionSeqInLevel,
+				q_detail: details,
+				q_s_id: 0,
+				dqid: this.currentDqid,
+				session_seqid: ++this.currentActionSeqInSession,
+			});
+			this.currentDqid = null;
+		} catch {
+		} finally {
+			this.mutex.unlock();
+		}
 	}
 
 	// Actions should be buffered and sent at a limited rate
@@ -363,31 +396,37 @@ class CapstoneLogger {
 		details = this.parseArgs(details);
 		console.log("[LOG ACTION NO LEVEL]", actionId, details);
 
-		this._request("loggingactionnoquest/set/", {
-			session_seqid: ++this.currentActionSeqInSession,
-			cid: this.categoryId,
-			client_ts: Date.now(),
-			aid: actionId,
-			vid: this.versionNumber,
-			uid: this.currentUserId,
-			g_name: this.gameName,
-			a_detail: details,
-			gid: this.gameId,
-			svid: 2,
-			sessionid: this.currentSessionId,
-		});
-		this.mutex.unlock();
+		try {
+			this._request("loggingactionnoquest/set/", {
+				session_seqid: ++this.currentActionSeqInSession,
+				cid: this.categoryId,
+				client_ts: Date.now(),
+				aid: actionId,
+				vid: this.versionNumber,
+				uid: this.currentUserId,
+				g_name: this.gameName,
+				a_detail: details,
+				gid: this.gameId,
+				svid: 2,
+				sessionid: this.currentSessionId,
+			});
+		} catch {
+		} finally {
+			this.mutex.unlock();
+		}
 	}
 
 	async flushBufferedLevelActions() {
 		// Don't log any actions until a dqid has been set
 		if (this.levelActionBuffer.length > 0 && this.currentDqid != null) {
-			await this._request("logging/set", {
-				...this.getCommonData(),
-				actions: this.levelActionBuffer,
-				dqid: this.currentDqid,
-			});
-
+			try {
+				await this._request("logging/set", {
+					...this.getCommonData(),
+					actions: this.levelActionBuffer,
+					dqid: this.currentDqid,
+				});
+			} catch {
+			}
 			// Clear out old array
 			this.levelActionBuffer = [];
 		}
