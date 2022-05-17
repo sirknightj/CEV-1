@@ -87,6 +87,7 @@ _global_script_class_icons={
 [application]
 
 config/name="CEV-1"
+config/description="Block-style building resource management game where you keep Mars colonists alive."
 run/main_scene="res://scenes/MainGameScene.tscn"
 config/icon="res://icon.png"
 

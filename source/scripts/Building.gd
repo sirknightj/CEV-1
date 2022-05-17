@@ -535,7 +535,7 @@ func _unhandled_input(event : InputEvent):
 	if event.is_action_released("building_grab") and _mouse_state == MouseState.DRAGGING:
 		_on_building_place()
 		if event.device == -1: # touch
-			_mouse_state = MouseState.NONE
+			building_mouse_exited()
 
 	if event.is_action_pressed("building_rotate") and _mouse_state == MouseState.DRAGGING:
 		_on_building_rotate()
