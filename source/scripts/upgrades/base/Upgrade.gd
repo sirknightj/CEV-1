@@ -35,4 +35,7 @@ func apply():
 	pass
 
 func serialize():
-	return id
+	return {
+		"id": id,
+		"purchased": purchased
+	}

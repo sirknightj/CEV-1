@@ -138,7 +138,7 @@ func serialize():
 		"flipped": _shadow_flipped,
 		"moving_flipped": _main_flipped,
 		"original_flipped": _original_flipped,
-		"upgrades": building_effect_upgrades.keys(),
+		"upgrades": serialized_upgrades,
 		"purchased": purchased,
 		"enabled": enabled,
 		"locked": locked
