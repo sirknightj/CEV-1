@@ -114,6 +114,9 @@ func serialize():
 	var moving = GameStats.grid.global_to_grid(_main.global_position)
 	var original = GameStats.grid.global_to_grid(_original_pos)
 	var pos = GameStats.grid.global_to_grid(_shadow.global_position)
+	var serialized_upgrades = []
+	for upgrade in building_effect_upgrades.keys():
+		serialized_upgrades.append(upgrade.serialize())
 	return {
 		"name": name,
 		"id": building_id,

@@ -7,12 +7,14 @@ export(String) var description
 export(String) var effects
 
 var purchased : bool = false
+var id : int = -1
 
 func _ready():
 	assert(cost != null)
 	assert(upgrade_name != null)
 	assert(description != null)
 	assert(effects != null)
+	assert(id != -1)
 
 """
 	Purchase the upgrade, spending its resource cost. If the purchase succeeds,
@@ -31,3 +33,6 @@ func purchase():
 """
 func apply():
 	pass
+
+func serialize():
+	return id

@@ -195,6 +195,7 @@ class UpgradeTree:
 		for id in GameStats.upgrades_data.keys():
 			var upgrade = GameStats.upgrades_data[id]
 			var instance : Upgrade = upgrade.scene.instance()
+			instance.id = id
 			parent.add_child(instance)
 			tree_dict[id] = UpgradeTreeNode.new({
 				"id": id,
