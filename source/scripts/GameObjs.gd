@@ -168,22 +168,15 @@ class Resources:
 			"resources_used": resources_used
 		}
 
-	func fix_types(dict):
-		var fixed = {}
-		for str_type in dict:
-			var type = int(str_type)
-			assert(GameData.is_resource_type(type))
-			fixed[type] = dict[str_type]
-		return fixed
-
 	func deserialize(data):
-		resources_generated = fix_types(data.resources_generated)
-		resources_used = fix_types(data.resources_used)
-		var load_resources = fix_types(data.resources)
+		resources_generated = GameData.fix_types(data.resources_generated)
+		resources_used = GameData.fix_types(data.resources_used)
+		var load_resources = GameData.fix_types(data.resources)
 		for type in load_resources:
+			assert(GameData.is_resource_type(type))
 			var resource = GameResource.new()
 			resource.deserialize(load_resources[type])
-			self.resources[type] = resource
+			resources[type] = resource
 		on_update()
 
 class UpgradeTree:
@@ -230,10 +223,11 @@ class UpgradeTree:
 			upgrades[type] = tree_dict[type].serialize()
 		return upgrades
 
-	func deserialize(upgrades):
-		for str_type in upgrades:
-			var type = int(str_type)
-			tree_dict[type].deserialize(upgrades[str_type])
+	func deserialize(data):
+		var upgrades = GameData.fix_types(data)
+		for type in upgrades:
+			assert(GameData.is_upgrade_type(type))
+			tree_dict[type].deserialize(upgrades[type])
 		recalculate_available()
 
 class UpgradeTreeNode:

@@ -109,6 +109,7 @@ func deserialize(data):
 	enabled = data.enabled
 	locked = data.locked
 	force_set(GameStats.grid.grid_to_global(Vector2(data.current_pos.x, data.current_pos.y)), data.rotation, data.flipped)
+	emit_signal("building_released")
 
 func serialize():
 	var moving = GameStats.grid.global_to_grid(_main.global_position)

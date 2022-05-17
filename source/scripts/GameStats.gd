@@ -280,8 +280,10 @@ func serialize_buildings():
 
 func deserialize_buildings(buildings):
 	for data in buildings:
-		var building = building_scene.instance()
 		var type = int(data.id)
+		if type == GameData.BuildingType.CENTER:
+			continue
+		var building = building_scene.instance()
 		var building_stats = buildings_dict[type]
 		building.shape = building_stats.shape
 		building.building_effects = building_stats.effects
@@ -290,6 +292,7 @@ func deserialize_buildings(buildings):
 		building.texture = GameData.BUILDING_TO_TEXTURE[type]
 		get_tree().current_scene.add_child(building)
 		building.deserialize(data)
+		game._on_SceneTree_node_added(building)
 
 const SERIALIZATION_VERSION = 1
 const SAVE_FILE = "res://savegame.save"
@@ -316,7 +319,6 @@ func load_game() -> bool:
 		print("Serialization version mismatch (file: " + str(data.serialization_version) + ", game: " + str(SERIALIZATION_VERSION) + "). Aborting load.")
 		return false
 	deserialize(data)
-	print(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE))
 	return true
 
 func serialize():
@@ -339,13 +341,13 @@ func deserialize(data):
 	dead = data.dead
 	is_playing = data.is_playing
 	resources.deserialize(data.resources)
-	upgrade_tree.deserialize(data.upgrades)
 	deserialize_buildings(data.buildings)
+	upgrade_tree.deserialize(data.upgrades)
 	if not is_playing:
 		show_win_lose_screen(data.win_status)
 	else:
-		game.sidebar.show_all()
 		game.update_stats()
+		game.sidebar.show_all()
 
 """
 	Reads the building data from assets/data/buildings.json and loads it into

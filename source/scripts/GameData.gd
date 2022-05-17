@@ -146,6 +146,17 @@ static func is_resource_type(type : int) -> bool:
 static func is_building_type(type : int) -> bool:
 	return type in BuildingType.values()
 
+static func is_upgrade_type(type : int) -> bool:
+	return type in UpgradeType.values()
+
+static func fix_types(va) -> Dictionary:
+	var iter = range(len(va)) if typeof(va) == TYPE_ARRAY else va.keys()
+	var fixed = {}
+	for str_type in iter:
+		var type = int(str_type)
+		fixed[type] = va[str_type]
+	return fixed
+
 """
 	Colors
 """
