@@ -21,19 +21,27 @@ func _setup_control_element(control : Control):
 func _ready():
 	game = get_parent().get_parent()
 	Turn_Count_Text = get_node("TurnCount")
-	update_turn_display()
 
-	# TODO: tutorial progression
+func start_game():
 	for resource in GameData.ResourceType.values():
 		show_resources[resource] = false
-	
+
 	populate_sidebar_correctly()
+
+func show_all():
+	GameStats.shown_resources = GameData.ResourceType.values()
+	show_resources()
+	toggle_next_month_button(true)
+	toggle_upgrades_button(true)
+	GameStats.restrictions.clear()
+	GameStats.selling_enabled = true
+	GameStats.buildings_unlocked.append_array([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1, GameData.BuildingType.SCI1])
+	populate_sidebar_correctly()
+	update_turn_display()
 
 func cheat():
 	GameStats.turn = 20
-	GameStats.shown_resources = GameData.ResourceType.values()
-	show_resources()
-	GameStats.buildings_unlocked.append_array(GameData.BuildingType.values())
+	GameStats.buildings_unlocked = GameData.BuildingType.values()
 	GameStats.resources.set_reserves({
 		GameData.ResourceType.FOOD: 5000.0,
 		GameData.ResourceType.OXYGEN: 5000.0,
@@ -43,12 +51,8 @@ func cheat():
 		GameData.ResourceType.SCIENCE: 5000.0,
 		GameData.ResourceType.PEOPLE: 1.0
 	})
-	GameStats.restrictions.clear()
-	GameStats.selling_enabled = true
-	toggle_next_month_button(true)
-	toggle_upgrades_button(true)
 	GameStats.game.on_next_turn()
-	populate_sidebar_correctly()
+	show_all()
 	GameStats.game.on_next_turn()
 
 func check_buttons() -> void:
@@ -66,7 +70,7 @@ func repopulate_sidebar():
 
 func populate_sidebar_correctly() -> void:
 	if GameStats.colonist_death_threshold <= GameStats.dead or GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 1:
-		show_win_lose_screen(false)
+		GameStats.show_win_lose_screen(false)
 	
 	var turn = GameStats.turn
 	if turn <= 2:
@@ -194,7 +198,7 @@ func _on_Building_building_released(building : Building, original_pos : Vector2,
 			GameStats.buildings_owned[building.building_id] = 1
 		placed_building(building.building_id)
 		if building.building_id == GameData.BuildingType.END1:
-			show_win_lose_screen(true)
+			GameStats.show_win_lose_screen(true)
 	else:
 		building.destroy()
 	repopulate_sidebar()
@@ -355,16 +359,6 @@ func toggle_upgrades_button(_clickable) -> void:
 		$Upgrades.show()
 	else:
 		$Upgrades.hide()
-
-"""
-	Show the win/lose screen
-	is_win true if the player won
-	false if the player lost
-"""
-func show_win_lose_screen(is_win : bool) -> void:
-	GameStats.win_status = is_win
-	get_tree().change_scene("res://scenes/EndScreen.tscn")
-	GameStats.logger.log_level_action(Logger.Actions.Win if is_win else Logger.Actions.Lose)
 
 const SCROLL_SPEED = 12
 func _unhandled_input(event : InputEvent):

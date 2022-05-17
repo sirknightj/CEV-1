@@ -14,6 +14,18 @@ class GameResource:
 	func step_n(n : int):
 		reserves += (income - expense) * n
 
+	func serialize():
+		return {
+			"reserves": reserves,
+			"income": income,
+			"expense": expense
+		}
+
+	func deserialize(data):
+		reserves = data.reserves
+		income = data.income
+		expense = data.expense
+
 class Resources:
 	var resources : Dictionary = {}
 	var callback : FuncRef
@@ -144,7 +156,35 @@ class Resources:
 			var resource = resources[type]
 			resource.step_n(n)
 			resources_generated[type] += resource.income
-			resources_used[type] += resource.expense	
+			resources_used[type] += resource.expense
+
+	func serialize():
+		var serialized_resources : Dictionary = {}
+		for type in resources:
+			serialized_resources[type] = resources[type].serialize()
+		return {
+			"resources": serialized_resources,
+			"resources_generated": resources_generated,
+			"resources_used": resources_used
+		}
+
+	func fix_types(dict):
+		var fixed = {}
+		for str_type in dict:
+			var type = int(str_type)
+			assert(GameData.is_resource_type(type))
+			fixed[type] = dict[str_type]
+		return fixed
+
+	func deserialize(data):
+		resources_generated = fix_types(data.resources_generated)
+		resources_used = fix_types(data.resources_used)
+		var load_resources = fix_types(data.resources)
+		for type in load_resources:
+			var resource = GameResource.new()
+			resource.deserialize(load_resources[type])
+			self.resources[type] = resource
+		on_update()
 
 class UpgradeTree:
 	var tree_dict : Dictionary = {} # upgrade ID -> upgrade data
@@ -182,6 +222,18 @@ class UpgradeTree:
 			if v.unlocked:
 				num_unlocked += 1
 		return num_unlocked - num_initial_unlocked
+
+	func serialize():
+		var upgrades = {}
+		for type in tree_dict:
+			upgrades[type] = tree_dict[type].serialize()
+		return upgrades
+
+	func deserialize(upgrades):
+		for str_type in upgrades:
+			var type = int(str_type)
+			tree_dict[type].deserialize(upgrades[str_type])
+		recalculate_available()
 
 class UpgradeTreeNode:
 	var id: int
@@ -253,3 +305,15 @@ class UpgradeTreeNode:
 		for p in prereqs:
 			res += tree.tree_dict.get(p).get_all_pre_links()
 		return res
+
+	func serialize():
+		return {
+			"unlocked": unlocked
+		}
+
+	func deserialize(data):
+		if data.unlocked:
+			unlocked = true
+			enabled = true
+			instance.purchased = true
+			instance.apply()

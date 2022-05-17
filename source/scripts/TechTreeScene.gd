@@ -17,8 +17,6 @@ const DEFAULT_LINK_COLOR = Color("#4AD0CCD0")
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	GameStats.upgrade_tree.load_upgrade_tree(self)
-	add_nodes()
-	set_node_styles()
 	_on_item_hover_off(-1)
 	$SelectedUpgrade/BuyButton.connect("gui_input", self, "_on_BuyButton_gui_input")
 
@@ -50,6 +48,8 @@ func add_nodes() -> void:
 		item.connect("hover_off", self, "_on_item_hover_off")
 		item.connect("click", self, "_on_item_click")
 		upgrade.node = item
+
+	set_node_styles()
 
 func set_node_styles() -> void:
 	for upgrade in GameStats.upgrade_tree.tree_dict.values():

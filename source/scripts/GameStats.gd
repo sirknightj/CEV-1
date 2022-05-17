@@ -9,6 +9,7 @@ var upgrade_tree : GameObjs.UpgradeTree
 var grid : Grid
 var game : Game
 
+var is_playing : bool # true if the game is still being played, false if it has ended
 var win_status : bool # true if the player won. false if they lost
 var selling_enabled : bool = false # true if selling is enabled. false if disabled
 var colonist_death_threshold : int
@@ -241,18 +242,110 @@ var buildings_json = "res://assets/data/buildings.json"
 # building_id -> BuildingStats
 var buildings_dict : Dictionary = {}
 
+onready var building_scene = preload("res://scenes/Building.tscn")
+
 func _init():
 	logger = Logger.Log.new()
 	upgrade_tree = GameObjs.UpgradeTree.new()
 	load_buildings_json()
 
 func _ready():
+	is_playing = true
 	grid_size = 15
 	turn = 0
 	dead = 0
 	colonist_death_threshold = 100
 	resources = GameObjs.Resources.new()
 	resources.set_reserves(_initial_reserves)
+
+"""
+	Show the win/lose screen
+	is_win true if the player won
+	false if the player lost
+"""
+func show_win_lose_screen(is_win : bool) -> void:
+	is_playing = false
+	GameStats.win_status = is_win
+	get_tree().change_scene("res://scenes/EndScreen.tscn")
+	logger.log_level_action(Logger.Actions.Win if is_win else Logger.Actions.Lose, {
+		"game": GameStats.serialize()
+	})
+
+func serialize_buildings():
+	var buildings = []
+	for building in get_tree().get_nodes_in_group("buildings"):
+		if building.purchased:
+			buildings.append(building.serialize())
+	return buildings
+
+func deserialize_buildings(buildings):
+	for data in buildings:
+		var building = building_scene.instance()
+		var type = int(data.id)
+		var building_stats = buildings_dict[type]
+		building.shape = building_stats.shape
+		building.building_effects = building_stats.effects
+		building.building_cost = building_stats.cost
+		building.building_id = type
+		building.texture = GameData.BUILDING_TO_TEXTURE[type]
+		get_tree().current_scene.add_child(building)
+		building.deserialize(data)
+
+const SERIALIZATION_VERSION = 1
+const SAVE_FILE = "res://savegame.save"
+
+func save_game():
+	var save_game = File.new()
+	save_game.open(SAVE_FILE, File.WRITE)
+	save_game.store_line(JSON.print(serialize()))
+	save_game.close()
+
+func load_game() -> bool:
+	var save_game = File.new()
+	if not save_game.file_exists(SAVE_FILE):
+		print("Save file not found. Aborting load.")
+		return false
+	save_game.open(SAVE_FILE, File.READ)
+	var res = JSON.parse(save_game.get_line())
+	save_game.close()
+	if res.error != OK:
+		print("JSON parse error: " + res.error_string + ". Aborting load.")
+		return false
+	var data = res.result
+	if data.serialization_version != SERIALIZATION_VERSION:
+		print("Serialization version mismatch (file: " + str(data.serialization_version) + ", game: " + str(SERIALIZATION_VERSION) + "). Aborting load.")
+		return false
+	deserialize(data)
+	print(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE))
+	return true
+
+func serialize():
+	return {
+		"serialization_version": SERIALIZATION_VERSION,
+		"turn": turn,
+		"dead": dead,
+		"colonist_death_threshold": colonist_death_threshold,
+		"win_status": win_status,
+		"is_playing": is_playing,
+		"resources": resources.serialize(),
+		"upgrades": upgrade_tree.serialize(),
+		"buildings": serialize_buildings()
+	}
+
+func deserialize(data):
+	assert(data.serialization_version == SERIALIZATION_VERSION)
+	colonist_death_threshold = data.colonist_death_threshold
+	turn = data.turn
+	dead = data.dead
+	is_playing = data.is_playing
+	resources.deserialize(data.resources)
+	upgrade_tree.deserialize(data.upgrades)
+	deserialize_buildings(data.buildings)
+	if not is_playing:
+		show_win_lose_screen(data.win_status)
+	else:
+		game.sidebar.show_all()
+		game.update_stats()
 
 """
 	Reads the building data from assets/data/buildings.json and loads it into

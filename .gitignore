@@ -4,6 +4,7 @@ export/*
 
 # Analytics
 analytics/*.tsv
+*.save
 
 # Godot 4+ specific ignores
 .godot/

@@ -21,9 +21,19 @@ func _ready():
 		_on_SceneTree_node_added(building)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 	get_tree().connect("node_removed", self, "_on_SceneTree_node_removed")
+	GameStats.resources.set_callback(funcref(self, "_on_Resources_changed"))
+	"""
+		SAVED GAME DEBUGGING
+		DISABLE IN PRODUCTION
+	"""
+	#if not GameStats.load_game():
+	#	sidebar.start_game()
+	"""
+	"""
+	sidebar.start_game()
+	sidebar.get_node("CanvasLayer/TechTree").add_nodes()
 	update_stats()
 	show_correct_text()
-	GameStats.resources.set_callback(funcref(self, "_on_Resources_changed"))
 
 """
 	Update visualizations
@@ -42,10 +52,18 @@ func update_stats():
 func on_next_turn():
 	GameStats.logger.log_level_end({
 		"resource_hovers": graph.hover_durations,
+		"game": GameStats.serialize()
 	})
 	GameStats.resources.step()
 	GameStats.turn += 1
 	emit_signal("next_turn")
+	"""
+		SAVED GAME DEBUGGING
+		DISABLE IN PRODUCTION
+	"""
+	#GameStats.save_game()
+	"""
+	"""
 	GameStats.logger.log_level_start(GameStats.turn)
 	show_correct_text()
 

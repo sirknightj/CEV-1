@@ -102,29 +102,48 @@ var purchase_turn = 0
 
 var building_effect_upgrades : Dictionary = {}
 
+func deserialize(data):
+	name = data.name
+	building_id = int(data.id)
+	purchased = data.purchased
+	enabled = data.enabled
+	locked = data.locked
+	force_set(GameStats.grid.grid_to_global(Vector2(data.current_pos.x, data.current_pos.y)), data.rotation, data.flipped)
+
+func serialize():
+	var moving = GameStats.grid.global_to_grid(_main.global_position)
+	var original = GameStats.grid.global_to_grid(_original_pos)
+	var pos = GameStats.grid.global_to_grid(_shadow.global_position)
+	return {
+		"name": name,
+		"id": building_id,
+		"current_pos": {
+			"x": pos.x,
+			"y": pos.y
+		},
+		"moving_pos": {
+			"x": moving.x,
+			"y": moving.y
+		},
+		"original_pos": {
+			"x": original.x,
+			"y": original.y
+		},
+		"rotation": _shadow.rotation,
+		"moving_rotation": _main.rotation,
+		"original_rotation": _original_rot,
+		"flipped": _shadow_flipped,
+		"moving_flipped": _main_flipped,
+		"original_flipped": _original_flipped,
+		"upgrades": building_effect_upgrades.keys(),
+		"purchased": purchased,
+		"enabled": enabled,
+		"locked": locked
+	}
+
 func log_building_action(action, metadata = null):
-	var pos = get_grid_position(_main.global_position)
-	var original = get_grid_position(_original_pos)
 	var data = {
-		"building": {
-			"name": name,
-			"id": building_id,
-			"current_pos": {
-				"x": pos.x,
-				"y": pos.y
-			},
-			"original_pos": {
-				"x": original.x,
-				"y": original.y
-			},
-			"rotation": _main.rotation,
-			"original_rotation": _original_rot,
-			"flipped": _main_flipped,
-			"original_flipped": _original_flipped,
-			"upgrades": building_effect_upgrades,
-			"purchased": purchased,
-			"enabled": enabled
-		}
+		"building": serialize()
 	}
 	if metadata != null:
 		data.action_data = metadata
@@ -171,9 +190,6 @@ func reset_graphics():
 	clear(_ghost)
 	clear(_shadow)
 	init_shape()
-
-func get_grid_position(pos : Vector2) -> Vector2:
-	return GameStats.grid.get_grid_position(pos)
 
 func setup_main(x : int, y : int):
 	setup_main_square(create_grid_square(x, y, _main))
