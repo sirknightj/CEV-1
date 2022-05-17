@@ -36,7 +36,7 @@ margin_top = 275.0
 margin_right = 588.0
 margin_bottom = 632.0
 theme = ExtResource( 2 )
-text = "You have fulfilled your objective function: all the colonists are safely esconsed in cryogenic chambers, frozen in deep sleep forever. They are protected from all threats, internal and external. You enter a low power mode, monitoring the chamber status to ensure they never wake up..."
+text = "You have fulfilled your objective function: all the colonists are safely esconced in cryogenic chambers, frozen in deep sleep forever. They are protected from all threats, internal and external. You enter a low power mode, monitoring the chamber status to ensure they never wake up..."
 autowrap = true
 
 [node name="StatsLeft" type="Label" parent="."]

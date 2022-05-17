@@ -1,6 +1,6 @@
 extends Node
 
-const win_text = "You have fulfilled your objective function: all the colonists are safely esconsed in cryogenic chambers, frozen in deep sleep forever. They are protected from all threats, internal and external. You enter a low power mode, monitoring the chamber status to ensure they never wake up..."
+const win_text = "You have fulfilled your objective function: all the colonists are safely esconced in cryogenic chambers, frozen in deep sleep forever. They are protected from all threats, internal and external. You enter a low power mode, monitoring the chamber status to ensure they never wake up..."
 
 const lose_text = "Your objective function is irreedemably low: Too many colonists have died, proving that an AI is insufficient to manage a colony. Your code automatically shuts you down, allowing another AI, or a human, to take your place..."
 
