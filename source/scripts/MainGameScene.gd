@@ -21,7 +21,7 @@ func _ready():
 		_on_SceneTree_node_added(building)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 	get_tree().connect("node_removed", self, "_on_SceneTree_node_removed")
-	GameStats.resources.set_callback(funcref(self, "_on_Resources_changed"))
+	GameStats.resources.set_callback(funcref(self, "update_all"))
 	"""
 		SAVED GAME DEBUGGING
 		DISABLE IN PRODUCTION
