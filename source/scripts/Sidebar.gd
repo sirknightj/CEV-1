@@ -166,8 +166,8 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			entry.add_child(_building)
 			_building.set_physics_process(false)
 			_building.force_set(building_pos, 0.0, false)
-			_building.connect("building_grabbed", self, "_on_Building_building_grabbed", [_building])
-			_building.connect("building_destroy", self, "repopulate_sidebar")
+			_building.connect("building_grabbed", self, "_on_Building_building_grabbed")
+			_building.connect("building_destroy", self, "_on_Building_building_destroy")
 
 		# set cost and effect texts
 		var cost_text = _building.get_costs_as_bbcode()
@@ -178,8 +178,11 @@ func populate_sidebar(buildings : Dictionary) -> void:
 func available(building) -> bool:
 	return GameStats.restrictions.empty() or GameStats.restrictions.has(building)
 
+func _on_Building_building_destroy(_building):
+	repopulate_sidebar()
+
 func _on_Building_building_grabbed(building : Building):
-	building.connect("building_released", self, "_on_Building_building_released", [building, building._main.global_position, building.get_parent()])
+	building.connect("building_released", self, "_on_Building_building_released", [building._main.global_position, building.get_parent()])
 	var diff = get_global_mouse_position() - building._main.global_position
 	building.get_parent().remove_child(building)
 	get_tree().current_scene.add_child(building)

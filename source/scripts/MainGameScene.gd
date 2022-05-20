@@ -133,7 +133,7 @@ func show_correct_text():
 		else:
 			text = ""
 	$UILayer/TextBox.bbcode_text = text
-	_on_Resources_changed()
+	update_all()
 
 """
 	Place the building at the grid square (_x, _y).
@@ -210,11 +210,14 @@ func _unhandled_input(event):
 	if event.is_action_pressed("toggle_fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
 
-func _on_Resources_changed():
+func update_all():
 	update_resources()
 	sidebar.update_displays()
 	update_stats()
 	sidebar.check_buttons()
+
+func _on_Resources_changed(_building):
+	update_all()
 
 func _on_Building_hover(building):
 	graph.on_building_hover(building)
@@ -224,7 +227,7 @@ func _on_Building_hover_off(building):
 
 func _on_SceneTree_node_removed(_node):
 	if _node is Building:
-		_on_Resources_changed()
+		_on_Resources_changed(_node)
 
 func _on_SceneTree_node_added(_node):
 	if (not _node.is_in_group("buildings")
@@ -235,3 +238,6 @@ func _on_SceneTree_node_added(_node):
 	_node.connect("building_hovered", self, "_on_Building_hover")
 	_node.connect("building_hovered_off", self, "_on_Building_hover_off")
 	emit_signal("building_added", _node)
+
+func get_buildings():
+	return get_tree().get_nodes_in_group("tracked")

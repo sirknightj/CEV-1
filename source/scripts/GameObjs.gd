@@ -1,8 +1,6 @@
 extends Object
 class_name GameObjs
 
-signal resources_changed
-
 class GameResource:
 	# Amount of resource currently in reserves
 	var reserves : float = 0

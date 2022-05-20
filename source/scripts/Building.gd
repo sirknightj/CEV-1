@@ -109,7 +109,7 @@ func deserialize(data):
 	enabled = data.enabled
 	locked = data.locked
 	force_set(GameStats.grid.grid_to_global(Vector2(data.current_pos.x, data.current_pos.y)), data.rotation, data.flipped)
-	emit_signal("building_released")
+	emit_signal("building_released", self)
 
 func serialize():
 	var moving = GameStats.grid.global_to_grid(_main.global_position)
@@ -177,6 +177,8 @@ func _ready():
 	_shadow = get_node("Shadow")
 	_ghost = get_node("Ghost")
 	reset_graphics()
+	set_state(MouseState.NONE)
+	set_physics_process(false)
 
 	add_to_group("buildings")
 
@@ -274,13 +276,13 @@ func setup_ghost_square(grid_square : GridSquare):
 
 func building_mouse_entered():
 	if _mouse_state == MouseState.NONE and not GameStats.current_selected_building:
-		_mouse_state = MouseState.HOVER
+		set_state(MouseState.HOVER)
 		if purchased and enabled:
 			emit_signal("building_hovered", self)
 
 func building_mouse_exited():
 	if _mouse_state == MouseState.HOVER:
-		_mouse_state = MouseState.NONE
+		set_state(MouseState.NONE)
 		emit_signal("building_hovered_off", self)
 
 func set_next_pos(pos : Vector2):
@@ -314,7 +316,7 @@ func snapped(position) -> Vector2:
 
 func add_building_effect_upgrade(upgrade : BuildingEffectUpgrade):
 	building_effect_upgrades[upgrade] = true
-	emit_signal("building_changed")
+	emit_signal("building_changed", self)
 
 func has_building_effect_upgrade(upgrade : BuildingEffectUpgrade):
 	return building_effect_upgrades.has(upgrade)
@@ -322,7 +324,7 @@ func has_building_effect_upgrade(upgrade : BuildingEffectUpgrade):
 func remove_building_effect_upgrade(upgrade : BuildingEffectUpgrade):
 	if building_effect_upgrades.has(upgrade):
 		building_effect_upgrades.erase(upgrade)
-		emit_signal("building_changed")
+		emit_signal("building_changed", self)
 
 func get_base_effect(resource_type : int) -> float:
 	assert(GameData.is_resource_type(resource_type))
@@ -395,7 +397,8 @@ func set_locked(is_locked: bool) -> void:
 	if material:
 		material.set_shader_param('saturation', 0 if locked else 1)
 
-func _process(_delta):
+func set_state(state):
+	_mouse_state = state
 	if locked:
 		return
 
@@ -419,7 +422,8 @@ func _physics_process(_delta):
 	_update_ghost()
 	if _emit_release_on_next_physics:
 		_emit_release_on_next_physics = false
-		emit_signal("building_released")
+		set_physics_process(false)
+		emit_signal("building_released", self)
 	if (_main_flipped_next != _main_flipped
 			or _shadow_flipped_next != _shadow_flipped
 			or _ghost_flipped_next != _ghost_flipped):
@@ -473,11 +477,11 @@ func destroy():
 	})
 	GameStats.current_selected_building = null
 	Input.set_custom_mouse_cursor(null)
-	_mouse_state = MouseState.NONE
+	set_state(MouseState.NONE)
 	queue_free()
 	if refund:
 		refund()
-	emit_signal("building_destroy")
+	emit_signal("building_destroy", self)
 	emit_signal("building_hovered_off", self)
 
 func _on_building_place():
@@ -493,15 +497,15 @@ func _on_building_place():
 	if has_moved():
 		purchase_building()
 	if purchased:
-		_mouse_state = MouseState.HOVER
+		set_state(MouseState.HOVER)
 		_global_pos_next = _shadow.global_position
 		_global_rot_next = _shadow.rotation
 		_main_flipped_next = _shadow_flipped
 		_ghost_flipped_next = _main_flipped_next
 		_shadow_flipped_next = _shadow_flipped
-		emit_signal("building_changed")
+		emit_signal("building_changed", self)
 	else:
-		_mouse_state = MouseState.NONE
+		set_state(MouseState.NONE)
 		force_set(_original_pos, _original_rot, _original_flipped)
 	_on_building_release()
 
@@ -526,7 +530,8 @@ func _on_building_grab():
 	_last_mouse_pos = get_global_mouse_position()
 	_original_pos = _main.global_position
 	_original_rot = _main.rotation
-	emit_signal("building_grabbed")
+	set_physics_process(true)
+	emit_signal("building_grabbed", self)
 	log_building_action(Logger.Actions.BuildingGrabbed)
 
 func _on_building_rotate():
@@ -549,7 +554,7 @@ func _unhandled_input(event : InputEvent):
 		return
 
 	if event.is_action_pressed("building_grab") and _mouse_state == MouseState.HOVER:
-		_mouse_state = MouseState.DRAGGING
+		set_state(MouseState.DRAGGING)
 		_on_building_grab()
 
 	if event.is_action_released("building_grab") and _mouse_state == MouseState.DRAGGING:
