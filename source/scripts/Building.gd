@@ -546,6 +546,7 @@ func _on_building_drag():
 	check_trash()
 	_global_pos_next += (get_global_mouse_position() - _last_mouse_pos)
 	_last_mouse_pos = get_global_mouse_position()
+	_update_main()
 
 func _unhandled_input(event : InputEvent):
 	if locked:
