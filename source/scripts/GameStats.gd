@@ -210,7 +210,7 @@ var _initial_reserves = {
 	GameData.ResourceType.OXYGEN: 450.0,
 	GameData.ResourceType.WATER: 25.0,
 	GameData.ResourceType.METAL: 0.0,
-	GameData.ResourceType.ELECTRICITY: 80.0,
+	GameData.ResourceType.ELECTRICITY: 100.0,
 	GameData.ResourceType.SCIENCE: 0.0,
 	GameData.ResourceType.PEOPLE: 20.0
 }
