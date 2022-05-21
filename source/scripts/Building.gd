@@ -67,6 +67,7 @@ var _mouse_enters : int = 0
 var _overlapping_areas : int = 0
 var square_scene = preload("res://scenes/GridSquare.tscn")
 var trash_icon = preload("res://assets/images/trash.png")
+var refund_icon = preload("res://assets/images/refund.png")
 
 """
 	These are needed because of the following Godot bug:
@@ -364,7 +365,10 @@ func purchase_building():
 func check_trash():
 	if is_in_trash_area():
 		if has_moved() or purchased:
-			Input.set_custom_mouse_cursor(trash_icon)
+			if refundable():
+				Input.set_custom_mouse_cursor(refund_icon)
+			else:
+				Input.set_custom_mouse_cursor(trash_icon)
 		_shadow.visible = false
 	else:
 		Input.set_custom_mouse_cursor(null)
@@ -469,17 +473,19 @@ func refund():
 		else:
 			GameStats.restrictions[building_id] = 1
 
+func refundable():
+	return not purchased or GameStats.turn == purchase_turn
+
 func destroy():
 	remove_from_group("buildings")
-	var refund = GameStats.turn == purchase_turn
 	log_building_action(Logger.Actions.BuildingDeleted, {
-		"refunded": refund
+		"refunded": refundable()
 	})
 	GameStats.current_selected_building = null
 	Input.set_custom_mouse_cursor(null)
 	set_state(MouseState.NONE)
 	queue_free()
-	if refund:
+	if refundable():
 		refund()
 	emit_signal("building_destroy", self)
 	emit_signal("building_hovered_off", self)
