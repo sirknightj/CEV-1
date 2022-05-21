@@ -109,7 +109,7 @@ class Resources:
 	func enough_resources(res : Dictionary) -> bool:
 		for type in res.keys():
 			assert(GameData.is_resource_type(type))
-			if resources[type].reserves < res[type]:
+			if resources[type].reserves < res[type] and res[type] > 0:
 				return false
 		return true
 

@@ -56,19 +56,23 @@ func cheat():
 	GameStats.game.on_next_turn()
 
 func check_buttons() -> void:
-	if not has_enough_electricity():
+	var current = get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text
+	if not has_enough_electricity() and GameStats.turn >= 12 and not current.ends_with("more energy!"):
 		toggle_next_month_button(false)
-		get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = "You don't have enough [color=%s]energy[/color] to keep your buildings running! You'll need to sell some buildings or generate more energy!" % GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)
-	elif not has_enough_metal():
+		current += "\nYou don't have enough [color=%s]energy[/color] to keep your buildings running! You'll need to sell some buildings or generate more energy!" % GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)
+	elif not has_enough_metal() and GameStats.turn >= 12 and not current.ends_with("more metal!"):
 		toggle_next_month_button(false)
-		get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = "You don't have enough [color=%s]metal[/color] to keep your buildings running! You'll need to sell some buildings or generate more metal!" % GameData.get_resource_color_as_hex(GameData.ResourceType.METAL)
+		current += "\nYou don't have enough [color=%s]metal[/color] to keep your buildings running! You'll need to sell some buildings or generate more metal!" % GameData.get_resource_color_as_hex(GameData.ResourceType.METAL)
 	elif GameStats.turn >= 12:
 		toggle_next_month_button(true)
+	if current:
+		get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = current.strip_edges()
 
 func repopulate_sidebar():
 	populate_sidebar_correctly()
 
 func populate_sidebar_correctly() -> void:
+	check_buttons()
 	if GameStats.colonist_death_threshold <= GameStats.dead or GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 1:
 		GameStats.show_win_lose_screen(false)
 	
