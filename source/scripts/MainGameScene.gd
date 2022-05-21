@@ -83,8 +83,8 @@ func show_correct_text():
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 2}
 		GameStats.selling_enabled = true
 	elif turn == 2:
-		text = "Another person has arrived to your colony!\nYou need another %s to support the growing population." % GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(1)
-		$UILayer/Sidebar.toggle_next_month_button(false)
+		text = "Another colonist has arrived!\nYou need another %s to support the growing population." % GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(1)
+		# $UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 6)
 		# GameStats.restrictions = {GameData.BuildingType.WATER1: 1}
 	elif turn == 3:
@@ -110,7 +110,7 @@ func show_correct_text():
 	elif turn == 8:
 		text = "If " + str(GameStats.colonist_death_threshold) + " colonists die, you'll be shut down. Protect your humans by any means necessary to make sure that doesn't happen!"
 	elif turn == 9:
-		text = "Your mine needs [color=%s]energy[/color] to function.\nBuild some %s before you run out!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY), GameStats.buildings_dict[GameData.BuildingType.ELEC1].format_str(2)]
+		text = "Some buildings need [color=%s]energy[/color] to function.\nBuild some %s before you run out!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY), GameStats.buildings_dict[GameData.BuildingType.ELEC1].format_str(2)]
 		# $UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 24)
 		# GameStats.restrictions = {GameData.BuildingType.ELEC1: 3}

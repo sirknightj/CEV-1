@@ -5,8 +5,8 @@
 [ext_resource path="res://scripts/EndScreen.gd" type="Script" id=3]
 
 [sub_resource type="DynamicFont" id=1]
-use_filter = true
 size = 160
+use_filter = true
 extra_spacing_char = 10
 font_data = ExtResource( 1 )
 

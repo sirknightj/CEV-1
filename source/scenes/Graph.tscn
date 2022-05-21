@@ -6,13 +6,13 @@
 [ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=4]
 
 [sub_resource type="DynamicFont" id=1]
-use_filter = true
 size = 20
+use_filter = true
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=2]
-use_filter = true
 size = 44
+use_filter = true
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=3]
