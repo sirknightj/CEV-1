@@ -280,7 +280,11 @@ func building_mouse_entered():
 	if _mouse_state == MouseState.NONE and not GameStats.current_selected_building:
 		set_state(MouseState.HOVER)
 		GameStats.current_hovered_building = self
-		Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
+		if locked:
+			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+		else:
+			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
+
 		emit_signal("building_hovered", self)
 
 func building_mouse_exited():
