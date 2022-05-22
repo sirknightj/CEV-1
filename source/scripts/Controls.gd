@@ -1,7 +1,9 @@
-extends Node2D
+extends Tooltip
 
 var controls_texture = preload("res://assets/images/building-controls.png")
 var controls_rotateonly_texture = preload("res://assets/images/building-controls-rotateonly.png")
+
+var _height = 60.0
 
 func _ready():
 	add_to_group("preparable")
@@ -12,10 +14,22 @@ func prepare():
 
 func _on_Game_building_grabbed(_building):
 	if _building.is_symmetrical():
-		$Tooltip/Sprite.texture = controls_rotateonly_texture
+		$Sprite.texture = controls_rotateonly_texture
+		_height = 30.0
 	else:
-		$Tooltip/Sprite.texture = controls_texture
+		$Sprite.texture = controls_texture
+		_height = 60.0
 	show()
 
 func _on_Game_building_released(_building):
 	hide()
+
+func _unhandled_input(event):
+	if event is InputEventMouseMotion:
+		if Input.get_current_cursor_shape() == Input.CURSOR_CAN_DROP:
+			hide()
+		elif GameStats.current_selected_building != null:
+			show()
+
+func get_height():
+	return _height

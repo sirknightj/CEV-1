@@ -3,6 +3,9 @@
 [ext_resource path="res://scenes/upgrades/base/PlotUpgrade.tscn" type="PackedScene" id=1]
 
 [node name="Upgrade" instance=ExtResource( 1 )]
+cost = {
+5: 0.0
+}
 upgrade_name = "Colonization"
 description = "Settle the first colony on Mars. So far, the colony is just a small dome protecting the brave pioneers from the harsh conditions of the Martian atmosphere."
 size = 15

@@ -96,6 +96,16 @@ const BUILDING_TO_TEXTURE : Dictionary = {
 	BuildingType.WATER3: preload("res://assets/images/water3.png")
 }
 
+const RESOURCE_TYPE_TO_STRING : Dictionary = {
+	ResourceType.WATER: "Water",
+	ResourceType.FOOD: "Food",
+	ResourceType.OXYGEN: "Oxygen",
+	ResourceType.ELECTRICITY: "Energy",
+	ResourceType.METAL: "Metal",
+	ResourceType.SCIENCE: "Science",
+	ResourceType.PEOPLE: "Colonists"
+}
+
 """
 	The size of each square on the grid
 """
@@ -156,6 +166,20 @@ static func fix_types(va) -> Dictionary:
 		var type = int(str_type)
 		fixed[type] = va[str_type]
 	return fixed
+
+static func natural_join(arr : Array):
+	if len(arr) == 1:
+		return arr[0]
+	if len(arr) == 2:
+		return "%s and %s" % [arr[0], arr[1]]
+	var r = ""
+	for i in range(len(arr)):
+		r += arr[i]
+		if i < len(arr) - 2:
+			r += ", "
+		elif i == len(arr) - 2:
+			r += ", and "
+	return r
 
 """
 	Colors

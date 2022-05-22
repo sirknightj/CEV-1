@@ -5,6 +5,9 @@ signal next_turn
 signal building_added(building)
 signal building_grabbed(building)
 signal building_released(building)
+signal building_hovered(building)
+signal building_hovered_off(building)
+signal building_changed(building)
 
 # The sidebar object
 var sidebar : Control
@@ -224,14 +227,17 @@ func update_all():
 	update_stats()
 	sidebar.check_buttons()
 
-func _on_Resources_changed(_building):
+func _on_Building_building_changed(building):
 	update_all()
+	emit_signal("building_changed", building)
 
-func _on_Building_hover(building):
+func _on_Building_building_hovered(building):
 	graph.on_building_hover(building)
+	emit_signal("building_hovered", building)
 
-func _on_Building_hover_off(building):
+func _on_Building_building_hovered_off(building):
 	graph.on_building_hover_off(building)
+	emit_signal("building_hovered_off", building)
 
 func _on_Building_building_grabbed(building):
 	emit_signal("building_grabbed", building)
@@ -241,13 +247,13 @@ func _on_Building_building_released(building):
 
 func _on_SceneTree_node_removed(_node):
 	if _node is Building:
-		_on_Resources_changed(_node)
+		_on_Building_building_changed(_node)
 
 func _on_Building_ready(building):
 	building.add_to_group("tracked")
-	building.connect("building_changed", self, "_on_Resources_changed")
-	building.connect("building_hovered", self, "_on_Building_hover")
-	building.connect("building_hovered_off", self, "_on_Building_hover_off")
+	building.connect("building_changed", self, "_on_Building_building_changed")
+	building.connect("building_hovered", self, "_on_Building_building_hovered")
+	building.connect("building_hovered_off", self, "_on_Building_building_hovered_off")
 	building.connect("building_grabbed", self, "_on_Building_building_grabbed")
 	building.connect("building_released", self, "_on_Building_building_released")
 	emit_signal("building_added", building)

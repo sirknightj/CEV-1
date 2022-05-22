@@ -10,7 +10,7 @@ cost = {
 }
 upgrade_name = "Irrigation"
 description = "Improve plant health and output with new irrigation techniques and better crop placement, increasing your farms' efficiency."
-effects = "+10% food output to each farm adjacent to a well."
+effects = "+10% food output to each farm adjacent to a water source."
 multipliers = {
 0: 1.1
 }

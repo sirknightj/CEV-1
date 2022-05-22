@@ -217,6 +217,7 @@ var _initial_reserves = {
 }
 
 var current_selected_building : Building = null
+var current_hovered_building : Building = null
 
 class BuildingStats:
 	var shape : Array
