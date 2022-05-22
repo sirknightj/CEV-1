@@ -567,7 +567,7 @@ func _on_building_drag():
 	_last_mouse_pos = get_global_mouse_position()
 	_update_main()
 
-func _unhandled_input(event : InputEvent):
+func _input(event : InputEvent):
 	if locked:
 		return
 	if not is_instance_valid(self):
