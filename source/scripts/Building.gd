@@ -278,12 +278,17 @@ func setup_ghost_square(grid_square : GridSquare):
 func building_mouse_entered():
 	if _mouse_state == MouseState.NONE and not GameStats.current_selected_building:
 		set_state(MouseState.HOVER)
+		GameStats.current_hovered_building = self
+		Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
 		if purchased and enabled:
 			emit_signal("building_hovered", self)
 
 func building_mouse_exited():
 	if _mouse_state == MouseState.HOVER:
 		set_state(MouseState.NONE)
+		if GameStats.current_hovered_building == self:
+			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+			GameStats.current_hovered_building = null
 		emit_signal("building_hovered_off", self)
 
 func set_next_pos(pos : Vector2):
@@ -366,12 +371,13 @@ func check_trash():
 	if is_in_trash_area():
 		if has_moved() or purchased:
 			if refundable():
-				Input.set_custom_mouse_cursor(refund_icon)
+				Input.set_custom_mouse_cursor(refund_icon, Input.CURSOR_CAN_DROP)
 			else:
-				Input.set_custom_mouse_cursor(trash_icon)
+				Input.set_custom_mouse_cursor(trash_icon, Input.CURSOR_CAN_DROP)
 		_shadow.visible = false
 	else:
 		Input.set_custom_mouse_cursor(null)
+		Input.set_default_cursor_shape(Input.CURSOR_DRAG)
 		if has_moved():
 			_shadow.visible = true
 
@@ -531,12 +537,14 @@ func _on_building_release():
 		return
 	if GameStats.current_selected_building == self:
 		GameStats.current_selected_building = null
+		Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
 	_emit_release_on_next_physics = true
 	if (_mouse_enters == 0):
 		building_mouse_exited()
 	log_building_action(Logger.Actions.BuildingReleased)
 
 func _on_building_grab():
+	Input.set_default_cursor_shape(Input.CURSOR_DRAG)
 	GameStats.current_selected_building = self
 	_last_mouse_pos = get_global_mouse_position()
 	_original_pos = _main.global_position
@@ -581,7 +589,8 @@ func _unhandled_input(event : InputEvent):
 		_on_building_flip()
 
 	if event is InputEventMouseMotion and _mouse_state == MouseState.DRAGGING:
-		_on_building_drag()
+		if event.relative != Vector2(0.0, 0.0):
+			_on_building_drag()
 
 func _on_MainSquare_mouse_entered():
 	_mouse_enters += 1
@@ -625,9 +634,7 @@ func get_effects_as_bbcode() -> String:
 	for resource_type in building_effects:
 		if not GameStats.shown_resources.has(resource_type):
 			continue
-		var e = building_effects[resource_type]
-		for upgrade in building_effect_upgrades.keys():
-			e = upgrade.stack_effect(self, resource_type, e)
+		var e = get_effect(resource_type)
 		
 		if e == 0:
 			continue

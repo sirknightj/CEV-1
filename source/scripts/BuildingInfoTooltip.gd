@@ -1,0 +1,68 @@
+extends Tooltip
+
+onready var panel : PanelContainer = $Control/Panel
+onready var building_name : RichTextLabel = panel.get_node("VBoxContainer/Name")
+onready var production : RichTextLabel = panel.get_node("VBoxContainer/HBoxContainer/Production")
+onready var consumption : RichTextLabel = panel.get_node("VBoxContainer/HBoxContainer/Consumption")
+onready var upgrades : RichTextLabel = panel.get_node("VBoxContainer/Upgrades")
+
+var active_building = null
+
+func _ready():
+	add_to_group("preparable")
+
+func _on_building_changed(building):
+	if building != active_building:
+		return
+	show_building(building)
+
+func _on_building_active(building):
+	if not building.purchased:
+		return
+	active_building = building
+	show_building(building)
+
+func _on_building_inactive(building):
+	if building != active_building:
+		return
+	hide()
+
+func _people():
+	return GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
+
+func prepare():
+	GameStats.game.connect("building_hovered", self, "_on_building_active")
+	GameStats.game.connect("building_released", self, "_on_building_active")
+	GameStats.game.connect("building_hovered_off", self, "_on_building_inactive")
+	GameStats.game.connect("building_grabbed", self, "_on_building_inactive")
+	GameStats.game.connect("building_changed", self, "_on_building_changed")
+
+func show_building(building : Building):
+	building_name.text = GameStats.buildings_dict[building.building_id].name
+	var production_text = "Production\n"
+	var consumption_text = "Consumption\n"
+	for resource_type in GameData.ResourceType.values():
+		var effect = building.get_effect(resource_type)
+		if resource_type == GameData.ResourceType.PEOPLE:
+			effect = floor(_people() + effect) - floor(_people())
+		var text = "%s: %s" % [GameData.RESOURCE_TYPE_TO_STRING[resource_type], str(effect)]
+		if effect > 0:
+			production_text += "\n" + text
+		elif effect < 0:
+			consumption_text += "\n" + text
+	production.text = production_text
+	consumption.text = consumption_text
+	var building_upgrades = building.building_effect_upgrades
+	var upgrade_names = []
+	for upgrade in building_upgrades:
+		upgrade_names.append(upgrade.upgrade_name)
+	var has_upgrades = len(building_upgrades) > 0
+	if has_upgrades:
+		upgrades.text = "Active upgrades: %s" % [GameData.natural_join(upgrade_names)]
+		upgrades.show()
+	else:
+		upgrades.hide()
+	show()
+
+func get_height() -> float:
+	return panel.rect_size.y + panel.margin_top + 15.0
