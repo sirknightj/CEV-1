@@ -244,6 +244,8 @@ anchor_right = 1.0
 margin_left = -1280.0
 margin_right = 0.0
 
+[node name="EndScreen" parent="CanvasLayer" instance=ExtResource( 3 )]
+visible = false
 
 [node name="NotEnoughResourcesTooltip" type="ColorRect" parent="."]
 visible = false
@@ -252,11 +254,13 @@ margin_bottom = 40.0
 color = Color( 0.34902, 0.34902, 0.34902, 1 )
 
 [node name="Label" type="Label" parent="NotEnoughResourcesTooltip"]
+visible = false
 margin_right = 40.0
 margin_bottom = 14.0
 
-[node name="EndScreen" parent="CanvasLayer" instance=ExtResource( 3 )]
-visible = false
+[node name="RichTextLabel" type="RichTextLabel" parent="NotEnoughResourcesTooltip"]
+fit_content_height = true
+scroll_active = false
 
 [connection signal="gui_input" from="NextMonth/Label" to="." method="_on_Next_Month_gui_input"]
 [connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Upgrades_gui_input"]

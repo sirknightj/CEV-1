@@ -41,26 +41,29 @@ func show_all():
 	update_turn_display()
 
 func cheat():
+	var cheat_alot = true
 	GameStats.turn = 20
 	GameStats.buildings_unlocked = GameData.BuildingType.values()
-#	GameStats.resources.set_reserves({
-#		GameData.ResourceType.FOOD: 5000.0,
-#		GameData.ResourceType.OXYGEN: 5000.0,
-#		GameData.ResourceType.WATER: 5000.0,
-#		GameData.ResourceType.METAL: 5000.0,
-#		GameData.ResourceType.ELECTRICITY: 5000.0,
-#		GameData.ResourceType.SCIENCE: 5000.0,
-#		GameData.ResourceType.PEOPLE: 1.0
-	#})
-	GameStats.resources.set_reserves({
-		GameData.ResourceType.FOOD: 50,
-		GameData.ResourceType.OXYGEN: 50,
-		GameData.ResourceType.WATER: 50,
-		GameData.ResourceType.METAL: 50,
-		GameData.ResourceType.ELECTRICITY: 50,
-		GameData.ResourceType.SCIENCE: 5000.0,
-		GameData.ResourceType.PEOPLE: 1.0
-	})
+	if cheat_alot:
+		GameStats.resources.set_reserves({
+			GameData.ResourceType.FOOD: 5000.0,
+			GameData.ResourceType.OXYGEN: 5000.0,
+			GameData.ResourceType.WATER: 5000.0,
+			GameData.ResourceType.METAL: 5000.0,
+			GameData.ResourceType.ELECTRICITY: 5000.0,
+			GameData.ResourceType.SCIENCE: 5000.0,
+			GameData.ResourceType.PEOPLE: 1.0
+		})
+	else:
+		GameStats.resources.set_reserves({
+			GameData.ResourceType.FOOD: 50,
+			GameData.ResourceType.OXYGEN: 50,
+			GameData.ResourceType.WATER: 50,
+			GameData.ResourceType.METAL: 50,
+			GameData.ResourceType.ELECTRICITY: 50,
+			GameData.ResourceType.SCIENCE: 5000.0,
+			GameData.ResourceType.PEOPLE: 1.0
+		})
 	GameStats.game.on_next_turn()
 	show_all()
 	GameStats.game.on_next_turn()
@@ -205,12 +208,16 @@ func _on_Building_mouse_entered(_building : Building):
 			output_text = "Missing:\n" +  PoolStringArray(missing_text).join("\n")
 
 		var _padding = 20
+		# big brain - use the label in order to calculate the size the richtextlabel needs to be :)
 		$NotEnoughResourcesTooltip/Label.text = output_text
+		$NotEnoughResourcesTooltip/RichTextLabel.bbcode_text = output_text
 		
 		# Note: need to use get_minimum_size() instead of Label.rect_size because
 		# godot defers updates to rect_size until the next time _draw() is called
 		# so we use this to get the size right away
-		var label_size = $NotEnoughResourcesTooltip/Label.get_minimum_size()
+		$NotEnoughResourcesTooltip/RichTextLabel.rect_min_size = $NotEnoughResourcesTooltip/Label.get_minimum_size()
+		
+		var label_size = $NotEnoughResourcesTooltip/RichTextLabel.rect_size
 		
 		$NotEnoughResourcesTooltip.rect_size.y = label_size.y + _padding
 		$NotEnoughResourcesTooltip.rect_size.x = label_size.x + _padding
@@ -219,8 +226,8 @@ func _on_Building_mouse_entered(_building : Building):
 		#$NotEnoughResourcesTooltip.rect_position.y = _building.get_local_mouse_position().y + $ScrollContainer.rect_position.y - $NotEnoughResourcesTooltip.rect_size.y / 2
 		$NotEnoughResourcesTooltip.rect_position.y = get_viewport().get_mouse_position().y - _padding / 2
 		
-		$NotEnoughResourcesTooltip/Label.rect_position.x = _padding / 2
-		$NotEnoughResourcesTooltip/Label.rect_position.y = _padding / 2
+		$NotEnoughResourcesTooltip/RichTextLabel.rect_position.x = _padding / 2
+		$NotEnoughResourcesTooltip/RichTextLabel.rect_position.y = _padding / 2
 		$NotEnoughResourcesTooltip.show()
 
 
@@ -331,6 +338,7 @@ func on_ending() -> void:
 	if ending_shown_once:
 		return
 	ending_shown_once = true
+	GameStats.just_won = true
 	$CanvasLayer/EndScreen.set_condition(GameStats.win_status)
 	$CanvasLayer/EndScreen.show()
 
