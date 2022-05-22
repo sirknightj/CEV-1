@@ -111,7 +111,7 @@ func show_correct_text():
 	elif turn == 7:
 		text = "Tip: You can also move any placed buildings for free."
 	elif turn == 8:
-		text = "If " + str(GameStats.colonist_death_threshold) + " colonists die, you'll be shut down. Protect your humans by any means necessary to make sure that doesn't happen!"
+		text = "If " + str(GameStats.colonist_death_threshold) + " colonists die, you'll be shut down. Make sure that doesn't happen!"
 	elif turn == 9:
 		text = "Some buildings need [color=%s]energy[/color] to function.\nBuild some %s before you run out!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY), GameStats.buildings_dict[GameData.BuildingType.ELEC1].format_str(2)]
 		# $UILayer/Sidebar.toggle_next_month_button(false)
