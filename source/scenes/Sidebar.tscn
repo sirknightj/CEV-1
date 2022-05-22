@@ -251,6 +251,7 @@ visible = false
 visible = false
 margin_right = 40.0
 margin_bottom = 40.0
+mouse_filter = 2
 color = Color( 0.34902, 0.34902, 0.34902, 1 )
 
 [node name="Label" type="Label" parent="NotEnoughResourcesTooltip"]
@@ -259,6 +260,7 @@ margin_right = 40.0
 margin_bottom = 14.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="NotEnoughResourcesTooltip"]
+mouse_filter = 2
 fit_content_height = true
 scroll_active = false
 
