@@ -599,6 +599,12 @@ func _on_GhostSquare_area_entered(area : Area2D):
 func _on_GhostSquare_area_exited(area : Area2D):
 	_overlapping_areas -= 1
 
+func is_symmetrical():
+	for x in range(shape.size()):
+		for y in range(shape[x].size() / 2):
+			if shape[x][y] != shape[x][shape[x].size() - y - 1]:
+				return false
+	return true
 
 func _get_resource_color_as_hex(resource_type: int) -> String:
 	assert(GameData.is_resource_type(resource_type))

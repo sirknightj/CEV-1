@@ -11,7 +11,7 @@ func prepare():
 	GameStats.game.connect("building_released", self, "_on_Game_building_released")
 
 func _on_Game_building_grabbed(_building):
-	if GameStats.turn <= 2:
+	if _building.is_symmetrical():
 		$Tooltip/Sprite.texture = controls_rotateonly_texture
 	else:
 		$Tooltip/Sprite.texture = controls_texture

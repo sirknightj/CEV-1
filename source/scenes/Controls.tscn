@@ -13,5 +13,5 @@ script = ExtResource( 3 )
 
 [node name="Sprite" type="Sprite" parent="Tooltip"]
 position = Vector2( 35, 35 )
-scale = Vector2( 0.06, 0.06 )
+scale = Vector2( 0.08, 0.08 )
 texture = ExtResource( 1 )
