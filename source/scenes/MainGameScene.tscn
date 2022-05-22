@@ -28,7 +28,6 @@ building_cost = {
 building_id = 0
 
 [node name="UILayer" type="CanvasLayer" parent="."]
-layer = -1
 
 [node name="Sidebar" parent="UILayer" instance=ExtResource( 2 )]
 show_behind_parent = true
