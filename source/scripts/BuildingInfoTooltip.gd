@@ -21,6 +21,7 @@ func _on_building_active(building):
 		return
 	active_building = building
 	show_building(building)
+	show()
 
 func _on_building_inactive(building):
 	if building != active_building:
@@ -62,7 +63,6 @@ func show_building(building : Building):
 		upgrades.show()
 	else:
 		upgrades.hide()
-	show()
 
 func get_height() -> float:
 	return panel.rect_size.y + panel.margin_top + 15.0
