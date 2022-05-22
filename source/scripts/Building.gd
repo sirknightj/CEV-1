@@ -510,7 +510,7 @@ func _on_building_place():
 			destroy()
 			return
 		else:
-			get_node("../../MainGameScene/UILayer/TextBox").text = "Selling is currently disabled."
+			get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled."
 			Input.set_custom_mouse_cursor(null)
 	else:
 		check_trash()

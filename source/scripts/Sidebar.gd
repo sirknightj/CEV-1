@@ -69,7 +69,7 @@ func cheat():
 	GameStats.game.on_next_turn()
 
 func check_buttons() -> void:
-	var current = get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text
+	var current = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text
 	if not has_enough_electricity() and GameStats.turn >= 12 and not current.ends_with("more energy!"):
 		toggle_next_month_button(false)
 		current += "\nYou don't have enough [color=%s]energy[/color] to keep your buildings running! You'll need to sell some buildings or generate more energy!" % GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)
@@ -79,7 +79,7 @@ func check_buttons() -> void:
 	elif GameStats.turn >= 12:
 		toggle_next_month_button(true)
 	if current:
-		get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = current.strip_edges()
+		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = current.strip_edges()
 
 func repopulate_sidebar():
 	populate_sidebar_correctly()
@@ -306,9 +306,9 @@ func _on_Next_Month_gui_input(event):
 						required_placements += str(quantity) + " more "
 					required_placements += GameStats.buildings_dict[building].format_str(quantity) + ", "
 				required_placements.erase(required_placements.length() - 2, 2)
-				get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = required_placements + "."
+				get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = required_placements + "."
 			elif GameStats.turn == 10:
-				get_parent().get_parent().get_node("UILayer/TextBox").bbcode_text = "Please check out the [color=%s]Upgrades[/color] menu!" % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)
+				get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = "Please check out the [color=%s]Upgrades[/color] menu!" % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)
 		else:
 			game.on_next_turn()
 			$Graph.reset_for_next_turn()
