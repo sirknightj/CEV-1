@@ -14,6 +14,7 @@ var win_status : bool # true if the player won. false if they lost
 var just_won : bool = false # true on the turn the player wins (used to show the text)
 var selling_enabled : bool = false # true if selling is enabled. false if disabled
 var colonist_death_threshold : int
+var debug_prints = OS.is_debug_build() # true when debugging
 
 var shown_resources : Array # The resources to show. Resources in this array are shown.
 
