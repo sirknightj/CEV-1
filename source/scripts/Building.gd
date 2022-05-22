@@ -634,7 +634,9 @@ func get_effects_as_bbcode() -> String:
 	for resource_type in building_effects:
 		if not GameStats.shown_resources.has(resource_type):
 			continue
-		var e = get_effect(resource_type)
+		var e = building_effects[resource_type]
+		for upgrade in building_effect_upgrades.keys():
+			e = upgrade.stack_effect(self, resource_type, e)
 		
 		if e == 0:
 			continue
