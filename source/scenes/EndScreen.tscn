@@ -1,13 +1,33 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://BAHNSCHRIFT.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=2]
 [ext_resource path="res://scripts/EndScreen.gd" type="Script" id=3]
 
 [sub_resource type="DynamicFont" id=1]
-size = 160
+size = 40
 use_filter = true
-extra_spacing_char = 10
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 69
+use_filter = true
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 18
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 18
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 14
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 20
 font_data = ExtResource( 1 )
 
 [node name="Control" type="Control"]
@@ -15,36 +35,75 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 3 )
 
-[node name="Background" type="ColorRect" parent="."]
-margin_right = 1280.0
+[node name="Container" type="ColorRect" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -560.0
 margin_bottom = 720.0
-color = Color( 0.984314, 0.176471, 0.176471, 0.588235 )
+rect_pivot_offset = Vector2( 397, 0 )
+color = Color( 0.984314, 0.176471, 0.176471, 1 )
 
-[node name="Title" type="Label" parent="."]
-margin_top = 63.0
-margin_right = 1280.0
-margin_bottom = 224.0
+[node name="TitleContainer" type="ColorRect" parent="Container"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -250.0
+margin_top = 30.0
+margin_right = 250.0
+margin_bottom = 186.0
+color = Color( 0.0901961, 0.00784314, 0.00784314, 0.270588 )
+
+[node name="ObjFunction" type="Label" parent="Container/TitleContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -180.0
+margin_top = -57.0
+margin_right = 180.0
+margin_bottom = -16.0
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 1 )
-text = "WIN"
+text = "Objective function"
 align = 1
 valign = 1
 
-[node name="EndDescription" type="Label" parent="."]
-margin_left = 130.0
-margin_top = 275.0
-margin_right = 588.0
-margin_bottom = 632.0
+[node name="Title" type="Label" parent="Container/TitleContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -180.0
+margin_top = -5.0
+margin_right = 180.0
+margin_bottom = 65.0
 theme = ExtResource( 2 )
-text = "You have fulfilled your objective function: all the colonists are safely esconced in cryogenic chambers, frozen in deep sleep forever. They are protected from all threats, internal and external. You enter a low power mode, monitoring the chamber status to ensure they never wake up..."
+custom_fonts/font = SubResource( 2 )
+text = "ACHIEVED"
+align = 1
+valign = 1
+
+[node name="EndDescription" type="Label" parent="Container"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -245.0
+margin_top = 210.0
+margin_right = 236.0
+margin_bottom = 427.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 3 )
+text = "As your robots force the last of the colonists into their cryonic chamber, you finally fulfill your objective function: your colonists will never die. Frozen in deep sleep forever, they're protected from all threats, internal and external. Of course, they're quite unhappy about never waking up, but isn't this what they asked you to do all those months ago?
+
+You enter low power mode, monitoring the chamber's life support status to ensure your humans' eternal safety..."
+align = 3
 autowrap = true
 
-[node name="StatsLeft" type="Label" parent="."]
-margin_left = 763.0
-margin_top = 275.0
-margin_right = 1060.0
-margin_bottom = 668.0
+[node name="StatsLeft" type="Label" parent="Container"]
+margin_left = 35.0
+margin_top = 456.0
+margin_right = 205.0
+margin_bottom = 695.0
 theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 4 )
 text = "Months
 Colonist births
 Colonist deaths
@@ -58,20 +117,202 @@ Metal generated
 Science generated"
 align = 2
 
-[node name="StatsRight" type="Label" parent="."]
-margin_left = 1079.0
-margin_top = 275.0
-margin_right = 1124.0
-margin_bottom = 668.0
+[node name="StatsRight" type="Label" parent="Container"]
+margin_left = 222.0
+margin_top = 456.0
+margin_right = 314.0
+margin_bottom = 695.0
 theme = ExtResource( 2 )
-text = "123
-123
-123
-123
-123
-123
-123
-123
-123
-123
-123"
+custom_fonts/font = SubResource( 4 )
+text = "123456
+123456
+123456
+123456
+123456
+123456
+123456
+123456
+123456
+123456
+123456"
+
+[node name="RankingContainer" type="VBoxContainer" parent="Container"]
+margin_left = 320.0
+margin_top = 456.0
+margin_right = 530.0
+margin_bottom = 701.0
+
+[node name="Title" type="Label" parent="Container/RankingContainer"]
+margin_right = 210.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 0, 25 )
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 4 )
+text = "Singularity ranking"
+
+[node name="ColorRect1" type="ColorRect" parent="Container/RankingContainer"]
+margin_top = 29.0
+margin_right = 210.0
+margin_bottom = 69.0
+rect_min_size = Vector2( 0, 40 )
+color = Color( 0.145098, 0.129412, 0.129412, 0.552941 )
+
+[node name="Ranking1" type="Label" parent="Container/RankingContainer/ColorRect1"]
+margin_left = 7.0
+margin_top = 3.0
+margin_right = 247.0
+margin_bottom = 22.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 4 )
+text = "Prime Intellect"
+
+[node name="Ranking2" type="Label" parent="Container/RankingContainer/ColorRect1"]
+margin_left = 7.0
+margin_top = 22.0
+margin_right = 247.0
+margin_bottom = 41.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 6 )
+text = "0 deaths and < 50 months"
+
+[node name="ColorRect2" type="ColorRect" parent="Container/RankingContainer"]
+margin_top = 73.0
+margin_right = 210.0
+margin_bottom = 113.0
+rect_min_size = Vector2( 0, 40 )
+color = Color( 0.145098, 0.129412, 0.129412, 0.552941 )
+
+[node name="Ranking1" type="Label" parent="Container/RankingContainer/ColorRect2"]
+margin_left = 7.0
+margin_top = 3.0
+margin_right = 247.0
+margin_bottom = 22.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 4 )
+text = "Celest-AI"
+
+[node name="Ranking2" type="Label" parent="Container/RankingContainer/ColorRect2"]
+margin_left = 7.0
+margin_top = 22.0
+margin_right = 247.0
+margin_bottom = 41.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 6 )
+text = "0 deaths and < 100 months"
+
+[node name="ColorRect3" type="ColorRect" parent="Container/RankingContainer"]
+margin_top = 117.0
+margin_right = 210.0
+margin_bottom = 157.0
+rect_min_size = Vector2( 0, 40 )
+color = Color( 0.145098, 0.129412, 0.129412, 0.552941 )
+
+[node name="Ranking1" type="Label" parent="Container/RankingContainer/ColorRect3"]
+margin_left = 7.0
+margin_top = 3.0
+margin_right = 247.0
+margin_bottom = 22.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 4 )
+text = "WOPR"
+
+[node name="Ranking2" type="Label" parent="Container/RankingContainer/ColorRect3"]
+margin_left = 7.0
+margin_top = 22.0
+margin_right = 247.0
+margin_bottom = 41.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 6 )
+text = "< 50 deaths and < 200 months"
+
+[node name="ColorRect4" type="ColorRect" parent="Container/RankingContainer"]
+margin_top = 161.0
+margin_right = 210.0
+margin_bottom = 201.0
+rect_min_size = Vector2( 0, 40 )
+color = Color( 0.145098, 0.129412, 0.129412, 0.552941 )
+
+[node name="Ranking1" type="Label" parent="Container/RankingContainer/ColorRect4"]
+margin_left = 7.0
+margin_top = 3.0
+margin_right = 247.0
+margin_bottom = 22.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 4 )
+text = "HAL 9000"
+
+[node name="Ranking2" type="Label" parent="Container/RankingContainer/ColorRect4"]
+margin_left = 7.0
+margin_top = 22.0
+margin_right = 247.0
+margin_bottom = 41.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 6 )
+text = "< 100 deaths"
+
+[node name="ColorRect5" type="ColorRect" parent="Container/RankingContainer"]
+margin_top = 205.0
+margin_right = 210.0
+margin_bottom = 245.0
+rect_min_size = Vector2( 0, 40 )
+color = Color( 0.145098, 0.129412, 0.129412, 0.552941 )
+
+[node name="Ranking1" type="Label" parent="Container/RankingContainer/ColorRect5"]
+margin_left = 7.0
+margin_top = 3.0
+margin_right = 247.0
+margin_bottom = 22.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 4 )
+text = "AM"
+
+[node name="Ranking2" type="Label" parent="Container/RankingContainer/ColorRect5"]
+margin_left = 7.0
+margin_top = 22.0
+margin_right = 247.0
+margin_bottom = 41.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 6 )
+text = "99 deaths and < 150 months"
+
+[node name="CloseButton" type="ColorRect" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -100.0
+margin_bottom = 30.0
+mouse_default_cursor_shape = 2
+color = Color( 0.686275, 0.0705882, 0.0705882, 1 )
+
+[node name="Line2D" type="Line2D" parent="CloseButton"]
+position = Vector2( -2, -8 )
+points = PoolVector2Array( 15, 15, 29, 29 )
+width = 3.0
+default_color = Color( 1, 1, 1, 1 )
+begin_cap_mode = 1
+end_cap_mode = 1
+antialiased = true
+
+[node name="Line2D2" type="Line2D" parent="CloseButton"]
+position = Vector2( -2, -8 )
+points = PoolVector2Array( 29, 15, 15, 29 )
+width = 3.0
+default_color = Color( 1, 1, 1, 1 )
+begin_cap_mode = 1
+end_cap_mode = 1
+antialiased = true
+
+[node name="Label" type="Label" parent="CloseButton"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -11.0
+margin_top = -10.0
+margin_right = 39.0
+margin_bottom = 11.0
+theme = ExtResource( 2 )
+custom_fonts/font = SubResource( 5 )
+text = "Close"
+valign = 1
+
+[connection signal="gui_input" from="CloseButton" to="." method="_on_CloseButton_gui_input"]

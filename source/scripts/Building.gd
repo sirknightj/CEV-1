@@ -84,6 +84,7 @@ var _emit_release_on_next_physics : bool = false
 var _main_flipped_next : bool = false
 var _ghost_flipped_next : bool = false
 var _shadow_flipped_next : bool = false
+var building_pos : Vector2
 
 var _original_pos : Vector2
 var _original_rot : float
@@ -280,8 +281,7 @@ func building_mouse_entered():
 		set_state(MouseState.HOVER)
 		GameStats.current_hovered_building = self
 		Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
-		if purchased and enabled:
-			emit_signal("building_hovered", self)
+		emit_signal("building_hovered", self)
 
 func building_mouse_exited():
 	if _mouse_state == MouseState.HOVER:

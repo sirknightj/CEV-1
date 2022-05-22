@@ -12,7 +12,8 @@ var ignore_upgrades_button = true # default = unclickable
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 onready var row_scene = preload("res://scenes/BuildingRow.tscn")
-onready var win_lose_scene = preload("res://scenes/EndScreen.tscn")
+
+var ending_shown_once: bool = false  # set to true after ending shown for the first time so it isn't shown again
 
 func _setup_control_element(control : Control):
 	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -42,12 +43,21 @@ func show_all():
 func cheat():
 	GameStats.turn = 20
 	GameStats.buildings_unlocked = GameData.BuildingType.values()
+#	GameStats.resources.set_reserves({
+#		GameData.ResourceType.FOOD: 5000.0,
+#		GameData.ResourceType.OXYGEN: 5000.0,
+#		GameData.ResourceType.WATER: 5000.0,
+#		GameData.ResourceType.METAL: 5000.0,
+#		GameData.ResourceType.ELECTRICITY: 5000.0,
+#		GameData.ResourceType.SCIENCE: 5000.0,
+#		GameData.ResourceType.PEOPLE: 1.0
+	#})
 	GameStats.resources.set_reserves({
-		GameData.ResourceType.FOOD: 5000.0,
-		GameData.ResourceType.OXYGEN: 5000.0,
-		GameData.ResourceType.WATER: 5000.0,
-		GameData.ResourceType.METAL: 5000.0,
-		GameData.ResourceType.ELECTRICITY: 5000.0,
+		GameData.ResourceType.FOOD: 50,
+		GameData.ResourceType.OXYGEN: 50,
+		GameData.ResourceType.WATER: 50,
+		GameData.ResourceType.METAL: 50,
+		GameData.ResourceType.ELECTRICITY: 50,
 		GameData.ResourceType.SCIENCE: 5000.0,
 		GameData.ResourceType.PEOPLE: 1.0
 	})
@@ -164,7 +174,7 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		# vertically center building with row
 		var building_pos = Vector2(1035, $ScrollContainer.rect_position.y - scroll_offset)
 		building_pos.y += entry.rect_position.y + entry.rect_min_size.y / 2 - _building.shape.size() * GameData.SQUARE_SIZE / 2
-
+		_building.building_pos = building_pos
 		_building.set_locked(not available(building) or not GameStats.resources.enough_resources(building_stats.cost))
 		if not building_exists:
 			entry.add_child(_building)
@@ -172,12 +182,52 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			_building.force_set(building_pos, 0.0, false)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed")
 			_building.connect("building_destroy", self, "_on_Building_building_destroy")
+			_building.connect("building_hovered", self, "_on_Building_mouse_entered")
+			_building.connect("building_hovered_off", self, "_on_Building_mouse_exited")
 
 		# set cost and effect texts
 		var cost_text = _building.get_costs_as_bbcode()
 		var effects_text = _building.get_effects_as_bbcode()
 		entry.get_node("CostContainer/Text").bbcode_text = cost_text
 		entry.get_node("EffectsContainer/Text").bbcode_text = effects_text
+
+func _on_Building_mouse_entered(_building : Building):
+	if _building.locked:
+		var missing_text : Array = []
+		var missing_resources = resources_needed(_building.building_id)
+		for resource_id in missing_resources:
+			missing_text.append(str(missing_resources[resource_id]) + " " + $Graph.RESOURCE_TYPE_TO_STRING[resource_id])
+		
+		var output_text : String
+		if missing_text.empty() or not GameStats.restrictions.empty() or GameStats.turn < 6:
+			output_text = "Currently\nUnavailable"
+		else:
+			output_text = "Missing:\n" +  PoolStringArray(missing_text).join("\n")
+
+		var _padding = 20
+		$NotEnoughResourcesTooltip/Label.text = output_text
+		
+		# Note: need to use get_minimum_size() instead of Label.rect_size because
+		# godot defers updates to rect_size until the next time _draw() is called
+		# so we use this to get the size right away
+		var label_size = $NotEnoughResourcesTooltip/Label.get_minimum_size()
+		
+		$NotEnoughResourcesTooltip.rect_size.y = label_size.y + _padding
+		$NotEnoughResourcesTooltip.rect_size.x = label_size.x + _padding
+		
+		$NotEnoughResourcesTooltip.rect_position.x = 300 - $NotEnoughResourcesTooltip.rect_size.x
+		#$NotEnoughResourcesTooltip.rect_position.y = _building.get_local_mouse_position().y + $ScrollContainer.rect_position.y - $NotEnoughResourcesTooltip.rect_size.y / 2
+		$NotEnoughResourcesTooltip.rect_position.y = get_viewport().get_mouse_position().y - _padding / 2
+		
+		$NotEnoughResourcesTooltip/Label.rect_position.x = _padding / 2
+		$NotEnoughResourcesTooltip/Label.rect_position.y = _padding / 2
+		$NotEnoughResourcesTooltip.show()
+
+
+func _on_Building_mouse_exited(_building : Building):
+	# TODO: TOOLTIP = HIDE
+	$NotEnoughResourcesTooltip/Label.text = ""
+	$NotEnoughResourcesTooltip.hide()
 
 func available(building) -> bool:
 	return GameStats.restrictions.empty() or GameStats.restrictions.has(building)
@@ -276,6 +326,18 @@ func _on_Upgrades_gui_input(event):
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
 			$CanvasLayer/TechTree.show()
+
+func on_ending() -> void:
+	if ending_shown_once:
+		return
+	ending_shown_once = true
+	$CanvasLayer/EndScreen.set_condition(GameStats.win_status)
+	$CanvasLayer/EndScreen.show()
+
+	$CanvasLayer/EndScreen.connect("on_close_clicked", self, "on_endingscreen_close")
+
+func on_endingscreen_close() -> void:
+	$CanvasLayer/EndScreen.hide()
 
 """
 	Tells the restrictions that the player has placed a building

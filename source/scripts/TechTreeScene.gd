@@ -77,14 +77,24 @@ func set_sidebar(name: int) -> void:
 	var effects : String = upgrade.effects
 
 	$SelectedUpgrade/Name.text = upgrade.name
-	$SelectedUpgrade/Cost.text = "Cost: "
-	for resource_type in upgrade.cost.keys():
-		$SelectedUpgrade/Cost.text += (str(upgrade.cost[resource_type])
-				+ " " + str(GameData.ResourceType.keys()[resource_type]).to_lower()) + "\n"
+	
+	if upgrade.unlocked:
+		$SelectedUpgrade/Cost.text = "UNLOCKED"
+	else:
+		$SelectedUpgrade/Cost.text = "Cost: "
+		for resource_type in upgrade.cost.keys():
+			$SelectedUpgrade/Cost.text += (str(upgrade.cost[resource_type])
+					+ " " + str(GameData.ResourceType.keys()[resource_type]).to_lower()) + "\n"
 	var can_afford : bool = upgrade.can_afford()
 	if not upgrade.unlocked and upgrade.available and can_afford:
 		$SelectedUpgrade/BuyButton.show()
 	else:
+		var prereqs = upgrade.recalculate_available()
+		if not prereqs.empty():
+			var names : Array = [];
+			for upgr in prereqs:
+				names.append(upgr.name)
+			$SelectedUpgrade/Cost.text += "Need" + ("" if names.size() == 1 else "s") + ": " + PoolStringArray(names).join(", ")
 		$SelectedUpgrade/BuyButton.hide()
 	$SelectedUpgrade/Description.text = desc
 	$SelectedUpgrade/Effects.text = effects

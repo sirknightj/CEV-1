@@ -267,7 +267,7 @@ func _ready():
 func show_win_lose_screen(is_win : bool) -> void:
 	is_playing = false
 	GameStats.win_status = is_win
-	get_tree().change_scene("res://scenes/EndScreen.tscn")
+	game.sidebar.on_ending()
 	logger.log_level_action(Logger.Actions.Win if is_win else Logger.Actions.Lose, {
 		"game": GameStats.serialize()
 	})

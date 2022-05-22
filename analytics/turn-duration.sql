@@ -1,17 +1,42 @@
 -- turn duration by session and turn number
 SELECT
-  q1.sessionid,
-  q1.qid AS turn,
-  q1.log_q_ts - q2.log_q_ts AS duration
+  ends.sessionid,
+  ends.qid AS turn,
+  ends.client_ts - starts.client_ts AS duration,
+  ends.q_detail as detail
 FROM
-  player_quests_log AS q1,
-  player_quests_log AS q2
+  (
+    SELECT
+      qid,
+      sessionid,
+      client_ts,
+      q_detail
+    FROM
+      player_quests_log
+    WHERE
+      cid = 124
+      AND q_s_id = 0
+      AND sessionid NOT IN ('EXCLUDED')
+      AND uid NOT IN ('EXCLUDED')
+      AND log_q_ts > UNIX_TIMESTAMP('2022-05-16')
+  ) AS ends,
+  (
+    SELECT
+      qid,
+      sessionid,
+      client_ts
+    FROM
+      player_quests_log
+    WHERE
+      cid = 124
+      AND q_s_id = 1
+      AND sessionid NOT IN ('EXCLUDED')
+      AND uid NOT IN ('EXCLUDED')
+	  AND log_q_ts > UNIX_TIMESTAMP('2022-05-16')
+  ) AS starts
 WHERE
-  q1.qid = q2.qid
-  AND q1.sessionid = q2.sessionid
-  AND q1.q_s_id < q2.q_s_id
-  AND q1.cid = 124
-  AND q2.cid = 124
+  ends.qid = starts.qid
+  AND ends.sessionid = starts.sessionid
 ORDER BY
-  q1.sessionid,
-  q1.qid ASC;
+  ends.sessionid,
+  ends.qid ASC;
