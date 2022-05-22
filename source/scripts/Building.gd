@@ -277,6 +277,8 @@ func setup_ghost_square(grid_square : GridSquare):
 	return grid_square
 
 func building_mouse_entered():
+	if GameData.debug_prints:
+		print("building_mouse_entered was called")
 	if _mouse_state == MouseState.NONE and not GameStats.current_selected_building:
 		set_state(MouseState.HOVER)
 		GameStats.current_hovered_building = self

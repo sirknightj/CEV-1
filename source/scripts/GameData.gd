@@ -1,6 +1,8 @@
 extends Object
 class_name GameData
 
+var debug_prints = OS.is_debug_build() # true when debugging
+
 """
 	The type of building represented
 """
