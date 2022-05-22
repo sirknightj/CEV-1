@@ -285,13 +285,16 @@ class UpgradeTreeNode:
 		instance.purchase()
 		tree.recalculate_available()
 
-	func recalculate_available() -> void:
+	func recalculate_available() -> Array:
+		var arr = []
 		if available:
-			return
+			return arr
 		for p in prereqs:
 			if not tree.tree_dict.get(p).unlocked:
-				return
-		available = true
+				arr.append(tree.tree_dict.get(p))
+		if arr.empty():
+			available = true
+		return arr
 
 	func get_all_pre_links() -> Array:
 		var res = links.duplicate()
