@@ -84,6 +84,7 @@ var _emit_release_on_next_physics : bool = false
 var _main_flipped_next : bool = false
 var _ghost_flipped_next : bool = false
 var _shadow_flipped_next : bool = false
+var building_pos : Vector2
 
 var _original_pos : Vector2
 var _original_rot : float
@@ -278,8 +279,8 @@ func setup_ghost_square(grid_square : GridSquare):
 func building_mouse_entered():
 	if _mouse_state == MouseState.NONE and not GameStats.current_selected_building:
 		set_state(MouseState.HOVER)
-		if purchased and enabled:
-			emit_signal("building_hovered", self)
+		#if purchased and enabled:
+		emit_signal("building_hovered", self)
 
 func building_mouse_exited():
 	if _mouse_state == MouseState.HOVER:

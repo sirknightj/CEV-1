@@ -58,7 +58,7 @@ margin_top = 194.0
 margin_right = 365.0
 margin_bottom = 232.0
 mouse_default_cursor_shape = 2
-color = Color( 1, 1, 1, 0.215686 )
+color = Color( 0.329412, 0.129412, 0.819608, 1 )
 
 [node name="BuyText" type="Label" parent="BuyButton"]
 anchor_left = 0.5
