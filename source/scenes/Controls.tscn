@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/images/building-controls.png" type="Texture" id=1]
+[ext_resource path="res://scenes/Tooltip.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scripts/Controls.gd" type="Script" id=3]
+
+[node name="Controls" type="Node2D"]
+visible = false
+z_index = 30
+script = ExtResource( 3 )
+
+[node name="Tooltip" parent="." instance=ExtResource( 2 )]
+
+[node name="Sprite" type="Sprite" parent="Tooltip"]
+position = Vector2( 40, 40 )
+scale = Vector2( 0.07, 0.07 )
+texture = ExtResource( 1 )

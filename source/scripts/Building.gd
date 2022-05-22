@@ -1,10 +1,10 @@
 extends Node2D
 class_name Building
 
-signal building_changed
-signal building_grabbed
-signal building_released
-signal building_destroy
+signal building_changed(building)
+signal building_grabbed(building)
+signal building_released(building)
+signal building_destroy(building)
 signal building_hovered(building)
 signal building_hovered_off(building)
 
@@ -398,6 +398,7 @@ func _is_in_grid_range() -> bool:
 
 func set_locked(is_locked: bool) -> void:
 	locked = is_locked
+	set_state(_mouse_state)
 	if material:
 		material.set_shader_param('saturation', 0 if locked else 1)
 
@@ -463,6 +464,8 @@ func force_set(pos : Vector2, rot : float, flip : bool):
 	reset_graphics()
 
 func refund():
+	if not purchased:
+		return
 	for resource in building_cost.keys():
 		if building_cost[resource] > 0:
 			GameStats.resources.give(resource, building_cost[resource])
@@ -477,6 +480,8 @@ func refundable():
 	return not purchased or GameStats.turn == purchase_turn
 
 func destroy():
+	if _mouse_state == MouseState.DRAGGING:
+		emit_signal("building_released", self)
 	remove_from_group("buildings")
 	log_building_action(Logger.Actions.BuildingDeleted, {
 		"refunded": refundable()

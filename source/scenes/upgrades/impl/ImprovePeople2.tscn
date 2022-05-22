@@ -4,11 +4,11 @@
 
 [node name="Upgrade" instance=ExtResource( 1 )]
 cost = {
-5: 400.0
+5: 600.0
 }
 upgrade_name = "Cryogenics"
 description = "Preserve food for the long-term with freeze drying, which works well with Mars' low ambient pressure. With better preserved food, colonists decrease their food waste."
-effects = "Decreases food consumption of population by 20%."
+effects = "Decreases food consumption of population by 10%."
 multipliers = {
-0: 0.8
+0: 0.9
 }

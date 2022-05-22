@@ -186,7 +186,7 @@ func _on_Building_building_destroy(_building):
 	repopulate_sidebar()
 
 func _on_Building_building_grabbed(building : Building):
-	building.connect("building_released", self, "_on_Building_building_released", [building._main.global_position, building.get_parent()])
+	building.connect("building_released", self, "_on_Building_building_released")
 	var diff = get_global_mouse_position() - building._main.global_position
 	building.get_parent().remove_child(building)
 	get_tree().current_scene.add_child(building)
@@ -195,7 +195,7 @@ func _on_Building_building_grabbed(building : Building):
 	building.force_set(mouse - diff, 0.0, false)
 	building.set_physics_process(true)
 
-func _on_Building_building_released(building : Building, original_pos : Vector2, building_row : Node):
+func _on_Building_building_released(building : Building):
 	building.disconnect("building_released", self, "_on_Building_building_released")
 	if building.purchased:
 		building.disconnect("building_grabbed", self, "_on_Building_building_grabbed")

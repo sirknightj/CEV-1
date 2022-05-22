@@ -19,7 +19,6 @@ func _on_Game_building_grabbed(building: Building):
 func _on_Game_building_added(building : Building):
 	if building._mouse_state == building.MouseState.DRAGGING:
 		_on_Game_building_grabbed(building)
-	building.connect("building_grabbed", self, "_on_Game_building_grabbed")
 	var adjacents = building.get_adjacent_buildings()
 	adjacents.append(building)
 	apply_to(adjacents)
@@ -29,4 +28,5 @@ func apply():
 	for building in buildings:
 		_on_Game_building_added(building)
 	GameStats.game.connect("building_added", self, "_on_Game_building_added")
+	GameStats.game.connect("building_grabbed", self, "_on_Game_building_grabbed")
 	apply_to(buildings)

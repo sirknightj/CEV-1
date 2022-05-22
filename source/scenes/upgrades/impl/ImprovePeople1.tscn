@@ -4,12 +4,12 @@
 
 [node name="Upgrade" instance=ExtResource( 1 )]
 cost = {
-5: 400.0
+5: 600.0
 }
 upgrade_name = "Pantropy"
 description = "Genetically modify humans to better survive in the Mars environment."
-effects = "Decreases water and oxygen usage of population by 20%."
+effects = "Decreases water and oxygen usage of population by 10%."
 multipliers = {
-1: 0.8,
-2: 0.8
+1: 0.9,
+2: 0.9
 }

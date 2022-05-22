@@ -2,7 +2,9 @@ extends Node2D
 class_name Game
 
 signal next_turn
-signal building_added
+signal building_added(building)
+signal building_grabbed(building)
+signal building_released(building)
 
 # The sidebar object
 var sidebar : Control
@@ -32,6 +34,7 @@ func _ready():
 	"""
 	sidebar.start_game()
 	sidebar.get_node("CanvasLayer/TechTree").add_nodes()
+	get_tree().call_group("preparable", "prepare")
 	update_stats()
 	show_correct_text()
 
@@ -226,19 +229,32 @@ func _on_Building_hover(building):
 func _on_Building_hover_off(building):
 	graph.on_building_hover_off(building)
 
+func _on_Building_building_grabbed(building):
+	emit_signal("building_grabbed", building)
+
+func _on_Building_building_released(building):
+	emit_signal("building_released", building)
+
 func _on_SceneTree_node_removed(_node):
 	if _node is Building:
 		_on_Resources_changed(_node)
 
+func _on_Building_ready(building):
+	building.add_to_group("tracked")
+	building.connect("building_changed", self, "_on_Resources_changed")
+	building.connect("building_hovered", self, "_on_Building_hover")
+	building.connect("building_hovered_off", self, "_on_Building_hover_off")
+	building.connect("building_grabbed", self, "_on_Building_building_grabbed")
+	building.connect("building_released", self, "_on_Building_building_released")
+	emit_signal("building_added", building)
+
 func _on_SceneTree_node_added(_node):
-	if (not _node.is_in_group("buildings")
-			or _node.is_in_group("tracked")):
+	if (_node.is_in_group("buildings")):
+		if not _node.is_in_group("tracked"):
+			_on_Building_ready(_node)
 		return
-	_node.add_to_group("tracked")
-	_node.connect("building_changed", self, "_on_Resources_changed")
-	_node.connect("building_hovered", self, "_on_Building_hover")
-	_node.connect("building_hovered_off", self, "_on_Building_hover_off")
-	emit_signal("building_added", _node)
+	if _node is Building:
+		_node.connect("ready", self, "_on_Building_ready", [_node])
 
 func get_buildings():
 	return get_tree().get_nodes_in_group("tracked")
