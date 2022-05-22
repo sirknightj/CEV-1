@@ -12,7 +12,8 @@ var ignore_upgrades_button = true # default = unclickable
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 onready var row_scene = preload("res://scenes/BuildingRow.tscn")
-onready var win_lose_scene = preload("res://scenes/EndScreen.tscn")
+
+var ending_shown_once: bool = false  # set to true after ending shown for the first time so it isn't shown again
 
 func _setup_control_element(control : Control):
 	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -276,6 +277,18 @@ func _on_Upgrades_gui_input(event):
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
 			$CanvasLayer/TechTree.show()
+
+func on_ending() -> void:
+	if ending_shown_once:
+		return
+	ending_shown_once = true
+	$CanvasLayer/EndScreen.set_condition(GameStats.win_status)
+	$CanvasLayer/EndScreen.show()
+
+	$CanvasLayer/EndScreen.connect("on_close_clicked", self, "on_endingscreen_close")
+
+func on_endingscreen_close() -> void:
+	$CanvasLayer/EndScreen.hide()
 
 """
 	Tells the restrictions that the player has placed a building
