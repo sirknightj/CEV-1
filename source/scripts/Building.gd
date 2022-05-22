@@ -371,13 +371,12 @@ func check_trash():
 	if is_in_trash_area():
 		if has_moved() or purchased:
 			if refundable():
-				Input.set_custom_mouse_cursor(refund_icon, Input.CURSOR_CAN_DROP)
+				Input.set_custom_mouse_cursor(refund_icon)
 			else:
-				Input.set_custom_mouse_cursor(trash_icon, Input.CURSOR_CAN_DROP)
+				Input.set_custom_mouse_cursor(trash_icon)
 		_shadow.visible = false
 	else:
 		Input.set_custom_mouse_cursor(null)
-		Input.set_default_cursor_shape(Input.CURSOR_DRAG)
 		if has_moved():
 			_shadow.visible = true
 
@@ -544,7 +543,7 @@ func _on_building_release():
 	log_building_action(Logger.Actions.BuildingReleased)
 
 func _on_building_grab():
-	Input.set_default_cursor_shape(Input.CURSOR_DRAG)
+	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	GameStats.current_selected_building = self
 	_last_mouse_pos = get_global_mouse_position()
 	_original_pos = _main.global_position
