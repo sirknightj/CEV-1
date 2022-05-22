@@ -10,14 +10,13 @@ var hovered_upgrade : int = -1
 var COLORS : Dictionary = {
 	"unlocked" : [Color("#049F0C"), Color("#049F0C").darkened(0.4)],
 	"available" : [Color("#CCA700"), Color("#CCA700").darkened(0.4)],
-	"locked" : [Color("#FFFFFF"), Color("#D4C2BF")]
+	"locked" : [Color("#FFFFFF"), Color("#B3A8A8")]
 }
 const DEFAULT_LINK_COLOR = Color("#4AD0CCD0")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	GameStats.upgrade_tree.load_upgrade_tree(self)
-	_on_item_hover_off(-1)
 	$SelectedUpgrade/BuyButton.connect("gui_input", self, "_on_BuyButton_gui_input")
 
 func add_nodes() -> void:
@@ -48,8 +47,12 @@ func add_nodes() -> void:
 		item.connect("hover_off", self, "_on_item_hover_off")
 		item.connect("click", self, "_on_item_click")
 		upgrade.node = item
+		
+		if upgrade.name == "Cryonics":
+			item.get_node("CryonicsGradientRect").show()
 
 	set_node_styles()
+	_on_item_hover_off(-1)
 
 func set_node_styles() -> void:
 	for upgrade in GameStats.upgrade_tree.tree_dict.values():
@@ -106,9 +109,9 @@ func clear_sidebar() -> void:
 	$Instructions.show()
 
 func set_link_colors() -> void:
-	var name = hovered_upgrade
-	if not name:
-		name = selected_upgrade
+	var name = selected_upgrade
+	if name == -1:
+		name = hovered_upgrade
 	
 	var tree_dict = GameStats.upgrade_tree.tree_dict
 	
@@ -116,15 +119,16 @@ func set_link_colors() -> void:
 	for line in all_links:
 		line.default_color = DEFAULT_LINK_COLOR
 		line.width = 9
+	
 	# set link colors of name
 	if name != -1:
 		var links = tree_dict.get(name).get_all_pre_links()
 		for line in links:
-			var post = tree_dict.get(line.get_meta('post'))
+			var pre = tree_dict.get(line.get_meta('pre'))
 			var type = "locked"
-			if post.unlocked:
+			if pre.unlocked:
 				type = "unlocked"
-			elif post.available:
+			elif pre.available:
 				type = "available"
 			line.default_color = COLORS[type][0]
 			line.width = 12
@@ -140,7 +144,7 @@ func _on_item_hover_on(name: int) -> void:
 func _on_item_hover_off(_name: int) -> void:
 	if selected_upgrade == -1:
 		clear_sidebar()
-	hovered_upgrade = _name
+	hovered_upgrade = -1
 	set_link_colors()
 
 func _on_item_click(_name: int) -> void:
@@ -156,6 +160,7 @@ func _on_item_click(_name: int) -> void:
 	GameStats.logger.log_level_action(action, {
 		"upgrade": _name
 	})
+	set_link_colors()
 
 func show() -> void:
 	_update_reserve_text()
@@ -168,7 +173,6 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	var upgrade : GameObjs.UpgradeTreeNode = GameStats.upgrade_tree.tree_dict.get(selected_upgrade)
 	
 	upgrade.unlock()
-	print("Unlocked ", upgrade.name)
 	GameStats.logger.log_level_action(Logger.Actions.UpgradeBought, {
 		"upgrade": upgrade.name
 	})
