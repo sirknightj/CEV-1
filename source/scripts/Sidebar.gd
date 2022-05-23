@@ -246,7 +246,7 @@ func _on_Next_Month_gui_input(event):
 		# print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:
 			if GameStats.restrictions.keys().size() > 0:
-				var required_placements = "Please place "
+				var required_placements = "Please build "
 				var num_restrictions = GameStats.restrictions.keys().size()
 				var i = num_restrictions
 				for building in GameStats.restrictions.keys():
@@ -287,6 +287,7 @@ func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuClicked)
 		if GameStats.turn == 10:
+			get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.trim_prefix("Your city has generated enough [color=%s]science[/color] for an upgrade! Spend your science points to unlock new building types and expand your colony." % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)).strip_edges()
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
 			$CanvasLayer/TechTree.show()
