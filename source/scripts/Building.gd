@@ -98,6 +98,7 @@ var _original_flipped : bool
 export(bool) var enabled = false
 export(bool) var locked = false
 export(bool) var purchased = false
+export(bool) var saleable = true
 export(Array) var shape
 export(Dictionary) var building_effects
 export(Dictionary) var building_cost
@@ -174,6 +175,9 @@ func _ready():
 	assert(color != null)
 	assert(texture != null)
 	assert(building_id != -1)
+	
+	if building_id == GameData.BuildingType.END1:
+		saleable = false
 
 	_main = get_node("Main")
 	if (building_id > 0 && building_id < GameData.BuildingType.size()):
@@ -385,7 +389,10 @@ func purchase_building():
 func check_trash():
 	if is_in_trash_area():
 		if has_moved() or purchased:
-			if refundable():
+			if not saleable:
+				# TODO - custom icon maybe?
+				Input.set_custom_mouse_cursor(null)
+			elif refundable():
 				Input.set_custom_mouse_cursor(refund_icon)
 			else:
 				Input.set_custom_mouse_cursor(trash_icon)
@@ -527,8 +534,11 @@ func _on_building_place():
 	if _mouse_state == MouseState.DRAGGING:
 		if is_in_trash_area():
 			if GameStats.selling_enabled:
-				destroy()
-				return
+				if not saleable:
+					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "This building cannot be sold."
+				else:
+					destroy()
+					return
 			else:
 				get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled."
 				Input.set_custom_mouse_cursor(null)

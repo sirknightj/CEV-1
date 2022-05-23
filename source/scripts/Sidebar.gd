@@ -42,7 +42,7 @@ func show_all():
 
 func cheat():
 	var cheat_alot = true
-	GameStats.turn = 20
+	GameStats.turn += 20
 	GameStats.buildings_unlocked = GameData.BuildingType.values()
 	if cheat_alot:
 		GameStats.resources.set_reserves({
@@ -56,10 +56,10 @@ func cheat():
 		})
 	else:
 		GameStats.resources.set_reserves({
-			GameData.ResourceType.FOOD: 50,
-			GameData.ResourceType.OXYGEN: 50,
-			GameData.ResourceType.WATER: 50,
-			GameData.ResourceType.METAL: 50,
+			GameData.ResourceType.FOOD: 100,
+			GameData.ResourceType.OXYGEN: 100,
+			GameData.ResourceType.WATER: 100,
+			GameData.ResourceType.METAL: 100,
 			GameData.ResourceType.ELECTRICITY: 50,
 			GameData.ResourceType.SCIENCE: 5000.0,
 			GameData.ResourceType.PEOPLE: 1.0
@@ -178,7 +178,7 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		var building_pos = Vector2(1035, $ScrollContainer.rect_position.y - scroll_offset)
 		building_pos.y += entry.rect_position.y + entry.rect_min_size.y / 2 - _building.shape.size() * GameData.SQUARE_SIZE / 2
 		_building.building_pos = building_pos
-		_building.set_locked(not available(building) or not GameStats.resources.enough_resources(building_stats.cost))
+		_building.set_locked(not available(building) or not GameStats.resources.enough_resources(building_stats.cost) or (_building.building_id == GameData.BuildingType.END1 and GameStats.win_status))
 		if not building_exists:
 			entry.add_child(_building)
 			_building.set_physics_process(false)

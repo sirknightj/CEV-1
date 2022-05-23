@@ -33,6 +33,14 @@ func get_base_effect(resource : int) -> float:
 	if turn > 15 and GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 50:
 		factor += (50 / _people()) / 100 * 5
 	
+	if GameStats.win_status:
+		if turn % 10 == 0:
+			factor += 0.07
+		else:
+			factor += 0.03
+		if turn % 100 == 69:
+			factor += 0.069
+	
 	print("People factor on month " + str(turn) + ": " + str(factor))
 	
 	return _people() * factor

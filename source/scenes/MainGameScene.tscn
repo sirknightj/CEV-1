@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scripts/Grid.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Sidebar.tscn" type="PackedScene" id=2]
@@ -83,9 +83,6 @@ visible = false
 [node name="BuildingLockedTooltip" parent="UpperLayer" instance=ExtResource( 9 )]
 visible = false
 
-[node name="MultiSelector" parent="." instance=ExtResource( 10 )]
-visible = false
-
 [node name="GraphTooltip" type="Control" parent="UpperLayer"]
 visible = false
 margin_left = 718.0
@@ -124,3 +121,6 @@ margin_bottom = 28.0
 theme = ExtResource( 5 )
 custom_fonts/font = SubResource( 2 )
 text = "Consumption"
+
+[node name="MultiSelector" parent="." instance=ExtResource( 10 )]
+visible = false

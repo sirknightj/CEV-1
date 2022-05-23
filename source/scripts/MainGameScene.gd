@@ -143,8 +143,10 @@ func show_correct_text():
 			text += ("\nOh no! %s died from %s." % [plural_colonists, format_death_reasons_as_bbcode(death_reasons)])
 			if deaths_left > 0:
 				var plural_deaths = "death" if deaths_left == 1 else "deaths"
+				text += (" " if text else "")
 				text += "Only %s more %s will be tolerated before you get shut down!" % [deaths_left, plural_deaths]
 			num_died = 0
+			print(text)
 			death_reasons = []
 	$UpperLayer/TutorialText.bbcode_text = text.strip_edges()
 	update_all()
