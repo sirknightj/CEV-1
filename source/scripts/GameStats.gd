@@ -216,8 +216,9 @@ var _initial_reserves = {
 	GameData.ResourceType.PEOPLE: 20.0
 }
 
-var current_selected_building : Building = null
-var current_hovered_building : Building = null
+var current_selected_building = null
+var current_hovered_building = null
+var multiselect_drag : bool = false
 
 class BuildingStats:
 	var shape : Array

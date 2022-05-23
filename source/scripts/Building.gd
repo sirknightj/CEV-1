@@ -54,7 +54,11 @@ enum MouseState {
 	# The mouse is hovering over the building
 	HOVER,
 	# The building is being dragged by the mouse
-	DRAGGING
+	DRAGGING,
+	# The building is being selected along with multiple other buildings
+	MULTISELECT,
+	MULTISELECTHOVER,
+	MULTISELECTDRAGGING
 }
 
 var _main_flipped : bool = false
@@ -81,6 +85,7 @@ var refund_icon = preload("res://assets/images/refund.png")
 var _global_pos_next : Vector2
 var _global_rot_next : float
 var _emit_release_on_next_physics : bool = false
+var _check_enter_on_next_physics : bool = false
 var _main_flipped_next : bool = false
 var _ghost_flipped_next : bool = false
 var _shadow_flipped_next : bool = false
@@ -277,23 +282,29 @@ func setup_ghost_square(grid_square : GridSquare):
 	return grid_square
 
 func building_mouse_entered():
-	if _mouse_state == MouseState.NONE and not GameStats.current_selected_building:
-		set_state(MouseState.HOVER)
+	if ((_mouse_state == MouseState.NONE and GameStats.current_selected_building == null)
+			or _mouse_state == MouseState.MULTISELECT):
+		if _mouse_state == MouseState.MULTISELECT:
+			set_state(MouseState.MULTISELECTHOVER)
+		else:
+			set_state(MouseState.HOVER)
+			emit_signal("building_hovered", self)
 		GameStats.current_hovered_building = self
 		if locked:
 			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		else:
 			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
 
-		emit_signal("building_hovered", self)
-
 func building_mouse_exited():
-	if _mouse_state == MouseState.HOVER:
-		set_state(MouseState.NONE)
+	if _mouse_state == MouseState.HOVER or _mouse_state == MouseState.MULTISELECTHOVER:
+		if _mouse_state == MouseState.MULTISELECTHOVER:
+			set_state(MouseState.MULTISELECT)
+		else:
+			set_state(MouseState.NONE)
+			emit_signal("building_hovered_off", self)
 		if GameStats.current_hovered_building == self:
 			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 			GameStats.current_hovered_building = null
-		emit_signal("building_hovered_off", self)
 
 func set_next_pos(pos : Vector2):
 	_global_pos_next = pos
@@ -388,7 +399,7 @@ func _update_shadow():
 	_shadow_flipped_next = _ghost_flipped
 	_shadow.global_position = snapped(_ghost.global_position)
 	_shadow.rotation = _ghost.rotation
-	if (_mouse_state == MouseState.DRAGGING):
+	if (_mouse_state == MouseState.DRAGGING or _mouse_state == MouseState.MULTISELECTDRAGGING):
 		_shadow.visible = true
 	else:
 		_shadow.visible = false
@@ -416,9 +427,12 @@ func set_state(state):
 	if locked:
 		return
 
-	if _mouse_state == MouseState.HOVER:
+	if (_mouse_state == MouseState.HOVER
+			or _mouse_state == MouseState.MULTISELECT
+			or _mouse_state == MouseState.MULTISELECTHOVER):
 		set_modulate(HOVER_MODULATE)
-	elif _mouse_state == MouseState.DRAGGING:
+	elif (_mouse_state == MouseState.DRAGGING
+			or _mouse_state == MouseState.MULTISELECTDRAGGING):
 		set_modulate(DRAGGING_MODULATE)
 		set_z_index(DRAGGING_Z_INDEX)
 	else:
@@ -430,7 +444,7 @@ func _update_main():
 	_main.rotation = _global_rot_next
 
 func _physics_process(_delta):
-	if not is_overlapping() and _is_in_grid_range():
+	if _mouse_state == MouseState.DRAGGING and not is_overlapping() and _is_in_grid_range():
 		_update_shadow()
 	_update_main()
 	_update_ghost()
@@ -438,6 +452,11 @@ func _physics_process(_delta):
 		_emit_release_on_next_physics = false
 		set_physics_process(false)
 		emit_signal("building_released", self)
+	if _check_enter_on_next_physics:
+		_check_enter_on_next_physics = false
+		set_physics_process(false)
+		if _mouse_enters > 0:
+			building_mouse_entered()
 	if (_main_flipped_next != _main_flipped
 			or _shadow_flipped_next != _shadow_flipped
 			or _ghost_flipped_next != _ghost_flipped):
@@ -505,19 +524,24 @@ func destroy():
 	emit_signal("building_hovered_off", self)
 
 func _on_building_place():
-	if is_in_trash_area():
-		if GameStats.selling_enabled:
-			destroy()
-			return
+	if _mouse_state == MouseState.DRAGGING:
+		if is_in_trash_area():
+			if GameStats.selling_enabled:
+				destroy()
+				return
+			else:
+				get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled."
+				Input.set_custom_mouse_cursor(null)
 		else:
-			get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled."
-			Input.set_custom_mouse_cursor(null)
-	else:
-		check_trash()
-	if has_moved():
-		purchase_building()
+			check_trash()
+		if has_moved():
+			purchase_building()
+	var old = _mouse_state
 	if purchased:
-		set_state(MouseState.HOVER)
+		if _mouse_state == MouseState.DRAGGING:
+			set_state(MouseState.HOVER)
+		else:
+			set_state(MouseState.NONE)
 		_global_pos_next = _shadow.global_position
 		_global_rot_next = _shadow.rotation
 		_main_flipped_next = _shadow_flipped
@@ -527,13 +551,26 @@ func _on_building_place():
 	else:
 		set_state(MouseState.NONE)
 		force_set(_original_pos, _original_rot, _original_flipped)
-	_on_building_release()
+	if old == MouseState.DRAGGING:
+		_on_building_release()
+	else:
+		_check_enter_on_next_physics = true
+
+func possible_enter():
+	if _mouse_enters > 0:
+		building_mouse_entered()
 
 func force_update():
 	_last_mouse_pos = get_global_mouse_position()
 
 func is_in_trash_area():
-	return get_global_mouse_position().x > GameStats.grid.get_edge() * 1.10
+	return not GameStats.grid.is_within_grid(get_global_mouse_position())
+
+func multiselect_on():
+	set_state(MouseState.MULTISELECT)
+
+func multiselect_off():
+	set_state(MouseState.NONE)
 
 func _on_building_release():
 	if not is_instance_valid(self):
@@ -548,13 +585,14 @@ func _on_building_release():
 
 func _on_building_grab():
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-	GameStats.current_selected_building = self
 	_last_mouse_pos = get_global_mouse_position()
 	_original_pos = _main.global_position
 	_original_rot = _main.rotation
 	set_physics_process(true)
-	emit_signal("building_grabbed", self)
 	log_building_action(Logger.Actions.BuildingGrabbed)
+	if _mouse_state == MouseState.DRAGGING:
+		GameStats.current_selected_building = self
+		emit_signal("building_grabbed", self)
 
 func _on_building_rotate():
 	rotate_around(get_global_mouse_position(), PI/2)
@@ -565,7 +603,8 @@ func _on_building_flip():
 	set_building_flip(!_main_flipped)
 
 func _on_building_drag():
-	check_trash()
+	if _mouse_state == MouseState.DRAGGING:
+		check_trash()
 	_global_pos_next += (get_global_mouse_position() - _last_mouse_pos)
 	_last_mouse_pos = get_global_mouse_position()
 	_update_main()
@@ -576,24 +615,29 @@ func _input(event : InputEvent):
 	if not is_instance_valid(self):
 		return
 
+	var any_dragging = _mouse_state == MouseState.DRAGGING or _mouse_state == MouseState.MULTISELECTDRAGGING
+
 	if event.is_action_pressed("building_grab") and _mouse_state == MouseState.HOVER:
 		set_state(MouseState.DRAGGING)
 		_on_building_grab()
-
-	if event.is_action_released("building_grab") and _mouse_state == MouseState.DRAGGING:
+	elif (event.is_action_pressed("building_grab")
+			and ((_mouse_state == MouseState.MULTISELECT
+				or _mouse_state == MouseState.MULTISELECTHOVER))
+				and GameStats.current_hovered_building != null):
+		set_state(MouseState.MULTISELECTDRAGGING)
+		_on_building_grab()
+	elif event.is_action_released("building_grab") and any_dragging:
 		_on_building_place()
 		if event.device == -1: # touch
 			building_mouse_exited()
-
-	if event.is_action_pressed("building_rotate") and _mouse_state == MouseState.DRAGGING:
+	elif event.is_action_pressed("building_rotate") and any_dragging:
 		_on_building_rotate()
-
-	if event.is_action_pressed("building_flip") and _mouse_state == MouseState.DRAGGING:
+	elif event.is_action_pressed("building_flip") and _mouse_state == MouseState.DRAGGING:
 		_on_building_flip()
-
-	if event is InputEventMouseMotion and _mouse_state == MouseState.DRAGGING:
-		if event.relative != Vector2(0.0, 0.0):
-			_on_building_drag()
+	elif (event is InputEventMouseMotion
+			and event.relative != Vector2(0.0, 0.0)
+			and any_dragging):
+		_on_building_drag()
 
 func _on_MainSquare_mouse_entered():
 	_mouse_enters += 1

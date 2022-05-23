@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/Grid.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Sidebar.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://scenes/Controls.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/BuildingInfoTooltip.tscn" type="PackedScene" id=8]
 [ext_resource path="res://scenes/BuildingLockedTooltip.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/MultiSelector.tscn" type="PackedScene" id=10]
 
 [sub_resource type="DynamicFont" id=1]
 size = 20
@@ -76,4 +77,7 @@ scroll_active = false
 visible = false
 
 [node name="BuildingLockedTooltip" parent="UpperLayer" instance=ExtResource( 9 )]
+visible = false
+
+[node name="MultiSelector" parent="." instance=ExtResource( 10 )]
 visible = false
