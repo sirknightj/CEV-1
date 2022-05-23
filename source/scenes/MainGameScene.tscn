@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scripts/Grid.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Sidebar.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://BAHNSCHRIFT.TTF" type="DynamicFontData" id=6]
 [ext_resource path="res://scenes/Controls.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/BuildingInfoTooltip.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/BuildingLockedTooltip.tscn" type="PackedScene" id=9]
 
 [sub_resource type="DynamicFont" id=1]
 size = 20
@@ -72,4 +73,7 @@ fit_content_height = true
 scroll_active = false
 
 [node name="BuildingInfoTooltip" parent="UpperLayer" instance=ExtResource( 8 )]
+visible = false
+
+[node name="BuildingLockedTooltip" parent="UpperLayer" instance=ExtResource( 9 )]
 visible = false

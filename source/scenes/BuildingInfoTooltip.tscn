@@ -39,7 +39,7 @@ margin_bottom = 15.0
 mouse_filter = 2
 
 [node name="Panel" type="PanelContainer" parent="Control"]
-margin_right = 154.0
+margin_right = 160.0
 margin_bottom = 83.0
 mouse_filter = 2
 size_flags_horizontal = 3
@@ -49,12 +49,12 @@ custom_styles/panel = SubResource( 4 )
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Panel"]
 margin_left = 10.0
 margin_top = 10.0
-margin_right = 144.0
+margin_right = 150.0
 margin_bottom = 73.0
 mouse_filter = 2
 
 [node name="Name" type="RichTextLabel" parent="Control/Panel/VBoxContainer"]
-margin_right = 134.0
+margin_right = 140.0
 margin_bottom = 20.0
 rect_pivot_offset = Vector2( 345, 209 )
 mouse_filter = 2
@@ -83,14 +83,14 @@ scroll_active = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel/VBoxContainer"]
 margin_top = 24.0
-margin_right = 134.0
+margin_right = 140.0
 margin_bottom = 63.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Production" type="RichTextLabel" parent="Control/Panel/VBoxContainer/HBoxContainer"]
-margin_right = 65.0
+margin_right = 68.0
 margin_bottom = 39.0
 rect_pivot_offset = Vector2( 356.333, 83.6667 )
 mouse_filter = 2
@@ -104,8 +104,8 @@ fit_content_height = true
 scroll_active = false
 
 [node name="Consumption" type="RichTextLabel" parent="Control/Panel/VBoxContainer/HBoxContainer"]
-margin_left = 69.0
-margin_right = 134.0
+margin_left = 72.0
+margin_right = 140.0
 margin_bottom = 39.0
 rect_pivot_offset = Vector2( 356.333, 83.6667 )
 mouse_filter = 2

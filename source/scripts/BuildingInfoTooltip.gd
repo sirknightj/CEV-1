@@ -1,6 +1,7 @@
 extends Tooltip
 
-onready var panel : PanelContainer = $Control/Panel
+onready var control : Control = $Control
+onready var panel : PanelContainer = control.get_node("Panel")
 onready var building_name : RichTextLabel = panel.get_node("VBoxContainer/Name")
 onready var production : RichTextLabel = panel.get_node("VBoxContainer/HBoxContainer/Production")
 onready var consumption : RichTextLabel = panel.get_node("VBoxContainer/HBoxContainer/Consumption")
@@ -65,4 +66,4 @@ func show_building(building : Building):
 		upgrades.hide()
 
 func get_height() -> float:
-	return panel.rect_size.y + panel.margin_top + 15.0
+	return panel.rect_size.y + control.margin_top
