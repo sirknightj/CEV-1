@@ -292,6 +292,18 @@ func _on_Upgrades_gui_input(event):
 		if not ignore_upgrades_button:
 			$CanvasLayer/TechTree.show()
 
+func scroll_down():
+	var tween : Tween = get_node("Tween")
+	var current : float = $ScrollContainer.get_v_scrollbar().value
+	var target : float = $ScrollContainer.get_v_scrollbar().max_value
+	if not tween.is_active() and current != target:
+		print("Scrolling down...")
+		var duration : float = 1.0
+		tween.interpolate_property($ScrollContainer.get_v_scrollbar(), "value",
+									current, target, 1.0, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+		tween.start()
+
+
 func on_ending() -> void:
 	if ending_shown_once:
 		return

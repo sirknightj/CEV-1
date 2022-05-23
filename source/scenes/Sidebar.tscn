@@ -250,6 +250,8 @@ margin_right = 0.0
 [node name="EndScreen" parent="CanvasLayer" instance=ExtResource( 3 )]
 visible = false
 
+[node name="Tween" type="Tween" parent="."]
+
 [connection signal="gui_input" from="NextMonth/Label" to="." method="_on_Next_Month_gui_input"]
 [connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Upgrades_gui_input"]
 [connection signal="gui_input" from="Stats/Label" to="." method="_on_Stats_gui_input"]

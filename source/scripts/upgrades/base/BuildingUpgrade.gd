@@ -8,5 +8,6 @@ func _ready():
 	self.effects = "Unlocks: " + GameStats.buildings_dict[unlock_building_id].name
 
 func apply():
+	GameStats.scroll_down_queued = true
 	GameStats.buildings_unlocked.append(unlock_building_id)
 	GameStats.game.sidebar.repopulate_sidebar()

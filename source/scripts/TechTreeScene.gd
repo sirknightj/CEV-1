@@ -195,3 +195,6 @@ func _on_Back_gui_input(event):
 		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuBackClicked)
 		clear_sidebar()
 		self.hide()
+		if GameStats.scroll_down_queued:
+			GameStats.game.get_node("UILayer/Sidebar").scroll_down()
+			GameStats.scroll_down_queued = false

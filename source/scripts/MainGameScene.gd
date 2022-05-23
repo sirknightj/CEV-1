@@ -72,6 +72,8 @@ func on_next_turn():
 	"""
 	GameStats.logger.log_level_start(GameStats.turn)
 	show_correct_text()
+	if GameStats.turn == 6 or GameStats.turn == 9 or GameStats.turn == 11:
+		$UILayer/Sidebar.scroll_down()
 
 var num_died : int = 0
 var death_reasons : Array = []
