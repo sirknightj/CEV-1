@@ -28,7 +28,7 @@ size = 14
 font_data = ExtResource( 1 )
 
 [sub_resource type="DynamicFont" id=2]
-size = 14
+size = 11
 use_mipmaps = true
 use_filter = true
 font_data = ExtResource( 1 )
@@ -89,14 +89,14 @@ scroll_active = false
 [node name="TitleContainer" type="HBoxContainer" parent="Control/Panel/VBoxContainer"]
 margin_top = 24.0
 margin_right = 178.0
-margin_bottom = 39.0
+margin_bottom = 48.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Production" type="Label" parent="Control/Panel/VBoxContainer/TitleContainer"]
 margin_right = 87.0
-margin_bottom = 15.0
+margin_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 2 )
@@ -106,7 +106,7 @@ text = "Production"
 [node name="Consumption" type="Label" parent="Control/Panel/VBoxContainer/TitleContainer"]
 margin_left = 91.0
 margin_right = 178.0
-margin_bottom = 15.0
+margin_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 2 )
@@ -114,7 +114,7 @@ custom_fonts/font = SubResource( 5 )
 text = "Consumption"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel/VBoxContainer"]
-margin_top = 43.0
+margin_top = 52.0
 margin_right = 178.0
 margin_bottom = 91.0
 mouse_filter = 2
@@ -123,7 +123,7 @@ size_flags_vertical = 3
 
 [node name="Production" type="RichTextLabel" parent="Control/Panel/VBoxContainer/HBoxContainer"]
 margin_right = 87.0
-margin_bottom = 48.0
+margin_bottom = 39.0
 rect_pivot_offset = Vector2( 356.333, 83.6667 )
 mouse_filter = 2
 size_flags_horizontal = 3
@@ -142,7 +142,7 @@ scroll_active = false
 [node name="Consumption" type="RichTextLabel" parent="Control/Panel/VBoxContainer/HBoxContainer"]
 margin_left = 91.0
 margin_right = 178.0
-margin_bottom = 48.0
+margin_bottom = 39.0
 rect_pivot_offset = Vector2( 356.333, 83.6667 )
 mouse_filter = 2
 size_flags_horizontal = 3
