@@ -598,12 +598,12 @@ func _input(event : InputEvent):
 func _on_MainSquare_mouse_entered():
 	_mouse_enters += 1
 	if (_mouse_enters == 1):
-		building_mouse_entered()
+		call_deferred("building_mouse_entered")
 
 func _on_MainSquare_mouse_exited():
 	_mouse_enters -= 1
 	if (_mouse_enters == 0):
-		building_mouse_exited()
+		call_deferred("building_mouse_exited")
 
 func _on_GhostSquare_area_entered(area : Area2D):
 	_overlapping_areas += 1
