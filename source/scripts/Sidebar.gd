@@ -287,7 +287,7 @@ func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuClicked)
 		if GameStats.turn == 10:
-			get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.trim_prefix("Your city has generated enough [color=%s]science[/color] for an upgrade! Spend your science points to unlock new building types and expand your colony." % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)).strip_edges()
+			get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.trim_prefix("Your city has generated enough [color=%s]science[/color] for an upgrade! Spend [color=%s]science[/color] to unlock new buildings and increase building efficiency." % [GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE), GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)]).strip_edges()
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
 			$CanvasLayer/TechTree.show()
@@ -300,7 +300,7 @@ func scroll_down():
 		print("Scrolling down...")
 		var duration : float = 1.0
 		tween.interpolate_property($ScrollContainer.get_v_scrollbar(), "value",
-									current, target, 1.0, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+									current, target, 3.0, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
 		tween.start()
 
 
@@ -330,7 +330,7 @@ func placed_building(building : int):
 		toggle_next_month_button(true)
 	
 	if GameStats.turn == 1:
-		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = "Great work. Advance to the next month."
+		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = "Great work! Advance to the next month."
 	
 	check_buttons()
 
