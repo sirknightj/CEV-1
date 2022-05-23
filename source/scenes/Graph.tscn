@@ -26,9 +26,9 @@ script = ExtResource( 3 )
 
 [node name="HBoxContainer" type="GridContainer" parent="."]
 anchor_bottom = 0.371
-margin_left = 10.0
-margin_right = 397.0
-margin_bottom = 139.28
+margin_left = 9.0
+margin_right = 413.0
+margin_bottom = 184.28
 grow_horizontal = 2
 grow_vertical = 2
 columns = 5
@@ -36,46 +36,41 @@ columns = 5
 [node name="Water" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 76.0
+margin_right = 77.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 76, 235 )
-rect_pivot_offset = Vector2( 266, 201 )
+rect_min_size = Vector2( 77, 235 )
 
 [node name="Food" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 80.0
-margin_right = 156.0
+margin_left = 81.0
+margin_right = 158.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 76, 235 )
-rect_pivot_offset = Vector2( 266, 201 )
+rect_min_size = Vector2( 77, 235 )
 
 [node name="Oxygen" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 160.0
-margin_right = 236.0
+margin_left = 162.0
+margin_right = 239.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 76, 235 )
-rect_pivot_offset = Vector2( 266, 201 )
+rect_min_size = Vector2( 77, 235 )
 
 [node name="Energy" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 240.0
-margin_right = 316.0
+margin_left = 243.0
+margin_right = 320.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 76, 235 )
-rect_pivot_offset = Vector2( 266, 201 )
+rect_min_size = Vector2( 77, 235 )
 
 [node name="Metal" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 320.0
-margin_right = 396.0
+margin_left = 324.0
+margin_right = 401.0
 margin_bottom = 235.0
-rect_min_size = Vector2( 76, 235 )
-rect_pivot_offset = Vector2( 266, 201 )
+rect_min_size = Vector2( 77, 235 )
 
 [node name="Label" type="Label" parent="."]
 margin_left = 424.0
@@ -111,7 +106,7 @@ margin_left = 424.0
 margin_top = 193.0
 margin_right = 522.0
 margin_bottom = 222.0
-custom_colors/font_color = Color( 0.741176, 0.843137, 0.933333, 1 )
+custom_colors/font_color = Color( 0.729412, 0.682353, 0.835294, 1 )
 custom_fonts/font = SubResource( 1 )
 text = "+ 0 / mo"
 align = 1
@@ -122,7 +117,7 @@ margin_left = 424.0
 margin_top = 220.0
 margin_right = 522.0
 margin_bottom = 249.0
-custom_colors/font_color = Color( 0.741176, 0.843137, 0.933333, 1 )
+custom_colors/font_color = Color( 0.729412, 0.682353, 0.835294, 1 )
 custom_fonts/font = SubResource( 1 )
 text = "0 dead"
 align = 1
@@ -144,7 +139,7 @@ margin_left = 424.0
 margin_top = 149.0
 margin_right = 522.0
 margin_bottom = 194.0
-custom_colors/font_color = Color( 0.741176, 0.843137, 0.933333, 1 )
+custom_colors/font_color = Color( 0.729412, 0.682353, 0.835294, 1 )
 custom_fonts/font = SubResource( 2 )
 text = "0"
 align = 1
@@ -155,13 +150,13 @@ margin_left = 424.0
 margin_top = 119.0
 margin_right = 522.0
 margin_bottom = 148.0
-custom_colors/font_color = Color( 0.741176, 0.843137, 0.933333, 1 )
+custom_colors/font_color = Color( 0.729412, 0.682353, 0.835294, 1 )
 custom_fonts/font = SubResource( 1 )
 text = "Colonists"
 align = 1
 valign = 1
 
-[node name="ProductionRect" type="ColorRect" parent="."]
+[node name="TooltipRectLeft" type="ColorRect" parent="."]
 visible = false
 margin_left = 162.0
 margin_top = 65.0
@@ -170,7 +165,7 @@ margin_bottom = 157.0
 mouse_filter = 2
 color = Color( 0.34902, 0.34902, 0.34902, 1 )
 
-[node name="ProductionLabel" type="Label" parent="ProductionRect"]
+[node name="Text" type="Label" parent="TooltipRectLeft"]
 margin_left = 10.0
 margin_top = 11.0
 margin_right = 89.0
@@ -179,7 +174,7 @@ theme = ExtResource( 4 )
 custom_fonts/font = SubResource( 3 )
 text = "Production"
 
-[node name="ConsumptionRect" type="ColorRect" parent="."]
+[node name="TooltipRectRight" type="ColorRect" parent="."]
 visible = false
 margin_left = 326.0
 margin_top = 65.0
@@ -188,7 +183,7 @@ margin_bottom = 157.0
 mouse_filter = 2
 color = Color( 0.34902, 0.34902, 0.34902, 1 )
 
-[node name="ConsumptionLabel" type="Label" parent="ConsumptionRect"]
+[node name="Text" type="Label" parent="TooltipRectRight"]
 margin_left = 8.0
 margin_top = 11.0
 margin_right = 103.0

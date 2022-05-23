@@ -199,7 +199,8 @@ func _on_Building_mouse_entered(_building : Building):
 		var missing_text : Array = []
 		var missing_resources = resources_needed(_building.building_id)
 		for resource_id in missing_resources:
-			missing_text.append(str(missing_resources[resource_id]) + " " + $Graph.RESOURCE_TYPE_TO_STRING[resource_id])
+			if resource_id in $Graph.RESOURCE_TYPE_TO_STRING:
+				missing_text.append(str(missing_resources[resource_id]) + " " + $Graph.RESOURCE_TYPE_TO_STRING[resource_id])
 		
 		var output_text : String
 		if missing_text.empty() or not GameStats.restrictions.empty() or GameStats.turn < 6:

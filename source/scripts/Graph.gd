@@ -1,6 +1,6 @@
 extends Control
 
-const MAX_BAR_HEIGHT = 190
+const MAX_BAR_HEIGHT = 210
 
 const RESOURCE_TYPE_TO_STRING: Dictionary = {
 	GameData.ResourceType.WATER: "Water",
@@ -10,11 +10,10 @@ const RESOURCE_TYPE_TO_STRING: Dictionary = {
 	GameData.ResourceType.METAL: "Metal",
 }
 
-var hovered_building = null
-
 const ANIMATION_SPEED = 0.5
 
 var resource_dict : Dictionary
+var resources_saved: GameObjs.Resources
 
 var hover_durations : Dictionary = {}  # resource_type -> int (how long the bar was hovered over this turn)
 
@@ -27,8 +26,8 @@ func _ready() -> void:
 func reset_for_next_turn() -> void:
 	for type in RESOURCE_TYPE_TO_STRING.keys():
 		hover_durations[type] = 0
-	$ProductionRect.hide()
-	$ConsumptionRect.hide()
+	$TooltipRectLeft.hide()
+	$TooltipRectRight.hide()
 
 func _set_color(type: int) -> void:
 	assert(GameData.is_resource_type(type))
@@ -37,7 +36,7 @@ func _set_color(type: int) -> void:
 	var node = get_node("HBoxContainer/" + node_name)
 	node.get_node("Bar").color = color
 	node.get_node("ResourceName").text = node_name
-	node.get_node("ResourceStore").add_color_override("font_color", color)
+	node.get_node("ResourceName").add_color_override("font_color", color)
 	
 	node.get_node("BackgroundHoverBar").connect("mouse_entered", self, "_on_hover_on", [type])
 	node.get_node("BackgroundHoverBar").connect("mouse_exited", self, "_on_hover_off", [type])
@@ -51,6 +50,7 @@ class BuildingEffectsSorter:
 """
 func _on_hover_on(type: int) -> void:
 	assert(GameData.is_resource_type(type))
+
 	if not resource_dict:
 		return
 	hover_durations[type] -= OS.get_ticks_msec()
@@ -87,84 +87,32 @@ func _on_hover_on(type: int) -> void:
 	for t in consumption_texts:
 		consumption_text += t[1]
 	
-	$ProductionRect/ProductionLabel.text = production_text
-	$ConsumptionRect/ConsumptionLabel.text = consumption_text
-	$ProductionRect.show()
-	$ConsumptionRect.show()
+	var reserve_text = "Reserve: %s\n\n%s per month" % [resources_saved.get_reserve(type), _to_str(total_production - total_consumption, true)]
 	
-	$ProductionRect.rect_size.y = $ProductionRect/ProductionLabel.rect_size.y + 20
-	$ProductionRect.rect_size.x = $ProductionRect/ProductionLabel.rect_size.x + 20
-	$ConsumptionRect.rect_size.y = $ConsumptionRect/ConsumptionLabel.rect_size.y + 20
-	$ConsumptionRect.rect_size.x = $ConsumptionRect/ConsumptionLabel.rect_size.x + 20
+	$TooltipRectLeft/Text.text = production_text + "\n\n" + consumption_text
+	$TooltipRectRight/Text.text = reserve_text
+	$TooltipRectLeft.show()
+	$TooltipRectRight.show()
 	
-	var graph_bar = get_node("HBoxContainer/" + node_name)
-	$ProductionRect.rect_position.x = graph_bar.rect_position.x + graph_bar.rect_size.x - 10
-	$ProductionRect.rect_position.y = graph_bar.rect_position.y + graph_bar.get_node("Bar").rect_position.y
+	$TooltipRectLeft.rect_size.y = $TooltipRectLeft/Text.rect_size.y + 20
+	$TooltipRectLeft.rect_size.x = $TooltipRectLeft/Text.rect_size.x + 20
+	$TooltipRectRight.rect_size.y = $TooltipRectRight/Text.rect_size.y + 20
+	$TooltipRectRight.rect_size.x = $TooltipRectRight/Text.rect_size.x + 20
 	
-	$ConsumptionRect.rect_position.x = graph_bar.rect_position.x - $ConsumptionRect.rect_size.x + 30
-	$ConsumptionRect.rect_position.y = graph_bar.rect_position.y + graph_bar.get_node("ReferenceLine").rect_position.y
+	var graph_container = get_node("HBoxContainer")
+	var graph_bar = graph_container.get_node(node_name)
+	var graph_bar_bar = graph_bar.get_node("Bar")
+	$TooltipRectRight.rect_position.x = graph_container.rect_position.x + graph_bar.rect_position.x + graph_bar_bar.rect_position.x + graph_bar_bar.rect_size.x
+	$TooltipRectRight.rect_position.y = graph_bar.rect_position.y
+	
+	$TooltipRectLeft.rect_position.x = graph_container.rect_position.x + graph_bar.rect_position.x + graph_bar_bar.rect_position.x - $TooltipRectLeft.rect_size.x
+	$TooltipRectLeft.rect_position.y = graph_bar.rect_position.y
 
 func _on_hover_off(type: int) -> void:
 	assert(GameData.is_resource_type(type))
 	hover_durations[type] += OS.get_ticks_msec()
-	$ProductionRect.hide()
-	$ConsumptionRect.hide()
-
-func on_building_hover(building) -> void:
-	hovered_building = building
-	update_hovered_building_view()
-
-func update_hovered_building_view() -> void:
-	if hovered_building == null:
-		for type in RESOURCE_TYPE_TO_STRING.keys():
-			var node_name = RESOURCE_TYPE_TO_STRING.get(type)
-			var graph_bar = get_node("HBoxContainer/" + node_name)
-			graph_bar.get_node("HighlightProductionBar").rect_size.y = 0
-			graph_bar.get_node("HighlightConsumptionBar").rect_size.y = 0
-		return
-	
-	for type in RESOURCE_TYPE_TO_STRING.keys():
-		var node_name = RESOURCE_TYPE_TO_STRING.get(type)
-		var graph_bar = get_node("HBoxContainer/" + node_name)
-		var prod_bar = graph_bar.get_node("HighlightProductionBar")
-		var cons_bar = graph_bar.get_node("HighlightConsumptionBar")
-		
-		var contribution = 0
-		if hovered_building is String and hovered_building == "colonists":
-			# TODO: account for upgrades changing people's resource consumption
-			var people = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
-			if type in GameData.PEOPLE_RESOURCE_CONSUMPTION:
-				contribution = -people * GameData.PEOPLE_RESOURCE_CONSUMPTION[type]
-		elif is_instance_valid(hovered_building):
-			contribution = hovered_building.get_effect(type)
-		if contribution > 0:
-			var income = GameStats.resources.get_income(type)
-			if income == 0:
-				continue
-			var percentage = contribution / income
-			var height = graph_bar.get_node("Bar").get_meta("actual_height") * max(0.01, percentage)
-			prod_bar.rect_size.y = height
-			prod_bar.rect_position.y = MAX_BAR_HEIGHT - height
-			cons_bar.rect_size.y = 0
-		elif contribution < 0:
-			var expense = GameStats.resources.get_expense(type)
-			if expense == 0:
-				continue
-			var percentage = -contribution / expense
-			var y = graph_bar.get_node("ReferenceLine").get_meta("actual_y")
-			var height = (MAX_BAR_HEIGHT - y) * percentage
-			cons_bar.rect_position.y = y
-			cons_bar.rect_size.y = height
-			prod_bar.rect_size.y = 0
-		else:
-			prod_bar.rect_size.y = 0
-			cons_bar.rect_size.y = 0
-
-func on_building_hover_off(building) -> void:
-	if typeof(building) != typeof(hovered_building) or building != hovered_building:
-		return
-	hovered_building = null
-	update_hovered_building_view()
+	$TooltipRectLeft.hide()
+	$TooltipRectRight.hide()
 
 func _to_str(number: float, include_plus: bool, people : float = 0.0) -> String:
 	var prefix = "+" if number >= 0 and include_plus else ""
@@ -174,10 +122,10 @@ func _to_str(number: float, include_plus: bool, people : float = 0.0) -> String:
 		return prefix + str(floor(people + number) - floor(people))
 
 func _animate_store(name: String, val: float) -> void:
-	get_node("HBoxContainer/" + name + "/ResourceStore").text = _to_str(val, false)
+	get_node("HBoxContainer/" + name + "/TextReserve").text = _to_str(val, false)
 
 func _animate_diff(name: String, val: float) -> void:
-	get_node("HBoxContainer/" + name + "/ResourceDiff").text = _to_str(val, true)
+	get_node("HBoxContainer/" + name + "/TextDelta").text = _to_str(val, true)
 
 func _animate_store_Water(val: float) -> void:
 	_animate_store("Water", val)
@@ -211,6 +159,7 @@ func _parse_str(val: String) -> float:
 
 func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary) -> void:
 	resource_dict = new_resource_dict
+	resources_saved = resources
 	for type in RESOURCE_TYPE_TO_STRING.keys():
 		var node_name = RESOURCE_TYPE_TO_STRING.get(type)
 		var graph_bar = get_node("HBoxContainer/" + node_name)
@@ -222,26 +171,80 @@ func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary)
 		var consumption = resources.get_expense(type)
 		var reserve = resources.get_reserve(type)
 		
-		var initial_store = _parse_str(graph_bar.get_node("ResourceStore").text)
-		tween.interpolate_method(self, "_animate_store_" + node_name, initial_store, reserve, ANIMATION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
-		var initial_diff = _parse_str(graph_bar.get_node("ResourceDiff").text)
-		tween.interpolate_method(self, "_animate_diff_" + node_name, initial_diff, production - consumption, ANIMATION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		var resource_delta = production - consumption
+		var next_reserve = reserve + resource_delta
 		
-		var bar_ratio = production / max(consumption, 1)
+		var max_bar_height = MAX_BAR_HEIGHT + (0 if (next_reserve > 0 and reserve > 0) else -20)
+		
+		var initial_store = _parse_str(graph_bar.get_node("TextReserve").text)
+		tween.interpolate_method(self, "_animate_store_" + node_name, initial_store, reserve, ANIMATION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		var initial_diff = _parse_str(graph_bar.get_node("TextDelta").text)
+		tween.interpolate_method(self, "_animate_diff_" + node_name, initial_diff, production - consumption, ANIMATION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+
+		var bar_ratio_denominator = reserve - next_reserve if next_reserve < 0 else next_reserve
+		var bar_ratio = reserve / max(1, bar_ratio_denominator)
+
 		bar_ratio = max(0.01, min(1, bar_ratio))
-		tween.interpolate_property(bar, "rect_size:y", bar.rect_size.y, MAX_BAR_HEIGHT * bar_ratio, ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
-		bar.set_meta("actual_height", MAX_BAR_HEIGHT * bar_ratio)
-		tween.interpolate_property(bar, "rect_position:y", bar.rect_position.y, MAX_BAR_HEIGHT * (1 - bar_ratio), ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+
+		var bar_y = 0 if next_reserve < 0 else (max_bar_height * (1 - bar_ratio))
+
+		tween.interpolate_property(bar, "rect_size:y", bar.rect_size.y, max_bar_height * bar_ratio, ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		bar.set_meta("actual_height", max_bar_height * bar_ratio)
+		tween.interpolate_property(bar, "rect_position:y", bar.rect_position.y, bar_y, ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
 		
 		# move reference line and diff label
 		var reference_y = 0
-		if production > consumption:
-			reference_y = MAX_BAR_HEIGHT * (1 - consumption / production)
+
+		if next_reserve >= reserve:
+			reference_y = 0
+		elif next_reserve < 0:
+			reference_y = max_bar_height
+		else:
+			reference_y = max_bar_height * (1 - next_reserve / reserve)
+
 		var ref_line = graph_bar.get_node("ReferenceLine")
 		tween.interpolate_property(ref_line, "rect_position:y", ref_line.rect_position.y, reference_y, ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
 		ref_line.set_meta("actual_y", reference_y)
-		var diff_text = graph_bar.get_node("ResourceDiff")
-		tween.interpolate_property(diff_text, "rect_position:y", diff_text.rect_position.y, reference_y + (10 if reference_y < 10 else -20), ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		
+		var diff_text = graph_bar.get_node("TextDelta")
+		tween.interpolate_property(diff_text, "rect_position:y", diff_text.rect_position.y, reference_y + (9 if resource_delta < 0 else -20), ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		diff_text.modulate = Color("#f00") if next_reserve < 0 else Color("#fff")
+		
+		var triangle = graph_bar.get_node("Arrow/Triangle")
+		var arrow_line = graph_bar.get_node("Arrow/Line")
+		
+		tween.interpolate_property(triangle, "position:y", triangle.position.y, reference_y + (4 if next_reserve > reserve else -1), ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		tween.interpolate_property(triangle, "scale:y", triangle.scale.y, sign(resource_delta), ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		
+		var line_top = 0
+		var line_bottom = 0
+		if next_reserve < 0:
+			line_top = 0
+			line_bottom = max_bar_height - 5
+		elif next_reserve > reserve:
+			line_top = 5
+			line_bottom = bar_y
+		else:
+			line_top = 0
+			line_bottom = reference_y - 5
+		
+		tween.interpolate_property(arrow_line, "rect_position:y", arrow_line.rect_position.y, line_top, ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		tween.interpolate_property(arrow_line, "rect_size:y", arrow_line.rect_size.y, line_bottom - line_top, ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		
+		var reserve_text = graph_bar.get_node("TextReserve")
+		var reserve_y = 0
+		if bar_y < line_top - 5 or (bar_y == line_top and resource_delta < 0):
+			# line is below bar
+			reserve_y = line_top - 20
+		else:
+			reserve_y = bar_y + 9
+		
+		if resource_delta == 0 or abs(line_top - line_bottom) < 5:
+			graph_bar.get_node("Arrow").hide()
+		else:
+			graph_bar.get_node("Arrow").show()
+		
+		tween.interpolate_property(reserve_text, "rect_position:y", reserve_text.rect_position.y, reserve_y, ANIMATION_SPEED, Tween.TRANS_EXPO, Tween.EASE_OUT)
 		
 		tween.start()
 	
@@ -260,13 +263,4 @@ func update_graph(resources: GameObjs.Resources, new_resource_dict : Dictionary)
 	$ColonistsDead.text = _to_str(GameStats.dead, false) + " dead"
 	
 	tween.start()
-	
-	update_hovered_building_view()
 
-func _on_Colonists_hover() -> void:
-	hovered_building = "colonists"
-	update_hovered_building_view()
-
-func _on_Colonists_hover_off() -> void:
-	hovered_building = null
-	update_hovered_building_view()
