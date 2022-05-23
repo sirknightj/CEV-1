@@ -119,11 +119,12 @@ const SQUARE_SIZE : float = 32.0
 	i represented in the map such that i <= turn
 """
 const TURN_PROGRESSION : Dictionary = {
-	0: 0,
-	1: 0.05,
-	2: 0.08,
-	4: 0.25,
-	5: 0.08,
+	0: 0.0,
+	1: 0.50,
+	2: 0.07,
+	4: 0.60,
+	5: 0.25,
+	6: 0.08,
 	8: 0.08,
 	10: 0.15,
 	11: 0.03,

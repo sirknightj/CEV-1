@@ -212,8 +212,8 @@ var _initial_reserves = {
 	GameData.ResourceType.WATER: 25.0,
 	GameData.ResourceType.METAL: 0.0,
 	GameData.ResourceType.ELECTRICITY: 100.0,
-	GameData.ResourceType.SCIENCE: 0.0,
-	GameData.ResourceType.PEOPLE: 20.0
+	GameData.ResourceType.SCIENCE: 1.0,
+	GameData.ResourceType.PEOPLE: 10.0
 }
 
 var current_selected_building = null
@@ -255,7 +255,7 @@ func _init():
 func _ready():
 	is_playing = true
 	grid_size = 15
-	turn = 0
+	turn = 1
 	dead = 0
 	colonist_death_threshold = 100
 	resources = GameObjs.Resources.new()

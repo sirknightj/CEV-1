@@ -28,6 +28,7 @@ func start_game():
 		show_resources[resource] = false
 
 	populate_sidebar_correctly()
+	update_turn_display()
 
 func show_all():
 	GameStats.shown_resources = GameData.ResourceType.values()
@@ -314,6 +315,9 @@ func placed_building(building : int):
 	
 	if GameStats.restrictions.keys().size() == 0 and GameStats.turn != 10:
 		toggle_next_month_button(true)
+	
+	if GameStats.turn == 1:
+		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = "Great work. Advance to the next month."
 	
 	check_buttons()
 
