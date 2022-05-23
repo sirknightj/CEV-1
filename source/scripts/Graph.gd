@@ -164,7 +164,7 @@ func on_building_hover_off(building) -> void:
 	if typeof(building) != typeof(hovered_building) or building != hovered_building:
 		return
 	hovered_building = null
-	update_hovered_building_view()
+	call_deferred("update_hovered_building_view")
 
 func _to_str(number: float, include_plus: bool, people : float = 0.0) -> String:
 	var prefix = "+" if number >= 0 and include_plus else ""
