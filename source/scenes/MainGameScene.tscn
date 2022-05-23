@@ -55,7 +55,7 @@ visible = false
 [node name="TutorialText" type="RichTextLabel" parent="UpperLayer"]
 margin_left = 18.0
 margin_top = 21.0
-margin_right = 386.0
+margin_right = 403.0
 margin_bottom = 287.0
 mouse_filter = 2
 size_flags_vertical = 8
