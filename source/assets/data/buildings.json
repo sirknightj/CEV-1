@@ -268,7 +268,7 @@
         "water_cost": 0,
         "oxygen_cost": 0,
         "electricity_cost": 0,
-        "metal_cost": 500,
+        "metal_cost": 300,
         "science_cost": 0,
         "food_effect": 0,
         "water_effect": -20,

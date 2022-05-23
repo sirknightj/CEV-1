@@ -543,7 +543,7 @@ func _on_building_place():
 	if _mouse_state == MouseState.DRAGGING:
 		if is_in_trash_area():
 			if GameStats.selling_enabled:
-				if not saleable:
+				if not saleable and purchased:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "This building cannot be sold."
 				else:
 					destroy()
