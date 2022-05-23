@@ -156,9 +156,12 @@ func _on_item_click(_name: int) -> void:
 		selected_upgrade = -1
 		clear_sidebar()
 	else:
+		print("went in here" + str(_name))
 		action = Logger.Actions.UpgradeClickOn
-		selected_upgrade = _name
-		set_sidebar(_name)
+		var upgrade : GameObjs.UpgradeTreeNode = GameStats.upgrade_tree.tree_dict.get(_name)
+		if upgrade.recalculate_available().empty():
+			selected_upgrade = _name
+			set_sidebar(_name)
 	GameStats.logger.log_level_action(action, {
 		"upgrade": _name
 	})
