@@ -15,7 +15,7 @@ func prepare():
 func _on_Game_building_grabbed(_building):
 	if _building.is_symmetrical():
 		$Sprite.texture = controls_rotateonly_texture
-		_height = 30.0
+		_height = 35.0
 	else:
 		$Sprite.texture = controls_texture
 		_height = 60.0
@@ -24,12 +24,16 @@ func _on_Game_building_grabbed(_building):
 func _on_Game_building_released(_building):
 	hide()
 
-func _unhandled_input(event):
+func _input(event):
 	if event is InputEventMouseMotion:
-		if Input.get_current_cursor_shape() == Input.CURSOR_CAN_DROP:
-			hide()
-		elif GameStats.current_selected_building != null:
-			show()
+		var building = GameStats.current_selected_building
+		if building != null:
+			if (building.is_in_trash_area()
+					and (building.purchased or building.has_moved())):
+				hide()
+			else:
+				show()
+	._input(event)
 
 func get_height():
 	return _height

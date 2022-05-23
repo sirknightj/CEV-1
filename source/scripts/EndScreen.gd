@@ -21,7 +21,6 @@ class Ranking:
 		self.max_months = max_months
 		self.node = node
 	func does_apply(deaths: int, months: int) -> bool:
-		print(name, " d_eq=", self.equals_deaths, " ", deaths, " months=", self.max_months, " ", months)
 		if self.equals_deaths != -1 and deaths != self.equals_deaths:
 			return false
 		if self.max_months != -1 and months > self.max_months:

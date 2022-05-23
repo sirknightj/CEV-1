@@ -282,7 +282,11 @@ func building_mouse_entered():
 	if _mouse_state == MouseState.NONE and not GameStats.current_selected_building:
 		set_state(MouseState.HOVER)
 		GameStats.current_hovered_building = self
-		Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
+		if locked:
+			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+		else:
+			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
+
 		emit_signal("building_hovered", self)
 
 func building_mouse_exited():
@@ -373,13 +377,12 @@ func check_trash():
 	if is_in_trash_area():
 		if has_moved() or purchased:
 			if refundable():
-				Input.set_custom_mouse_cursor(refund_icon, Input.CURSOR_CAN_DROP)
+				Input.set_custom_mouse_cursor(refund_icon)
 			else:
-				Input.set_custom_mouse_cursor(trash_icon, Input.CURSOR_CAN_DROP)
+				Input.set_custom_mouse_cursor(trash_icon)
 		_shadow.visible = false
 	else:
 		Input.set_custom_mouse_cursor(null)
-		Input.set_default_cursor_shape(Input.CURSOR_DRAG)
 		if has_moved():
 			_shadow.visible = true
 
@@ -509,7 +512,7 @@ func _on_building_place():
 			destroy()
 			return
 		else:
-			get_node("../../MainGameScene/UILayer/TextBox").text = "Selling is currently disabled."
+			get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled."
 			Input.set_custom_mouse_cursor(null)
 	else:
 		check_trash()
@@ -546,7 +549,7 @@ func _on_building_release():
 	log_building_action(Logger.Actions.BuildingReleased)
 
 func _on_building_grab():
-	Input.set_default_cursor_shape(Input.CURSOR_DRAG)
+	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	GameStats.current_selected_building = self
 	_last_mouse_pos = get_global_mouse_position()
 	_original_pos = _main.global_position
@@ -569,7 +572,7 @@ func _on_building_drag():
 	_last_mouse_pos = get_global_mouse_position()
 	_update_main()
 
-func _unhandled_input(event : InputEvent):
+func _input(event : InputEvent):
 	if locked:
 		return
 	if not is_instance_valid(self):
@@ -597,12 +600,12 @@ func _unhandled_input(event : InputEvent):
 func _on_MainSquare_mouse_entered():
 	_mouse_enters += 1
 	if (_mouse_enters == 1):
-		building_mouse_entered()
+		call_deferred("building_mouse_entered")
 
 func _on_MainSquare_mouse_exited():
 	_mouse_enters -= 1
 	if (_mouse_enters == 0):
-		building_mouse_exited()
+		call_deferred("building_mouse_exited")
 
 func _on_GhostSquare_area_entered(area : Area2D):
 	_overlapping_areas += 1
@@ -629,6 +632,36 @@ class FirstAbsSorter:
 		if (a < 0) != (b < 0):
 			return a > b
 		return abs(a) > abs(b)
+
+"""
+	Returns a production list in return[0] and a consumption list in return[1]
+"""
+func get_production_consumption_as_bbcode() -> Array:
+	var production : PoolStringArray = PoolStringArray()
+	var consumption : PoolStringArray = PoolStringArray()
+
+	for resource_type in GameData.ResourceType.values():
+		if not GameStats.shown_resources.has(resource_type):
+			continue
+
+		var e = get_effect(resource_type)
+
+		if e == 0:
+			continue
+
+		if resource_type == GameData.ResourceType.PEOPLE:
+			var people = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
+			e = floor(people + e) - floor(people)
+
+		var key = GameData.RESOURCE_TYPE_TO_STRING[resource_type]
+
+		var text = "[color=%s]%s: %s[/color]" % [GameData.get_resource_color_as_hex(resource_type), key, str(e)]
+		if e < 0:
+			consumption.append(text)
+		else:
+			production.append(text)
+
+	return [production.join("\n"), consumption.join("\n")]
 
 func get_effects_as_bbcode() -> String:
 	var texts: Array = []

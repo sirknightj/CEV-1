@@ -144,7 +144,7 @@ func show_correct_text():
 			text += ("\nOh no! %s died from %s. Only %s more %s will be tolerated before you get shut down!" % [plural_colonists, format_death_reasons_as_bbcode(death_reasons), deaths_left, plural_deaths])
 			num_died = 0
 			death_reasons = []
-	$UILayer/TextBox.bbcode_text = text.strip_edges()
+	$UpperLayer/TutorialText.bbcode_text = text.strip_edges()
 	update_all()
 
 """

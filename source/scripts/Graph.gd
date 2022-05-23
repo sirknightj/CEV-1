@@ -161,7 +161,7 @@ func update_hovered_building_view() -> void:
 			cons_bar.rect_size.y = 0
 
 func on_building_hover_off(building) -> void:
-	if building != hovered_building:
+	if typeof(building) != typeof(hovered_building) or building != hovered_building:
 		return
 	hovered_building = null
 	update_hovered_building_view()
