@@ -310,16 +310,16 @@
         ],
         "food_cost": 0,
         "water_cost": 0,
-        "oxygen_cost": 500,
+        "oxygen_cost": 600,
         "electricity_cost": 0,
-        "metal_cost": 600,
+        "metal_cost": 550,
         "science_cost": 0,
         "food_effect": 0,
-        "water_effect": -20,
+        "water_effect": -35,
         "oxygen_effect": 0,
-        "electricity_effect": -20,
-        "metal_effect": -10,
-        "science_effect": 200
+        "electricity_effect": -35,
+        "metal_effect": -20,
+        "science_effect": 150
     },
     {
         "name": "Well",

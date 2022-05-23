@@ -116,7 +116,7 @@ func show_correct_text():
 		GameStats.restrictions = {GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 1}
 		# GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 1}
 	elif turn == 7:
-		text = "Tip: You can also move any placed buildings for free."
+		text = "Tip: You can also re-arrange any placed buildings for free."
 	elif turn == 8:
 		text = "If " + str(GameStats.colonist_death_threshold) + " colonists die, you'll be shut down. Make sure that doesn't happen!"
 	elif turn == 9:
