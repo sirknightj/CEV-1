@@ -15,19 +15,22 @@ const ANIMATION_SPEED = 0.5
 var resource_dict : Dictionary
 var resources_saved: GameObjs.Resources
 
+var tooltip_control : Control
+
 var hover_durations : Dictionary = {}  # resource_type -> int (how long the bar was hovered over this turn)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	for type in RESOURCE_TYPE_TO_STRING.keys():
 		_set_color(type)
+
 	reset_for_next_turn()
 
 func reset_for_next_turn() -> void:
 	for type in RESOURCE_TYPE_TO_STRING.keys():
 		hover_durations[type] = 0
-	$TooltipRectLeft.hide()
-	$TooltipRectRight.hide()
+	if tooltip_control:
+		tooltip_control.hide()
 
 func _set_color(type: int) -> void:
 	assert(GameData.is_resource_type(type))
@@ -53,6 +56,13 @@ func _on_hover_on(type: int) -> void:
 
 	if not resource_dict:
 		return
+	
+	tooltip_control = get_parent().get_parent().get_parent().get_node("UpperLayer/GraphTooltip")
+	
+	if not tooltip_control:
+		print("No tooltip control")
+		return
+	
 	hover_durations[type] -= OS.get_ticks_msec()
 	var node_name = RESOURCE_TYPE_TO_STRING.get(type)
 	
@@ -89,30 +99,29 @@ func _on_hover_on(type: int) -> void:
 	
 	var reserve_text = "Reserve: %s\n\n%s per month" % [resources_saved.get_reserve(type), _to_str(total_production - total_consumption, true)]
 	
-	$TooltipRectLeft/Text.text = production_text + "\n\n" + consumption_text
-	$TooltipRectRight/Text.text = reserve_text
-	$TooltipRectLeft.show()
-	$TooltipRectRight.show()
+	tooltip_control.get_node("RectLeft/Text").text = production_text + "\n\n" + consumption_text
+	tooltip_control.get_node("RectRight/Text").text = reserve_text
+	tooltip_control.show()
 	
-	$TooltipRectLeft.rect_size.y = $TooltipRectLeft/Text.rect_size.y + 20
-	$TooltipRectLeft.rect_size.x = $TooltipRectLeft/Text.rect_size.x + 20
-	$TooltipRectRight.rect_size.y = $TooltipRectRight/Text.rect_size.y + 20
-	$TooltipRectRight.rect_size.x = $TooltipRectRight/Text.rect_size.x + 20
+	tooltip_control.get_node("RectLeft").rect_size.y = tooltip_control.get_node("RectLeft/Text").rect_size.y + 20
+	tooltip_control.get_node("RectLeft").rect_size.x = tooltip_control.get_node("RectLeft/Text").rect_size.x + 20
+	tooltip_control.get_node("RectRight").rect_size.y = tooltip_control.get_node("RectRight/Text").rect_size.y + 20
+	tooltip_control.get_node("RectRight").rect_size.x = tooltip_control.get_node("RectRight/Text").rect_size.x + 20
 	
 	var graph_container = get_node("HBoxContainer")
 	var graph_bar = graph_container.get_node(node_name)
 	var graph_bar_bar = graph_bar.get_node("Bar")
-	$TooltipRectRight.rect_position.x = graph_container.rect_position.x + graph_bar.rect_position.x + graph_bar_bar.rect_position.x + graph_bar_bar.rect_size.x
-	$TooltipRectRight.rect_position.y = graph_bar.rect_position.y
+	tooltip_control.get_node("RectRight").rect_position.x = graph_container.rect_position.x + graph_bar.rect_position.x + graph_bar_bar.rect_position.x + graph_bar_bar.rect_size.x
+	tooltip_control.get_node("RectRight").rect_position.y = graph_bar.rect_position.y
 	
-	$TooltipRectLeft.rect_position.x = graph_container.rect_position.x + graph_bar.rect_position.x + graph_bar_bar.rect_position.x - $TooltipRectLeft.rect_size.x
-	$TooltipRectLeft.rect_position.y = graph_bar.rect_position.y
+	tooltip_control.get_node("RectLeft").rect_position.x = graph_container.rect_position.x + graph_bar.rect_position.x + graph_bar_bar.rect_position.x - tooltip_control.get_node("RectLeft").rect_size.x
+	tooltip_control.get_node("RectLeft").rect_position.y = graph_bar.rect_position.y
 
 func _on_hover_off(type: int) -> void:
 	assert(GameData.is_resource_type(type))
 	hover_durations[type] += OS.get_ticks_msec()
-	$TooltipRectLeft.hide()
-	$TooltipRectRight.hide()
+	if tooltip_control:
+		tooltip_control.hide()
 
 func _to_str(number: float, include_plus: bool, people : float = 0.0) -> String:
 	var prefix = "+" if number >= 0 and include_plus else ""

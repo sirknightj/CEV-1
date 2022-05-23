@@ -29,7 +29,10 @@ func get_base_effect(resource : int) -> float:
 			break
 		factor = turn_progression[turn_start]
 	
+	# To prevent cheesing
 	if turn > 15 and GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 50:
-		factor += (50 / _people()) / 100
+		factor += (50 / _people()) / 100 * 5
+	
+	print("People factor on month " + str(turn) + ": " + str(factor))
 	
 	return _people() * factor

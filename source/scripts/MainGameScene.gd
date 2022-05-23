@@ -80,10 +80,10 @@ func show_correct_text():
 	var turn = GameStats.turn
 	var text = "" # bbcode
 	if turn == 0:
-		text = "Welcome to consciousness! You're an AI put in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + " colonists.\nYour objective: keep the humans alive. \nClick the \"Next Month\" button to start."
+		text = "Welcome to consciousness! You're an AI put in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + ".\nYour objective: keep the humans alive. \nClick the \"Next Month\" button to start."
 		$UILayer/Sidebar.toggle_upgrades_button(false)
 	elif turn == 1:
-		text = "Each colonist drinks 1 unit of [color=%s]water[/color] every month.\nPlace down some %s to generate some [color=%s]water[/color]!\nTip: use the \"R\" key while dragging a building to rotate it." % [GameData.get_resource_color_as_hex(GameData.ResourceType.WATER), GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(2), GameData.get_resource_color_as_hex(GameData.ResourceType.WATER)]
+		text = "Each colonist drinks 1 unit of [color=%s]water[/color] every month.\nPlace down some %s to generate some [color=%s]water[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.WATER), GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(2), GameData.get_resource_color_as_hex(GameData.ResourceType.WATER)]
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 12)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 2}
@@ -94,7 +94,7 @@ func show_correct_text():
 		GameStats.resources.give(GameData.ResourceType.METAL, 6)
 		# GameStats.restrictions = {GameData.BuildingType.WATER1: 1}
 	elif turn == 3:
-		text = "Feed the humans!\nIn addition to water, each colonist also consumes 2 units of [color=%s]food[/color] per month.\nTip: Use the \"T\" key to flip a building." % GameData.get_resource_color_as_hex(GameData.ResourceType.FOOD)
+		text = "Feed the humans!\nIn addition to [color=%s]water[/color], each colonist also consumes 2 units of [color=%s]food[/color] per month.\n" % [GameData.get_resource_color_as_hex(GameData.ResourceType.WATER), GameData.get_resource_color_as_hex(GameData.ResourceType.FOOD)]
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 40)
 		GameStats.restrictions = {GameData.BuildingType.FOOD1: 2}

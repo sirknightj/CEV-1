@@ -16,6 +16,10 @@ size = 20
 use_filter = true
 font_data = ExtResource( 6 )
 
+[sub_resource type="DynamicFont" id=2]
+use_filter = true
+font_data = ExtResource( 6 )
+
 [node name="MainGameScene" type="Node2D"]
 script = ExtResource( 4 )
 
@@ -81,3 +85,42 @@ visible = false
 
 [node name="MultiSelector" parent="." instance=ExtResource( 10 )]
 visible = false
+
+[node name="GraphTooltip" type="Control" parent="UpperLayer"]
+visible = false
+margin_left = 718.0
+margin_top = 78.0
+margin_right = 758.0
+margin_bottom = 118.0
+mouse_filter = 2
+
+[node name="RectLeft" type="ColorRect" parent="UpperLayer/GraphTooltip"]
+margin_right = 158.0
+margin_bottom = 92.0
+mouse_filter = 2
+color = Color( 0.2, 0.2, 0.2, 1 )
+
+[node name="Text" type="Label" parent="UpperLayer/GraphTooltip/RectLeft"]
+margin_left = 10.0
+margin_top = 11.0
+margin_right = 89.0
+margin_bottom = 28.0
+theme = ExtResource( 5 )
+custom_fonts/font = SubResource( 2 )
+text = "Production"
+
+[node name="RectRight" type="ColorRect" parent="UpperLayer/GraphTooltip"]
+margin_left = 164.0
+margin_right = 336.0
+margin_bottom = 92.0
+mouse_filter = 2
+color = Color( 0.2, 0.2, 0.2, 1 )
+
+[node name="Text" type="Label" parent="UpperLayer/GraphTooltip/RectRight"]
+margin_left = 8.0
+margin_top = 11.0
+margin_right = 103.0
+margin_bottom = 28.0
+theme = ExtResource( 5 )
+custom_fonts/font = SubResource( 2 )
+text = "Consumption"
