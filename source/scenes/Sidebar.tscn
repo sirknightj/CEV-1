@@ -27,12 +27,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 720.0
 rect_pivot_offset = Vector2( 1, 457 )
+mouse_filter = 1
 script = ExtResource( 4 )
 
 [node name="Background" type="ColorRect" parent="."]
 visible = false
 margin_right = 560.0
 margin_bottom = 720.0
+mouse_filter = 2
 color = Color( 0.72549, 0.0941176, 0.0941176, 0.25098 )
 
 [node name="TurnCount" type="Label" parent="."]
@@ -227,6 +229,7 @@ scroll_horizontal_enabled = false
 
 [node name="BuildingEntries" type="VBoxContainer" parent="ScrollContainer"]
 margin_bottom = 92.0
+mouse_filter = 2
 
 [node name="Control" parent="ScrollContainer/BuildingEntries" instance=ExtResource( 2 )]
 anchor_right = 0.0
