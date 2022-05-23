@@ -10,7 +10,7 @@ func _ready():
 	add_to_group("preparable")
 
 func _on_building_active(building):
-	if not building.locked:
+	if not building.locked or building.purchased:
 		return
 	active_building = building
 	show_building(building)
