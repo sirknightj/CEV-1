@@ -185,57 +185,12 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			_building.force_set(building_pos, 0.0, false)
 			_building.connect("building_grabbed", self, "_on_Building_building_grabbed")
 			_building.connect("building_destroy", self, "_on_Building_building_destroy")
-			_building.connect("building_hovered", self, "_on_Building_mouse_entered")
-			_building.connect("building_hovered_off", self, "_on_Building_mouse_exited")
 
 		# set cost and effect texts
 		var cost_text = _building.get_costs_as_bbcode()
 		var effects_text = _building.get_effects_as_bbcode()
 		entry.get_node("CostContainer/Text").bbcode_text = cost_text
 		entry.get_node("EffectsContainer/Text").bbcode_text = effects_text
-
-func _on_Building_mouse_entered(_building : Building):
-	if _building.locked:
-		var missing_text : Array = []
-		var missing_resources = resources_needed(_building.building_id)
-		for resource_id in missing_resources:
-			if resource_id in $Graph.RESOURCE_TYPE_TO_STRING:
-				missing_text.append(str(missing_resources[resource_id]) + " " + $Graph.RESOURCE_TYPE_TO_STRING[resource_id])
-		
-		var output_text : String
-		if missing_text.empty() or not GameStats.restrictions.empty() or GameStats.turn < 6:
-			output_text = "Currently\nUnavailable"
-		else:
-			output_text = "Missing:\n" +  PoolStringArray(missing_text).join("\n")
-
-		var _padding = 20
-		# big brain - use the label in order to calculate the size the richtextlabel needs to be :)
-		$NotEnoughResourcesTooltip/Label.text = output_text
-		$NotEnoughResourcesTooltip/RichTextLabel.bbcode_text = output_text
-		
-		# Note: need to use get_minimum_size() instead of Label.rect_size because
-		# godot defers updates to rect_size until the next time _draw() is called
-		# so we use this to get the size right away
-		$NotEnoughResourcesTooltip/RichTextLabel.rect_min_size = $NotEnoughResourcesTooltip/Label.get_minimum_size()
-		
-		var label_size = $NotEnoughResourcesTooltip/RichTextLabel.rect_size
-		
-		$NotEnoughResourcesTooltip.rect_size.y = label_size.y + _padding
-		$NotEnoughResourcesTooltip.rect_size.x = label_size.x + _padding
-		
-		$NotEnoughResourcesTooltip.rect_position.x = 300 - $NotEnoughResourcesTooltip.rect_size.x
-		#$NotEnoughResourcesTooltip.rect_position.y = _building.get_local_mouse_position().y + $ScrollContainer.rect_position.y - $NotEnoughResourcesTooltip.rect_size.y / 2
-		$NotEnoughResourcesTooltip.rect_position.y = get_viewport().get_mouse_position().y - _padding / 2
-		
-		$NotEnoughResourcesTooltip/RichTextLabel.rect_position.x = _padding / 2
-		$NotEnoughResourcesTooltip/RichTextLabel.rect_position.y = _padding / 2
-		$NotEnoughResourcesTooltip.show()
-
-
-func _on_Building_mouse_exited(_building : Building):
-	# TODO: TOOLTIP = HIDE
-	$NotEnoughResourcesTooltip/Label.text = ""
-	$NotEnoughResourcesTooltip.hide()
 
 func available(building) -> bool:
 	return GameStats.restrictions.empty() or GameStats.restrictions.has(building)

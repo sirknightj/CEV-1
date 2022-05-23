@@ -22,6 +22,7 @@ font_data = ExtResource( 2 )
 [node name="Graph" type="Control"]
 margin_right = 560.0
 margin_bottom = 320.0
+mouse_filter = 2
 script = ExtResource( 3 )
 
 [node name="HBoxContainer" type="GridContainer" parent="."]
@@ -31,6 +32,7 @@ margin_right = 413.0
 margin_bottom = 184.28
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 columns = 5
 
 [node name="Water" parent="HBoxContainer" instance=ExtResource( 1 )]
@@ -39,6 +41,7 @@ anchor_bottom = 0.0
 margin_right = 77.0
 margin_bottom = 235.0
 rect_min_size = Vector2( 77, 235 )
+mouse_filter = 2
 
 [node name="Food" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
@@ -47,6 +50,7 @@ margin_left = 81.0
 margin_right = 158.0
 margin_bottom = 235.0
 rect_min_size = Vector2( 77, 235 )
+mouse_filter = 2
 
 [node name="Oxygen" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
@@ -55,6 +59,8 @@ margin_left = 162.0
 margin_right = 239.0
 margin_bottom = 235.0
 rect_min_size = Vector2( 77, 235 )
+rect_pivot_offset = Vector2( 266, 201 )
+mouse_filter = 2
 
 [node name="Energy" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
@@ -63,6 +69,7 @@ margin_left = 243.0
 margin_right = 320.0
 margin_bottom = 235.0
 rect_min_size = Vector2( 77, 235 )
+mouse_filter = 2
 
 [node name="Metal" parent="HBoxContainer" instance=ExtResource( 1 )]
 anchor_right = 0.0
@@ -71,6 +78,7 @@ margin_left = 324.0
 margin_right = 401.0
 margin_bottom = 235.0
 rect_min_size = Vector2( 77, 235 )
+mouse_filter = 2
 
 [node name="Label" type="Label" parent="."]
 margin_left = 424.0
@@ -99,6 +107,7 @@ margin_left = 424.0
 margin_top = 119.0
 margin_right = 522.0
 margin_bottom = 246.0
+mouse_filter = 2
 color = Color( 1, 1, 1, 0 )
 
 [node name="ColonistsDiff" type="Label" parent="."]

@@ -598,12 +598,12 @@ func _input(event : InputEvent):
 func _on_MainSquare_mouse_entered():
 	_mouse_enters += 1
 	if (_mouse_enters == 1):
-		building_mouse_entered()
+		call_deferred("building_mouse_entered")
 
 func _on_MainSquare_mouse_exited():
 	_mouse_enters -= 1
 	if (_mouse_enters == 0):
-		building_mouse_exited()
+		call_deferred("building_mouse_exited")
 
 func _on_GhostSquare_area_entered(area : Area2D):
 	_overlapping_areas += 1
@@ -630,6 +630,51 @@ class FirstAbsSorter:
 		if (a < 0) != (b < 0):
 			return a > b
 		return abs(a) > abs(b)
+
+"""
+	Returns a production list in return[0] and a consumption list in return[1]
+"""
+func get_production_consumption_as_bbcode() -> Array:
+	var production_texts: Array = []
+	var consumption_texts: Array = []
+
+	for resource_type in GameData.ResourceType.values():
+		if not GameStats.shown_resources.has(resource_type):
+			continue
+
+		var e = get_effect(resource_type)
+
+		if e == 0:
+			continue
+
+		if resource_type == GameData.ResourceType.PEOPLE:
+			var people = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
+			e = floor(people + e) - floor(people)
+
+		var key = GameData.RESOURCE_TYPE_TO_STRING[resource_type]
+
+		var text = "[color=" + GameData.get_resource_color_as_hex(resource_type) + "]"
+		if e >= 0:
+			text += "+%s %s" % [str(abs(e)), key]
+		else:
+			text += "-%s %s" % [str(-e), key]
+		text += "[/color]\n"
+		if e < 0:
+			consumption_texts.append([e, text])
+		else:
+			production_texts.append([e, text])
+	
+	production_texts.sort_custom(FirstAbsSorter, "sort_descending")
+	consumption_texts.sort_custom(FirstAbsSorter, "sort_descending")
+
+	var production = ""
+	for t in production_texts:
+		production += t[1]
+	var consumption = ""
+	for t in consumption_texts:
+		consumption += t[1]
+
+	return [production.strip_edges(), consumption.strip_edges()]
 
 func get_effects_as_bbcode() -> String:
 	var texts: Array = []

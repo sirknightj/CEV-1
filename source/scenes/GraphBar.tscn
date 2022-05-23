@@ -20,6 +20,7 @@ anchor_bottom = 1.0
 margin_right = -1203.0
 margin_bottom = -485.0
 rect_min_size = Vector2( 77, 0 )
+mouse_filter = 1
 
 [node name="Bar" type="ColorRect" parent="."]
 anchor_left = 0.5
@@ -28,6 +29,7 @@ margin_left = -18.5
 margin_top = 190.0
 margin_right = 18.5
 margin_bottom = 190.0
+mouse_filter = 1
 color = Color( 0, 0.439216, 0.752941, 1 )
 
 [node name="BackgroundHoverBar" type="ColorRect" parent="."]
@@ -37,6 +39,7 @@ margin_left = -27.5
 margin_top = -20.0
 margin_right = 27.5
 margin_bottom = 241.0
+mouse_filter = 1
 color = Color( 0, 0, 0, 0 )
 
 [node name="ResourceName" type="Label" parent="."]
@@ -48,6 +51,7 @@ margin_left = -37.5
 margin_top = -15.0
 margin_right = 39.5
 margin_bottom = 6.0
+mouse_filter = 1
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 1 )
 text = "Water"
@@ -59,12 +63,14 @@ anchor_right = 0.5
 margin_left = -18.5
 margin_right = 18.5
 margin_bottom = 3.0
+mouse_filter = 1
 
 [node name="Arrow" type="Control" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -18.0
 margin_right = 18.0
+mouse_filter = 1
 
 [node name="Triangle" type="Polygon2D" parent="Arrow"]
 position = Vector2( 13.5, 0 )
@@ -76,6 +82,7 @@ anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -1.0
 margin_right = 2.0
+mouse_filter = 1
 
 [node name="TextReserve" type="Label" parent="."]
 anchor_left = 0.5
@@ -83,6 +90,7 @@ anchor_right = 0.5
 margin_left = -38.5
 margin_right = 38.5
 margin_bottom = 17.0
+mouse_filter = 1
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 2 )
 text = "0"
@@ -94,6 +102,7 @@ anchor_right = 0.5
 margin_left = -38.5
 margin_right = 38.5
 margin_bottom = 17.0
+mouse_filter = 1
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 2 )
 text = "0"
