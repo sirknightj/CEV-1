@@ -11,17 +11,21 @@ class Ranking:
 	var max_deaths: int
 	var equals_deaths: int
 	var max_months: int
+	var equals_months: int
 	var node: Node
 	
-	func _init(name: String, max_deaths: int, equals_deaths: int, max_months: int, node: Node):
+	func _init(name: String, max_deaths: int, equals_deaths: int, max_months: int, equals_months: int, node: Node):
 		assert(node != null)
 		self.name = name
 		self.max_deaths = max_deaths
 		self.equals_deaths = equals_deaths
 		self.max_months = max_months
+		self.equals_months = equals_months
 		self.node = node
 	func does_apply(deaths: int, months: int) -> bool:
 		if self.equals_deaths != -1 and deaths != self.equals_deaths:
+			return false
+		if self.equals_months != -1 and months != self.equals_months:
 			return false
 		if self.max_months != -1 and months > self.max_months:
 			return false
@@ -30,11 +34,11 @@ class Ranking:
 		return true
 
 onready var RANKINGS: Array = [
-	Ranking.new("Prime Intellect", 0, -1, 49, $Container/RankingContainer/ColorRect1),
-	Ranking.new("Celest-AI", 0, -1, 99, $Container/RankingContainer/ColorRect2),
-	Ranking.new("WOPR", 49, -1, 199, $Container/RankingContainer/ColorRect3),
-	Ranking.new("HAL 9000", 99, -1, -1, $Container/RankingContainer/ColorRect4),
-	Ranking.new("AM", -1, 99, 149, $Container/RankingContainer/ColorRect5),
+	Ranking.new("AM", -1, 99, -1, 109, $Container/RankingContainer/ColorRect5),
+	Ranking.new("Prime Intellect", 0, -1, 49, -1, $Container/RankingContainer/ColorRect1),
+	Ranking.new("Celest-AI", 0, -1, 99, -1, $Container/RankingContainer/ColorRect2),
+	Ranking.new("WOPR", 49, -1, 199, -1, $Container/RankingContainer/ColorRect3),
+	Ranking.new("HAL 9000", 99, -1, -1, -1, $Container/RankingContainer/ColorRect4),
 ]
 
 const win_color = Color("#077E15")
@@ -92,9 +96,10 @@ func _set_stats(is_win: bool) -> void:
 	
 	if is_win:
 		$Container/RankingContainer.show()
+		var found_ranking = false
 		for ranking in RANKINGS:
-			if ranking.does_apply(deaths, months):
-				pass
+			if not found_ranking and ranking.does_apply(deaths, months):
+				found_ranking = true
 			else:
 				ranking.node.color = Color(0, 0, 0, 0)
 	else:

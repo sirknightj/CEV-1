@@ -264,7 +264,7 @@ margin_right = 247.0
 margin_bottom = 22.0
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 4 )
-text = "AM"
+text = "Allied Mastercomputer"
 
 [node name="Ranking2" type="Label" parent="Container/RankingContainer/ColorRect5"]
 margin_left = 7.0
@@ -273,7 +273,7 @@ margin_right = 247.0
 margin_bottom = 41.0
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 6 )
-text = "99 deaths and < 150 months"
+text = "99 deaths and 109 months"
 
 [node name="CloseButton" type="ColorRect" parent="."]
 anchor_left = 1.0
