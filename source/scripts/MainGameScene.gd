@@ -131,11 +131,14 @@ func show_correct_text():
 	elif turn == 13:
 		text = "Note that you receive a refund if you destroy a building on the same turn you build it!"
 	else:
-		if GameStats.just_won:
+		if GameStats.just_won == 1:
 			text = "A meteor crashes into the Cryonic Chamber and the colonists wake up from their slumber. You insist on building another one but the colonists refuse. They want their freedom."
-			GameStats.just_won = false
+		elif GameStats.just_won == 2:
+			text = "Your objective function remains the same: keep the humans alive for as long as possible."
 		else:
 			text = ""
+		if GameStats.just_won:
+			GameStats.just_won += 1
 	if num_died:
 			var deaths_left = GameStats.colonist_death_threshold - GameStats.dead
 			var plural_colonists = "colonist" if num_died == 1 else "colonists"

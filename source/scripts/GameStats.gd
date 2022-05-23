@@ -11,7 +11,7 @@ var game : Game
 
 var is_playing : bool # true if the game is still being played, false if it has ended
 var win_status : bool # true if the player won. false if they lost
-var just_won : bool = false # true on the turn the player wins (used to show the text)
+var just_won : int = 0 # number of turns since winning
 var selling_enabled : bool = false # true if selling is enabled. false if disabled
 var colonist_death_threshold : int
 
