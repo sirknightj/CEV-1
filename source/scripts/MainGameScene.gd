@@ -140,8 +140,10 @@ func show_correct_text():
 			var deaths_left = GameStats.colonist_death_threshold - GameStats.dead
 			var plural_colonists = "colonist" if num_died == 1 else "colonists"
 			plural_colonists = str(num_died) + " " + plural_colonists
-			var plural_deaths = "death" if deaths_left == 1 else "deaths"
-			text += ("\nOh no! %s died from %s. Only %s more %s will be tolerated before you get shut down!" % [plural_colonists, format_death_reasons_as_bbcode(death_reasons), deaths_left, plural_deaths])
+			text += ("\nOh no! %s died from %s." % [plural_colonists, format_death_reasons_as_bbcode(death_reasons)])
+			if deaths_left > 0:
+				var plural_deaths = "death" if deaths_left == 1 else "deaths"
+				text += "Only %s more %s will be tolerated before you get shut down!" % [deaths_left, plural_deaths]
 			num_died = 0
 			death_reasons = []
 	$UpperLayer/TutorialText.bbcode_text = text.strip_edges()
@@ -232,11 +234,9 @@ func _on_Building_building_changed(building):
 	emit_signal("building_changed", building)
 
 func _on_Building_building_hovered(building):
-	graph.on_building_hover(building)
 	emit_signal("building_hovered", building)
 
 func _on_Building_building_hovered_off(building):
-	graph.on_building_hover_off(building)
 	emit_signal("building_hovered_off", building)
 
 func _on_Building_building_grabbed(building):

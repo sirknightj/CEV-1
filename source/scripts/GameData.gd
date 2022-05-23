@@ -187,14 +187,15 @@ static func natural_join(arr : Array):
 	Colors
 """
 const COLORS : Dictionary = {
-	# ResourceType.WATER: Color("#0070c0"),
-	ResourceType.WATER: Color("#0077be"),
+	# when changing these, make sure the contrast ratio with the background (#1A1A1A) is at least 5:1. Use https://webaim.org/resources/contrastchecker/
+	# also be sure to change the building images to match their main resource color
+	ResourceType.WATER: Color("#0091E6"),
 	ResourceType.FOOD: Color("#00b050"),
 	ResourceType.OXYGEN: Color("#ff3300"),
 	ResourceType.ELECTRICITY: Color("#ffcc00"),
 	ResourceType.METAL: Color("#ff9933"),
 	ResourceType.SCIENCE: Color("#cc66ff"),
-	ResourceType.PEOPLE: Color("#bdd7ee"),
+	ResourceType.PEOPLE: Color("#8D8DB0"),
 }
 
 static func get_resource_color_as_hex(resource_type: int) -> String:

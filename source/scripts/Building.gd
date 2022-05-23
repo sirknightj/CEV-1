@@ -635,8 +635,8 @@ class FirstAbsSorter:
 	Returns a production list in return[0] and a consumption list in return[1]
 """
 func get_production_consumption_as_bbcode() -> Array:
-	var production : PoolStringArray = PoolStringArray()
-	var consumption : PoolStringArray = PoolStringArray()
+	var production_texts: Array = []
+	var consumption_texts: Array = []
 
 	for resource_type in GameData.ResourceType.values():
 		if not GameStats.shown_resources.has(resource_type):
@@ -653,13 +653,28 @@ func get_production_consumption_as_bbcode() -> Array:
 
 		var key = GameData.RESOURCE_TYPE_TO_STRING[resource_type]
 
-		var text = "[color=%s]%s: %s[/color]" % [GameData.get_resource_color_as_hex(resource_type), key, str(e)]
-		if e < 0:
-			consumption.append(text)
+		var text = "[color=" + GameData.get_resource_color_as_hex(resource_type) + "]"
+		if e >= 0:
+			text += "+%s %s" % [str(abs(e)), key]
 		else:
-			production.append(text)
+			text += "-%s %s" % [str(-e), key]
+		text += "[/color]\n"
+		if e < 0:
+			consumption_texts.append([e, text])
+		else:
+			production_texts.append([e, text])
+	
+	production_texts.sort_custom(FirstAbsSorter, "sort_descending")
+	consumption_texts.sort_custom(FirstAbsSorter, "sort_descending")
 
-	return [production.join("\n"), consumption.join("\n")]
+	var production = ""
+	for t in production_texts:
+		production += t[1]
+	var consumption = ""
+	for t in consumption_texts:
+		consumption += t[1]
+
+	return [production.strip_edges(), consumption.strip_edges()]
 
 func get_effects_as_bbcode() -> String:
 	var texts: Array = []
