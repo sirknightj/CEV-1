@@ -16,7 +16,9 @@ var selling_enabled : bool = false # true if selling is enabled. false if disabl
 var colonist_death_threshold : int
 var scroll_down_queued : bool = false # true if we should scroll down after clicking
 									  # the "back" button in the upgrades menu
-var show_sell_no_refund_message : bool # true if we should show this when the player sells 
+
+var show_sell_no_refund_message : bool # true if we should show this when the player sells
+var show_sell_yes_refund_message : bool # true if we should show this when the player sells
 
 var shown_resources : Array # The resources to show. Resources in this array are shown.
 
@@ -257,6 +259,7 @@ func _init():
 
 func _ready():
 	show_sell_no_refund_message = true
+	show_sell_yes_refund_message = true
 	is_playing = true
 	grid_size = 15
 	turn = 1

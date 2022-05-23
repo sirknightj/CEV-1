@@ -393,6 +393,9 @@ func check_trash():
 				# TODO - custom icon maybe?
 				Input.set_custom_mouse_cursor(null)
 			elif refundable():
+				if GameStats.show_sell_yes_refund_message:
+					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Since this building was built on this turn, you'll receive a full refund!"
+					GameStats.show_sell_yes_refund_message = false
 				Input.set_custom_mouse_cursor(refund_icon)
 			else:
 				if GameStats.show_sell_no_refund_message:
