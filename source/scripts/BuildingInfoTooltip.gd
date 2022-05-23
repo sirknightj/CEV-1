@@ -42,8 +42,8 @@ func prepare():
 func show_building(building : Building):
 	building_name.text = GameStats.buildings_dict[building.building_id].name
 	var res = building.get_production_consumption_as_bbcode()
-	production.bbcode_text = "Production\n\n" + res[0]
-	consumption.bbcode_text = "Consumption\n\n" + res[1]
+	production.bbcode_text = res[0]
+	consumption.bbcode_text = res[1]
 	var building_upgrades = building.building_effect_upgrades
 	var upgrade_names = []
 	for upgrade in building_upgrades:

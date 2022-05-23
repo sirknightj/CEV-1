@@ -172,7 +172,7 @@ margin_top = 65.0
 margin_right = 320.0
 margin_bottom = 157.0
 mouse_filter = 2
-color = Color( 0.34902, 0.34902, 0.34902, 1 )
+color = Color( 0.2, 0.2, 0.2, 1 )
 
 [node name="Text" type="Label" parent="TooltipRectLeft"]
 margin_left = 10.0
@@ -190,7 +190,7 @@ margin_top = 65.0
 margin_right = 498.0
 margin_bottom = 157.0
 mouse_filter = 2
-color = Color( 0.34902, 0.34902, 0.34902, 1 )
+color = Color( 0.2, 0.2, 0.2, 1 )
 
 [node name="Text" type="Label" parent="TooltipRectRight"]
 margin_left = 8.0
