@@ -101,7 +101,7 @@
         "oxygen_effect": 0,
         "electricity_effect": 100,
         "metal_effect": -20,
-        "science_effect": -2
+        "science_effect": 0
     },
     {
         "name": "Farm",
