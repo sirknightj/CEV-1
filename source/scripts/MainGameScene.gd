@@ -125,7 +125,7 @@ func show_correct_text():
 		GameStats.resources.give(GameData.ResourceType.METAL, 24)
 		# GameStats.restrictions = {GameData.BuildingType.ELEC1: 3}
 	elif turn == 10:
-		text = "Your city has generated enough [color=%s]science[/color] for an upgrade! Spend your science points to unlock new building types and expand your colony." % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)
+		text = "Your city has generated enough [color=%s]science[/color] for an upgrade! Spend [color=%s]science[/color] to unlock new buildings and increase building efficiency." % [GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE), GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)]
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		$UILayer/Sidebar.toggle_upgrades_button(true)
 	elif turn == 11:
