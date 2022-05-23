@@ -396,8 +396,7 @@ func check_trash():
 				if GameStats.show_sell_yes_refund_message and purchased:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Since this building was built on this turn, you'll receive a full refund!"
 					GameStats.show_sell_yes_refund_message = false
-					Input.set_custom_mouse_cursor(null)
-				elif purchased:
+				if purchased:
 					Input.set_custom_mouse_cursor(refund_icon)
 				else:
 					Input.set_custom_mouse_cursor(null)
