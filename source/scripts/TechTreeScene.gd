@@ -6,6 +6,7 @@ var item_scene = preload("res://scenes/TreeItem.tscn")
 
 var selected_upgrade : int = -1
 var hovered_upgrade : int = -1
+var just_purchased : bool = false
 
 var COLORS : Dictionary = {
 	"unlocked" : [Color("#049F0C"), Color("#049F0C").darkened(0.4)],
@@ -134,8 +135,9 @@ func set_link_colors() -> void:
 			line.width = 12
 
 func _on_item_hover_on(name: int) -> void:
-	if selected_upgrade == -1:
+	if selected_upgrade == -1 or just_purchased:
 		set_sidebar(name)
+		just_purchased = false
 	if name == -1:
 		return
 	hovered_upgrade = name
@@ -180,6 +182,8 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	set_link_colors()
 	set_sidebar(upgrade.id)
 	_update_reserve_text()
+	just_purchased = true
+	selected_upgrade = -1
 
 """
 	Called when the Back button is pressed
@@ -187,4 +191,6 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 func _on_Back_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuBackClicked)
+		# selected_upgrade = -1
+		clear_sidebar()
 		self.hide()
