@@ -393,10 +393,14 @@ func check_trash():
 				# TODO - custom icon maybe?
 				Input.set_custom_mouse_cursor(null)
 			elif refundable():
-				if GameStats.show_sell_yes_refund_message:
+				if GameStats.show_sell_yes_refund_message and purchased:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Since this building was built on this turn, you'll receive a full refund!"
 					GameStats.show_sell_yes_refund_message = false
-				Input.set_custom_mouse_cursor(refund_icon)
+					Input.set_custom_mouse_cursor(null)
+				elif purchased:
+					Input.set_custom_mouse_cursor(refund_icon)
+				else:
+					Input.set_custom_mouse_cursor(null)
 			else:
 				if GameStats.show_sell_no_refund_message:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "You won't get a refund for destroying this building. You only get a refund if you build and destroy it on the same turn!"

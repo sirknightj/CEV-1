@@ -133,7 +133,11 @@ func show_correct_text():
 	elif turn == 12:
 		text = "Your goal is to place down the [color=#FFFFFF]Cryonic Chamber[/color] while minimizing colonist deaths."
 	elif turn == 13:
-		text = "Note that you receive a refund if you destroy a building on the same turn you build it!"
+		if GameStats.show_sell_no_refund_message and GameStats.show_sell_yes_refund_message:
+			# Basically, the player hasn't tried selling yet.
+			text = "Tip: You can demolish a building by dragging it off the grid."
+		else:
+			text = ""
 	else:
 		if GameStats.just_won == 1:
 			text = "A meteor crashes into the Cryonic Chamber and the colonists wake up from their slumber. You insist on building another one but the colonists refuse. They want their freedom."
