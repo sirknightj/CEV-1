@@ -647,6 +647,10 @@ func get_production_consumption_as_bbcode() -> Array:
 		if e == 0:
 			continue
 
+		if resource_type == GameData.ResourceType.PEOPLE:
+			var people = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
+			e = floor(people + e) - floor(people)
+
 		var key = GameData.RESOURCE_TYPE_TO_STRING[resource_type]
 
 		var text = "[color=%s]%s: %s[/color]" % [GameData.get_resource_color_as_hex(resource_type), key, str(e)]
