@@ -26,16 +26,17 @@ func prepare():
 	GameStats.game.connect("building_hovered_off", self, "_on_building_inactive")
 
 func show_building(building : Building):
-	var missing_text : Array = []
+	var missing_text : PoolStringArray = PoolStringArray()
 	var missing_resources = GameStats.game.sidebar.resources_needed(building.building_id)
 	for resource_id in missing_resources:
-		missing_text.append(str(missing_resources[resource_id]) + " " + GameData.RESOURCE_TYPE_TO_STRING[resource_id])
+		missing_text.append("[color=" + GameData.get_resource_color_as_hex(resource_id) + "]" + str(missing_resources[resource_id]) 
+							+ " " + GameData.RESOURCE_TYPE_TO_STRING[resource_id] + "[/color]")
 
 	var output_text : String
 	if missing_text.empty() or not GameStats.restrictions.empty() or GameStats.turn < 6:
 		output_text = "Currently\nUnavailable"
 	else:
-		output_text = "Missing:\n\n" +  PoolStringArray(missing_text).join("\n")
+		output_text = "Missing:\n\n" + missing_text.join("\n")
 
 	label.bbcode_text = output_text
 
