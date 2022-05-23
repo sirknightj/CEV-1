@@ -97,6 +97,10 @@ mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_fonts/normal_font = SubResource( 2 )
+bbcode_enabled = true
+bbcode_text = "Production
+
+[color=#00b050]Food: 1[/color]"
 text = "Production
 
 Food: 1"
@@ -112,6 +116,10 @@ mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_fonts/normal_font = SubResource( 2 )
+bbcode_enabled = true
+bbcode_text = "Consumption
+
+[color=#00b050]Food: 1[/color]"
 text = "Consumption
 
 Food: 1"

@@ -631,6 +631,32 @@ class FirstAbsSorter:
 			return a > b
 		return abs(a) > abs(b)
 
+"""
+	Returns a production list in return[0] and a consumption list in return[1]
+"""
+func get_production_consumption_as_bbcode() -> Array:
+	var production : PoolStringArray = PoolStringArray()
+	var consumption : PoolStringArray = PoolStringArray()
+
+	for resource_type in GameData.ResourceType.values():
+		if not GameStats.shown_resources.has(resource_type):
+			continue
+
+		var e = get_effect(resource_type)
+
+		if e == 0:
+			continue
+
+		var key = GameData.RESOURCE_TYPE_TO_STRING[resource_type]
+
+		var text = "[color=%s]%s: %s[/color]" % [GameData.get_resource_color_as_hex(resource_type), key, str(e)]
+		if e < 0:
+			consumption.append(text)
+		else:
+			production.append(text)
+
+	return [production.join("\n"), consumption.join("\n")]
+
 func get_effects_as_bbcode() -> String:
 	var texts: Array = []
 

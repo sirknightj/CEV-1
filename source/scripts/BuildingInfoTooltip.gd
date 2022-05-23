@@ -41,19 +41,9 @@ func prepare():
 
 func show_building(building : Building):
 	building_name.text = GameStats.buildings_dict[building.building_id].name
-	var production_text = "Production\n"
-	var consumption_text = "Consumption\n"
-	for resource_type in GameData.ResourceType.values():
-		var effect = building.get_effect(resource_type)
-		if resource_type == GameData.ResourceType.PEOPLE:
-			effect = floor(_people() + effect) - floor(_people())
-		var text = "%s: %s" % [GameData.RESOURCE_TYPE_TO_STRING[resource_type], str(effect)]
-		if effect > 0:
-			production_text += "\n" + text
-		elif effect < 0:
-			consumption_text += "\n" + text
-	production.text = production_text
-	consumption.text = consumption_text
+	var res = building.get_production_consumption_as_bbcode()
+	production.bbcode_text = "Production\n\n" + res[0]
+	consumption.bbcode_text = "Consumption\n\n" + res[1]
 	var building_upgrades = building.building_effect_upgrades
 	var upgrade_names = []
 	for upgrade in building_upgrades:
