@@ -42,7 +42,7 @@ func show_all():
 	update_turn_display()
 
 func cheat():
-	var cheat_alot = true
+	var cheat_alot = false
 	GameStats.turn = 20
 	GameStats.buildings_unlocked = GameData.BuildingType.values()
 	if cheat_alot:
@@ -57,11 +57,11 @@ func cheat():
 		})
 	else:
 		GameStats.resources.set_reserves({
-			GameData.ResourceType.FOOD: 50,
-			GameData.ResourceType.OXYGEN: 50,
-			GameData.ResourceType.WATER: 50,
-			GameData.ResourceType.METAL: 50,
-			GameData.ResourceType.ELECTRICITY: 50,
+			GameData.ResourceType.FOOD: 100,
+			GameData.ResourceType.OXYGEN: 700,
+			GameData.ResourceType.WATER: 100,
+			GameData.ResourceType.METAL: 550,
+			GameData.ResourceType.ELECTRICITY: 100,
 			GameData.ResourceType.SCIENCE: 5000.0,
 			GameData.ResourceType.PEOPLE: 1.0
 		})
@@ -70,14 +70,21 @@ func cheat():
 	GameStats.game.on_next_turn()
 
 func check_buttons() -> void:
-	var current = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text
-	if not has_enough_electricity() and GameStats.turn >= 12 and not current.ends_with("more energy!"):
+	var current = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.strip_edges()
+	var not_enough_energy_message : String = "You don't have enough [color=%s]energy[/color] to keep your buildings running! You'll need to sell some buildings or generate more [color=%s]energy[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY), GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)]
+	var not_enough_metal_message : String = "You don't have enough [color=%s]metal[/color] to keep your buildings running! You'll need to sell some buildings or generate more [color=%s]metal[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.METAL), GameData.get_resource_color_as_hex(GameData.ResourceType.METAL)]
+	if not has_enough_electricity() and GameStats.turn >= 12:
+		if not current.ends_with(not_enough_energy_message):
+			current += "\n" + not_enough_energy_message
 		toggle_next_month_button(false)
-		current += "\nYou don't have enough [color=%s]energy[/color] to keep your buildings running! You'll need to sell some buildings or generate more energy!" % GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)
 	elif not has_enough_metal() and GameStats.turn >= 12 and not current.ends_with("more metal!"):
+		current = current.strip_edges().trim_suffix(not_enough_energy_message).strip_edges()
+		if not current.ends_with(not_enough_metal_message):
+			current += "\n" + not_enough_metal_message
 		toggle_next_month_button(false)
-		current += "\nYou don't have enough [color=%s]metal[/color] to keep your buildings running! You'll need to sell some buildings or generate more metal!" % GameData.get_resource_color_as_hex(GameData.ResourceType.METAL)
 	elif GameStats.turn >= 12:
+		current = current.strip_edges().trim_suffix(not_enough_energy_message).strip_edges()
+		current = current.strip_edges().trim_suffix(not_enough_metal_message).strip_edges()
 		toggle_next_month_button(true)
 	if current:
 		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = current.strip_edges()
@@ -321,6 +328,7 @@ func on_endingscreen_close() -> void:
 	Tells the restrictions that the player has placed a building
 """
 func placed_building(building : int):
+	print("placed_building was called")
 	if GameStats.restrictions.has(building) and GameStats.restrictions[building] > 1:
 		GameStats.restrictions[building] -= 1
 	elif GameStats.restrictions.has(building) and GameStats.restrictions[building] == 1:
