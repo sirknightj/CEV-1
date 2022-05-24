@@ -85,7 +85,6 @@ var refund_icon = preload("res://assets/images/refund.png")
 var _global_pos_next : Vector2
 var _global_rot_next : float
 var _emit_release_on_next_physics : bool = false
-var _check_enter_on_next_physics : bool = false
 var _main_flipped_next : bool = false
 var _ghost_flipped_next : bool = false
 var _shadow_flipped_next : bool = false
@@ -468,11 +467,6 @@ func _physics_process(_delta):
 		_emit_release_on_next_physics = false
 		set_physics_process(false)
 		emit_signal("building_released", self)
-	if _check_enter_on_next_physics:
-		_check_enter_on_next_physics = false
-		set_physics_process(false)
-		if _mouse_enters > 0:
-			building_mouse_entered()
 	if (_main_flipped_next != _main_flipped
 			or _shadow_flipped_next != _shadow_flipped
 			or _ghost_flipped_next != _ghost_flipped):
@@ -570,10 +564,7 @@ func _on_building_place():
 	else:
 		set_state(MouseState.NONE)
 		force_set(_original_pos, _original_rot, _original_flipped)
-	if old == MouseState.DRAGGING:
-		_on_building_release()
-	else:
-		_check_enter_on_next_physics = true
+	_on_building_release()
 
 func possible_enter():
 	if _mouse_enters > 0:
@@ -586,10 +577,9 @@ func is_in_trash_area():
 	return not GameStats.grid.is_within_grid(get_global_mouse_position())
 
 func multiselect_on():
-	if _mouse_state == MouseState.HOVER:
-		set_state(MouseState.MULTISELECTHOVER)
-	else:
-		set_state(MouseState.MULTISELECT)
+	set_state(MouseState.MULTISELECT)
+	if _mouse_enters > 0:
+		building_mouse_entered()
 
 func multiselect_off():
 	set_state(MouseState.NONE)
@@ -614,7 +604,7 @@ func _on_building_grab():
 	log_building_action(Logger.Actions.BuildingGrabbed)
 	if _mouse_state == MouseState.DRAGGING:
 		GameStats.current_selected_building = self
-		emit_signal("building_grabbed", self)
+	emit_signal("building_grabbed", self)
 
 func _on_building_rotate():
 	rotate_around(get_global_mouse_position(), PI/2)
