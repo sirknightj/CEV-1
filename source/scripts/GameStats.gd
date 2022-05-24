@@ -223,7 +223,7 @@ var _initial_reserves = {
 
 var current_selected_building = null
 var current_hovered_building = null
-var multiselect_drag : bool = false
+var multiselect_drag : int = 0
 
 class BuildingStats:
 	var shape : Array

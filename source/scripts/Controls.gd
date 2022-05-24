@@ -16,8 +16,8 @@ func set_rotateonly(rotateonly : bool):
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		var building = GameStats.current_selected_building
-		if GameStats.multiselect_drag:
-			set_rotateonly(true)
+		if GameStats.multiselect_drag != MultiSelector.DragMode.None:
+			set_rotateonly(GameStats.multiselect_drag == MultiSelector.DragMode.DragRotateOnly)
 			show()
 		elif building != null and building is Building:
 			if (building.is_in_trash_area()

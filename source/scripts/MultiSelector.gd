@@ -1,9 +1,16 @@
 extends Node2D
+class_name MultiSelector
 
 var active : bool = false
 var dragging : bool = false
 var selected : Dictionary = {}
 var start_pos : Vector2
+
+enum DragMode {
+	None,
+	Drag
+	DragRotateOnly
+}
 
 onready var rect = $ColorRect
 onready var area = $Area2D
@@ -101,7 +108,10 @@ func _unhandled_input(event):
 			deselect()
 		else:
 			dragging = true
-			GameStats.multiselect_drag = true
+			if selected.size() == 1 and not selected.keys()[0].is_symmetrical():
+				GameStats.multiselect_drag = DragMode.Drag
+			else:
+				GameStats.multiselect_drag = DragMode.DragRotateOnly
 			set_physics_process(true)
 	elif event.is_action_released("building_grab"):
 		if active:
@@ -113,7 +123,7 @@ func _unhandled_input(event):
 		elif dragging:
 			set_physics_process(false)
 			dragging = false
-			GameStats.multiselect_drag = false
+			GameStats.multiselect_drag = DragMode.None
 			selected = {}
 			GameStats.current_selected_building = null
 			GameStats.current_hovered_building = null

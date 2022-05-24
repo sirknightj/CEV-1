@@ -467,6 +467,8 @@ func _physics_process(_delta):
 		_emit_release_on_next_physics = false
 		set_physics_process(false)
 		emit_signal("building_released", self)
+		if _mouse_enters > 0:
+			building_mouse_entered()
 	if (_main_flipped_next != _main_flipped
 			or _shadow_flipped_next != _shadow_flipped
 			or _ghost_flipped_next != _ghost_flipped):
@@ -574,7 +576,7 @@ func force_update():
 	_last_mouse_pos = get_global_mouse_position()
 
 func is_in_trash_area():
-	return not GameStats.grid.is_within_grid(get_global_mouse_position())
+	return get_global_mouse_position().x > GameStats.grid.get_pos_edge() * 1.1
 
 func multiselect_on():
 	set_state(MouseState.MULTISELECT)
@@ -644,7 +646,9 @@ func _unhandled_input(event : InputEvent):
 			building_mouse_exited()
 	elif event.is_action_pressed("building_rotate") and any_dragging:
 		_on_building_rotate()
-	elif event.is_action_pressed("building_flip") and _mouse_state == MouseState.DRAGGING:
+	elif (event.is_action_pressed("building_flip")
+			and (_mouse_state == MouseState.DRAGGING
+				or _mouse_state == MouseState.MULTISELECTDRAGGING and GameStats.multiselect_drag == MultiSelector.DragMode.Drag)):
 		_on_building_flip()
 	elif (event is InputEventMouseMotion
 			and event.relative != Vector2(0.0, 0.0)
