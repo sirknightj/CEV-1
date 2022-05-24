@@ -40,6 +40,7 @@ func _ready():
 	update_stats()
 	show_correct_text()
 	sidebar.start_game()
+	turns_shown_correct_text_already = {}
 
 """
 	Update visualizations
@@ -78,9 +79,17 @@ func on_next_turn():
 var num_died : int = 0
 var death_reasons : Array = []
 
+var turns_shown_correct_text_already : Dictionary
+
 func show_correct_text():
 	var turn = GameStats.turn
 	var text = "" # bbcode
+	
+	if turns_shown_correct_text_already.has(turn):
+		print("An extra MainGameScene.show_correct_text was called!")
+		return
+	turns_shown_correct_text_already[turn] = true
+	
 	if turn == 1:
 		text = "Welcome to consciousness! You're an AI put in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + ".\n"
 		text += "Each colonist needs 1 unit of [color=%s]water[/color].\nBuild a %s to generate some [color=%s]water[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.WATER), GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(1), GameData.get_resource_color_as_hex(GameData.ResourceType.WATER)]
