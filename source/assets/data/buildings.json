@@ -358,7 +358,7 @@
         "metal_cost": 30,
         "science_cost": 0,
         "food_effect": 0,
-        "water_effect": 35,
+        "water_effect": 45,
         "oxygen_effect": 0,
         "electricity_effect": -10,
         "metal_effect": 0,
