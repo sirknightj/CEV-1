@@ -40,6 +40,8 @@ func _on_area_entered(area : Area2D):
 	if not active:
 		return
 	var building = area.get_parent().get_parent()
+	if building.locked:
+		return
 	if not selected.has(building):
 		building.call_deferred("multiselect_on")
 		selected[building] = 0
@@ -70,7 +72,7 @@ func _physics_process(_delta):
 	for building in selected.keys():
 		building._update_shadow()
 
-func _input(event):
+func _unhandled_input(event):
 	var mouse_pos = get_global_mouse_position()
 	var x : float
 	var y : float
@@ -86,7 +88,8 @@ func _input(event):
 
 	if (event.is_action_pressed("building_grab")
 			and GameStats.grid.is_within_grid(mouse_pos)
-			and GameStats.current_hovered_building == null):
+			and GameStats.current_hovered_building == null
+			and not active):
 		GameStats.current_selected_building = self
 		active = true
 		start_pos = pos

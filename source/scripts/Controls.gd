@@ -13,7 +13,7 @@ func set_rotateonly(rotateonly : bool):
 		$Sprite.texture = controls_texture
 		_height = 60.0
 
-func _input(event):
+func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		var building = GameStats.current_selected_building
 		if GameStats.multiselect_drag:
@@ -28,7 +28,7 @@ func _input(event):
 				show()
 		elif building == null:
 			hide()
-	._input(event)
+	._unhandled_input(event)
 
 func get_height():
 	return _height

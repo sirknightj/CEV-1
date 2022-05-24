@@ -288,12 +288,12 @@ func setup_ghost_square(grid_square : GridSquare):
 func building_mouse_entered():
 	if ((_mouse_state == MouseState.NONE and GameStats.current_selected_building == null)
 			or _mouse_state == MouseState.MULTISELECT):
+		GameStats.current_hovered_building = self
 		if _mouse_state == MouseState.MULTISELECT:
 			set_state(MouseState.MULTISELECTHOVER)
 		else:
 			set_state(MouseState.HOVER)
 			emit_signal("building_hovered", self)
-		GameStats.current_hovered_building = self
 		if locked:
 			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		else:
@@ -586,7 +586,10 @@ func is_in_trash_area():
 	return not GameStats.grid.is_within_grid(get_global_mouse_position())
 
 func multiselect_on():
-	set_state(MouseState.MULTISELECT)
+	if _mouse_state == MouseState.HOVER:
+		set_state(MouseState.MULTISELECTHOVER)
+	else:
+		set_state(MouseState.MULTISELECT)
 
 func multiselect_off():
 	set_state(MouseState.NONE)
@@ -628,7 +631,7 @@ func _on_building_drag():
 	_last_mouse_pos = get_global_mouse_position()
 	_update_main()
 
-func _input(event : InputEvent):
+func _unhandled_input(event : InputEvent):
 	if locked:
 		return
 	if not is_instance_valid(self):

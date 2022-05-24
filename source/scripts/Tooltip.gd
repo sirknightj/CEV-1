@@ -6,7 +6,7 @@ onready var _screen_size = get_viewport().get_visible_rect().size
 func _ready():
 	global_position = get_global_mouse_position()
 
-func _input(event):
+func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		var pos = get_global_mouse_position()
 		if pos.y + get_height() > _screen_size.y:
