@@ -108,4 +108,5 @@ func _set_stats(is_win: bool) -> void:
 
 func _on_CloseButton_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
+		get_parent().get_parent().get_parent().get_parent().get_parent().get_node("MainGameScene/UpperLayer/TutorialText").bbcode_text = ""
 		emit_signal("on_close_clicked")

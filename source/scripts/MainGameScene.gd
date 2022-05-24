@@ -81,12 +81,10 @@ var death_reasons : Array = []
 func show_correct_text():
 	var turn = GameStats.turn
 	var text = "" # bbcode
-	if turn == 0:
-		text = "Welcome to consciousness! You're an AI put in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + ".\nYour objective: keep the humans alive. \nClick the \"Next Month\" button to start."
-		$UILayer/Sidebar.toggle_upgrades_button(false)
-	elif turn == 1:
+	if turn == 1:
 		text = "Welcome to consciousness! You're an AI put in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + ".\n"
 		text += "Each colonist needs 1 unit of [color=%s]water[/color].\nBuild a %s to generate some [color=%s]water[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.WATER), GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(1), GameData.get_resource_color_as_hex(GameData.ResourceType.WATER)]
+		$UILayer/Sidebar.toggle_upgrades_button(false)
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 6)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1}
@@ -147,7 +145,7 @@ func show_correct_text():
 			text = ""
 		if GameStats.just_won:
 			GameStats.just_won += 1
-	if num_died:
+	if num_died and 0 < floor(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)):
 			var deaths_left = GameStats.colonist_death_threshold - GameStats.dead
 			var plural_colonists = "colonist" if num_died == 1 else "colonists"
 			plural_colonists = str(num_died) + " " + plural_colonists
