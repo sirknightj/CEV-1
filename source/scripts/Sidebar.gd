@@ -300,7 +300,7 @@ func scroll_down():
 		print("Scrolling down...")
 		var duration : float = 1.0
 		tween.interpolate_property($ScrollContainer.get_v_scrollbar(), "value",
-									current, target, 3.0, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+									current, target, 1.5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
 		tween.start()
 
 
