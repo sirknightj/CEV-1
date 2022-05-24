@@ -7,21 +7,25 @@ var game : Game # The node representing the game
 var Turn_Count_Text # The node holding the turn count text
 
 var show_resources : Dictionary = {}
-var ignore_next_month : bool = false # default = clickable
-var ignore_upgrades_button = true # default = unclickable
+var ignore_next_month : bool # default = clickable
+var ignore_upgrades_button : bool  # default = unclickable
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 onready var row_scene = preload("res://scenes/BuildingRow.tscn")
 
-var ending_shown_once: bool = false  # set to true after ending shown for the first time so it isn't shown again
+var ending_shown_once: bool  # set to true after ending shown for the first time so it isn't shown again
 
 func _setup_control_element(control : Control):
 	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	ignore_next_month = false
+	ignore_upgrades_button = true
+	ending_shown_once = false
 	game = get_parent().get_parent()
 	Turn_Count_Text = get_node("TurnCount")
+	$NextMonth/Label.text = "Next Month"
 
 func start_game():
 	for resource in GameData.ResourceType.values():
@@ -96,6 +100,7 @@ func populate_sidebar_correctly() -> void:
 	check_buttons()
 	if GameStats.colonist_death_threshold <= GameStats.dead or GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 1:
 		GameStats.show_win_lose_screen(false)
+		$NextMonth/Label.text = "Restart"
 	
 	var turn = GameStats.turn
 	if turn <= 2:
@@ -249,7 +254,15 @@ func update_displays() -> void:
 func _on_Next_Month_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_level_action(Logger.Actions.NextMonthClicked)
-		# TODO(vishal)
+		
+		if $NextMonth/Label.text == "Restart":
+			# TODO - (LOGGING for when the game restarts!)
+			GameStats.reset_game(true)
+			GameStats.game._ready()
+			$CanvasLayer/TechTree._ready()
+			_ready()
+			return		
+		
 		# print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:
 			if GameStats.restrictions.keys().size() > 0:
