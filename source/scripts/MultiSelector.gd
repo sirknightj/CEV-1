@@ -105,6 +105,8 @@ func _unhandled_input(event):
 	elif (event.is_action_pressed("building_grab")
 			and GameStats.current_selected_building == self):
 		if GameStats.current_hovered_building == null:
+			active = false
+			GameStats.current_selected_building = null
 			deselect()
 		else:
 			dragging = true
