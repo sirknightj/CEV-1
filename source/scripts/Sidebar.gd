@@ -352,7 +352,7 @@ func placed_building(building : int):
 	
 	if GameStats.turn == 1:
 		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = "Great work! Advance to the next month."
-	
+		$NextMonth.show()
 	check_buttons()
 
 """
