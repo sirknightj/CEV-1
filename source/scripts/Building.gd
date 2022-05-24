@@ -389,8 +389,7 @@ func check_trash():
 	if is_in_trash_area():
 		if has_moved() or purchased:
 			if not saleable:
-				# TODO - custom icon maybe?
-				Input.set_custom_mouse_cursor(null)
+				Input.set_default_cursor_shape(Input.CURSOR_FORBIDDEN)
 			elif refundable():
 				if GameStats.show_sell_yes_refund_message and purchased:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Since this building was built on this turn, you'll receive a full refund!"
@@ -406,6 +405,7 @@ func check_trash():
 				Input.set_custom_mouse_cursor(trash_icon)
 		_shadow.visible = false
 	else:
+		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		Input.set_custom_mouse_cursor(null)
 		if has_moved():
 			_shadow.visible = true

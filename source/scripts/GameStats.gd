@@ -285,6 +285,8 @@ func reset_game(is_restart : bool):
 	scroll_down_queued = false
 	show_sell_no_refund_message = true
 	show_sell_yes_refund_message = true
+	upgrade_tree = GameObjs.UpgradeTree.new()
+	get_tree().reload_current_scene()
 
 """
 	Show the win/lose screen

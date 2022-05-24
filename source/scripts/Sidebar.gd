@@ -260,12 +260,8 @@ func _on_Next_Month_gui_input(event):
 		GameStats.logger.log_level_action(Logger.Actions.NextMonthClicked)
 		
 		if $NextMonth/Label.text == "Restart":
-			# TODO - (LOGGING for when the game restarts!)
 			GameStats.reset_game(true)
-			GameStats.game._ready()
-			# TODO - Reset the upgrades here
-			_ready()
-			return		
+			return
 		
 		# print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:
