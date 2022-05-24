@@ -205,8 +205,12 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		entry.get_node("CostContainer/Text").bbcode_text = cost_text
 		entry.get_node("EffectsContainer/Text").bbcode_text = effects_text
 
+"""
+	Returns true if the building is available
+	false if not
+"""
 func available(building) -> bool:
-	return GameStats.restrictions.empty() or GameStats.restrictions.has(building)
+	return (GameStats.restrictions.empty() or GameStats.restrictions.has(building)) and not (not GameStats.win_status and not GameStats.is_playing)
 
 func _on_Building_building_destroy(_building):
 	repopulate_sidebar()
@@ -259,7 +263,7 @@ func _on_Next_Month_gui_input(event):
 			# TODO - (LOGGING for when the game restarts!)
 			GameStats.reset_game(true)
 			GameStats.game._ready()
-			$CanvasLayer/TechTree._ready()
+			# TODO - Reset the upgrades here
 			_ready()
 			return		
 		

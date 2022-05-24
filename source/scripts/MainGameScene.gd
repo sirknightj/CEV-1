@@ -145,7 +145,7 @@ func show_correct_text():
 			text = ""
 		if GameStats.just_won:
 			GameStats.just_won += 1
-	if num_died:
+	if num_died and 0 < floor(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)):
 			var deaths_left = GameStats.colonist_death_threshold - GameStats.dead
 			var plural_colonists = "colonist" if num_died == 1 else "colonists"
 			plural_colonists = str(num_died) + " " + plural_colonists
