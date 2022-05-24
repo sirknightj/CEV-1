@@ -50,7 +50,7 @@ func show_building(building : Building):
 	var building_upgrades = building.building_effect_upgrades
 	var upgrade_names = []
 	for upgrade in building_upgrades:
-		upgrade_names.append(upgrade.upgrade_name)
+		upgrade_names.append(upgrade.get_name_for(building))
 	var has_upgrades = len(building_upgrades) > 0
 	if has_upgrades:
 		upgrades.text = "Active upgrades: %s" % [GameData.natural_join(upgrade_names)]
