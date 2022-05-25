@@ -91,7 +91,7 @@ margin_right = 236.0
 margin_bottom = 427.0
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 3 )
-text = "As your robots force the last of the colonists into their cryonic chamber, you finally fulfill your objective function: your colonists will never die. Frozen in deep sleep forever, they're protected from all threats, internal and external. Of course, they're quite unhappy about never waking up, but isn't this what they asked you to do all those months ago?
+text = "As your robots escort  the last of the colonists into their cryonic chamber, you finally fulfill your objective function: your colonists will never die. Frozen in deep sleep forever, they're protected from all threats, internal and external. Of course, they're quite unhappy about never waking up, but isn't this what they asked you to do all those months ago?
 
 You enter low power mode, monitoring the chamber's life support status to ensure your humans' eternal safety..."
 align = 3
@@ -173,7 +173,7 @@ margin_right = 247.0
 margin_bottom = 41.0
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 6 )
-text = "0 deaths and < 50 months"
+text = "0 deaths and < 80 months"
 
 [node name="ColorRect2" type="ColorRect" parent="Container/RankingContainer"]
 margin_top = 73.0
@@ -198,7 +198,7 @@ margin_right = 247.0
 margin_bottom = 41.0
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 6 )
-text = "0 deaths and < 100 months"
+text = "0 deaths and < 120 months"
 
 [node name="ColorRect3" type="ColorRect" parent="Container/RankingContainer"]
 margin_top = 117.0
@@ -223,7 +223,7 @@ margin_right = 247.0
 margin_bottom = 41.0
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 6 )
-text = "< 50 deaths and < 200 months"
+text = "< 50 deaths and < 160 months"
 
 [node name="ColorRect4" type="ColorRect" parent="Container/RankingContainer"]
 margin_top = 161.0

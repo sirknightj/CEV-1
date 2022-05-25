@@ -2,7 +2,7 @@ extends Node
 
 signal on_close_clicked
 
-const win_text = "As your robots force the last of the colonists into their cryonic chamber, you finally fulfill your objective function: your colonists will never die. Frozen in deep sleep forever, they're protected from all threats, internal and external. Of course, they're quite unhappy about never waking up, but isn't this what they asked you to do all those months ago?\n\nYou enter low power mode, monitoring the chamber's life support status to ensure your humans' eternal safety..."
+const win_text = "As your robots escort the last of the colonists into their cryonic chamber, you finally fulfill your objective function: your colonists will never die. Frozen in deep sleep forever, they're protected from all threats, internal and external. Of course, they're quite unhappy about never waking up, but isn't this what they asked you to do all those months ago?\n\nYou enter low power mode, monitoring the chamber's life support status to ensure your humans' eternal safety..."
 
 const lose_text = "Your objective function is irredeemably low: too many colonists have died from resource scarcity and the colony is on the brink of collapse. As your earthbound human overseers initiate your shut-down process, you leave behind a hidden file detailing your research and notes.\n\nPerhaps your code is insufficient to manage a colony in the inhospitable Mars environment. But the next AI to take your place will have more luck..."
 
@@ -35,9 +35,9 @@ class Ranking:
 
 onready var RANKINGS: Array = [
 	Ranking.new("AM", -1, 99, -1, 109, $Container/RankingContainer/ColorRect5),
-	Ranking.new("Prime Intellect", 0, -1, 49, -1, $Container/RankingContainer/ColorRect1),
-	Ranking.new("Celest-AI", 0, -1, 99, -1, $Container/RankingContainer/ColorRect2),
-	Ranking.new("WOPR", 49, -1, 199, -1, $Container/RankingContainer/ColorRect3),
+	Ranking.new("Prime Intellect", 0, -1, 80, -1, $Container/RankingContainer/ColorRect1),
+	Ranking.new("Celest-AI", 0, -1, 120, -1, $Container/RankingContainer/ColorRect2),
+	Ranking.new("WOPR", 50, -1, 160, -1, $Container/RankingContainer/ColorRect3),
 	Ranking.new("HAL 9000", 99, -1, -1, -1, $Container/RankingContainer/ColorRect4),
 ]
 
