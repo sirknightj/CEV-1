@@ -196,6 +196,7 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 func _on_Back_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuBackClicked)
+		selected_upgrade = -1
 		clear_sidebar()
 		self.hide()
 		if GameStats.scroll_down_queued:
