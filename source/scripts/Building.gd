@@ -294,7 +294,7 @@ func building_mouse_entered():
 			set_state(MouseState.HOVER)
 			emit_signal("building_hovered", self)
 		if locked:
-			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+			Input.set_default_cursor_shape(Input.CURSOR_FORBIDDEN)
 		else:
 			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
 
