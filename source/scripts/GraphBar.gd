@@ -133,9 +133,6 @@ func update_bar(is_next_turn_update: bool, production: float, consumption: float
 		line_bottom = reference_y - 5
 		line_top_old = bar_ps_current[0].y
 		line_bottom_old = reference_y_old - 5
-	
-	if node_name == "Water":
-		print(production, " - ", consumption, " = ", resource_delta, " -> ", sign(resource_delta))
 
 	var arrow_line_ps_current = get_arrow_line_points()
 	var arrow_line_ps = calculate_arrow_line_points(line_top, line_bottom)
@@ -144,7 +141,7 @@ func update_bar(is_next_turn_update: bool, production: float, consumption: float
 		_stage_animation(1, tween, ref_line, "rect_position:y", null, reference_y, Tween.TRANS_EXPO, Tween.EASE_OUT)
 		_stage_animation(1, tween, diff_text, "rect_position:y", null, reference_y + (9 if resource_delta < 0 else -20), Tween.TRANS_EXPO, Tween.EASE_OUT)
 		
-		_stage_animation(1, tween, triangle, "position:y", null, reference_y + (4 if next_reserve > reserve else -4), Tween.TRANS_EXPO, Tween.EASE_OUT)
+		_stage_animation(1, tween, triangle, "position:y", null, reference_y + (4 if next_reserve > reserve else -1), Tween.TRANS_EXPO, Tween.EASE_OUT)
 		# if node_name == "Water":
 		# 	print("[NTU] Setting scale:y to ", sign(resource_delta))
 		_stage_animation(1, tween, triangle, "scale:y", null, sign(resource_delta), Tween.TRANS_EXPO, Tween.EASE_OUT)
@@ -159,11 +156,11 @@ func update_bar(is_next_turn_update: bool, production: float, consumption: float
 		_stage_animation(0, tween, diff_text, "rect_position:y", null, diff_text_y_stage_1, Tween.TRANS_EXPO, Tween.EASE_OUT)
 		_stage_animation(1, tween, diff_text, "rect_position:y", diff_text_y_stage_1, reference_y + (9 if resource_delta < 0 else -20), Tween.TRANS_EXPO, Tween.EASE_OUT)
 		
-		_stage_animation(0, tween, triangle, "position:y", null, reference_y_old + (4 if next_reserve > reserve else -4), Tween.TRANS_EXPO, Tween.EASE_OUT)
+		_stage_animation(0, tween, triangle, "position:y", null, reference_y_old + (4 if next_reserve > reserve else -1), Tween.TRANS_EXPO, Tween.EASE_OUT)
 		# if node_name == "Water":
 		# 	print("[B] Setting scale:y to ", sign(resource_delta))
 		_stage_animation(0, tween, triangle, "scale:y", null, sign(resource_delta), Tween.TRANS_EXPO, Tween.EASE_OUT)
-		_stage_animation(1, tween, triangle, "position:y", reference_y_old + (4 if next_reserve > reserve else -4), reference_y + (4 if next_reserve > reserve else -4), Tween.TRANS_EXPO, Tween.EASE_OUT)
+		_stage_animation(1, tween, triangle, "position:y", reference_y_old + (4 if next_reserve > reserve else -1), reference_y + (4 if next_reserve > reserve else -1), Tween.TRANS_EXPO, Tween.EASE_OUT)
 
 		var arrow_line_ps_stage_1 = calculate_arrow_line_points(line_top_old, line_bottom_old)
 
@@ -181,7 +178,7 @@ func update_bar(is_next_turn_update: bool, production: float, consumption: float
 		reserve_y = bar_y + 9
 	
 	var should_hide_arrow = resource_delta == 0 or abs(line_top - line_bottom) < 5
-	if should_hide_arrow:
+	if resource_delta == 0:
 		triangle.hide()
 	else:
 		triangle.show()
