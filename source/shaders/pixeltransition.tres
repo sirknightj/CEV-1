@@ -1,0 +1,54 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform float progress : hint_range(0.0, 1.0);
+uniform float screen_width;
+uniform float screen_height;
+
+vec2 random(vec2 uv){
+	uv = vec2( dot(uv, vec2(127.1,311.7) ),
+			   dot(uv, vec2(269.5,183.3) ) );
+	return -1.0 + 2.0 * fract(sin(uv) * 43758.5453123);
+}
+
+float noise(vec2 uv) {
+	vec2 uv_index = floor(uv);
+	vec2 uv_fract = fract(uv);
+	vec2 blur = smoothstep(0.0, 1.0, uv_fract);
+	return mix( mix( dot( random(uv_index + vec2(0.0,0.0) ), uv_fract - vec2(0.0,0.0) ), dot( random(uv_index + vec2(1.0,0.0) ), uv_fract - vec2(1.0,0.0) ), blur.x), mix( dot( random(uv_index + vec2(0.0,1.0) ), uv_fract - vec2(0.0,1.0) ), dot( random(uv_index + vec2(1.0,1.0) ), uv_fract - vec2(1.0,1.0) ), blur.x), blur.y) + 0.5;
+}
+
+vec2 squarify(vec2 uv) {
+	return floor(uv * 15.) / 15. * 2.8;
+}
+
+void fragment() {
+	vec2 pos = UV.xy;
+	pos.y *= screen_height / screen_width;
+	vec2 square = squarify(pos);
+	float n = noise(square);
+	float dist = 1. - (distance(square, squarify(vec2(1., 0.))) / 2.8 - 0.15);
+	float val = (dist * 0.6) + (n / 2.);
+	
+	// COLOR = vec4(vec3(0.03), 1.);
+	COLOR = texture(TEXTURE, UV);
+	
+	float p = 1. - progress;
+	if (val < p) {
+		if (val < p - 0.02) {
+			COLOR.a = 0.;
+		} else {
+			COLOR.a = (val - 0.02) / p;
+		}
+	}
+}"
+
+[resource]
+resource_local_to_scene = true
+shader = SubResource( 1 )
+shader_param/progress = 0.451
+shader_param/screen_width = 1280.0
+shader_param/screen_height = 720.0

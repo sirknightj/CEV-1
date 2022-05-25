@@ -23,10 +23,14 @@ class GameResource:
 		reserves = data.reserves
 		income = data.income
 		expense = data.expense
+	
+	func hash() -> int:
+		return int(reserves) * 17 + int(income - expense)
 
 class Resources:
 	var resources : Dictionary = {}
 	var callback : FuncRef
+	var callback_enabled : bool = true
 	var resources_generated : Dictionary = {}  # only for final stats purposes
 	var resources_used : Dictionary = {}  # only for final stats purposes
 
@@ -46,7 +50,7 @@ class Resources:
 		return callback
 
 	func on_update():
-		if callback != null:
+		if callback_enabled and callback != null:
 			callback.call_func()
 
 	func reset_income_expense():
@@ -176,6 +180,13 @@ class Resources:
 			resource.deserialize(load_resources[type])
 			resources[type] = resource
 		on_update()
+	
+	func hash() -> int:
+		var res = 0
+		for type in GameData.ResourceType.values():
+			if type != GameData.ResourceType.SCIENCE and type != GameData.ResourceType.PEOPLE:
+				res = res * 31 + resources[type].hash()
+		return res
 
 class UpgradeTree:
 	var tree_dict : Dictionary = {} # upgrade ID -> upgrade data

@@ -18,7 +18,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -760.0
 margin_bottom = -628.0
-rect_min_size = Vector2( 0, 92 )
+rect_min_size = Vector2( 0, 100 )
 mouse_filter = 2
 
 [node name="BuildingName" type="Label" parent="."]
