@@ -131,7 +131,7 @@ func _animate_store_Science(val: float) -> void:
 func _animate_diff_Science(val: float) -> void:
 	$ScienceDiff.text = _to_str(val, true) + " / mo"
 func _animate_store_Colonists(val: float) -> void:
-	$ColonistsStore.text = _to_str(val + 1.0, false, -1.0)
+	$ColonistsStore.text = _to_str(val, false)
 
 func are_resources_same(resources: GameObjs.Resources) -> bool:
 	if resources and resources_saved:

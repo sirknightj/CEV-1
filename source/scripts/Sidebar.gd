@@ -113,6 +113,7 @@ func populate_sidebar_correctly() -> void:
 		if GameStats.resources.get_reserve(GameData.ResourceType.WATER) < 0:
 			GameStats.resources.set_reserve(GameData.ResourceType.WATER, 0)
 		GameStats.show_win_lose_screen(false)
+		GameStats.game.update_all()
 		
 		$NextMonth/Label.text = "Restart"
 		toggle_next_month_button(true)
