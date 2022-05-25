@@ -164,6 +164,9 @@ func _on_item_click(_name: int) -> void:
 		if upgrade.recalculate_available().empty():
 			selected_upgrade = _name
 			set_sidebar(_name)
+	if not GameStats.upgrade_tree.tree_dict.get(_name).available:
+		selected_upgrade = -1
+		set_sidebar(_name)
 	GameStats.logger.log_level_action(action, {
 		"upgrade": _name
 	})
