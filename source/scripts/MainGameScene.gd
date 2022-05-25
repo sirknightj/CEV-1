@@ -14,6 +14,8 @@ var sidebar : Control
 # The graph object
 var graph : Control
 
+var _dirty = false
+
 onready var building_scene = preload("res://scenes/Building.tscn")
 
 # Called when the node enters the scene tree for the first time.
@@ -252,11 +254,16 @@ func _unhandled_input(event):
 	if event.is_action_pressed("toggle_fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
 
+func _process(_delta):
+	if _dirty:
+		_dirty = false
+		update_resources()
+		update_stats()
+		sidebar.check_buttons()
+		sidebar.repopulate_sidebar()
+
 func update_all():
-	update_resources()
-	update_stats()
-	sidebar.check_buttons()
-	sidebar.repopulate_sidebar()
+	_dirty = true
 
 func _on_Building_building_changed(building):
 	update_all()
