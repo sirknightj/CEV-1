@@ -139,6 +139,7 @@ func are_resources_same(resources: GameObjs.Resources) -> bool:
 	return false
 
 func update_graph(turn: int, resources: GameObjs.Resources, new_resource_dict : Dictionary) -> void:
+	print("Update graph was called")
 	var is_next_turn_update = (turn != last_turn_animated)
 	last_turn_animated = turn
 

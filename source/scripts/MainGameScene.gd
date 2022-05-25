@@ -37,9 +37,9 @@ func _ready():
 	"""
 	sidebar.get_node("CanvasLayer/TechTree").add_nodes()
 	get_tree().call_group("preparable", "prepare")
-	update_stats()
 	show_correct_text()
-	update_all()
+	update_resources()
+	sidebar.check_buttons()
 	sidebar.start_game()
 	turns_shown_correct_text_already = {}
 
