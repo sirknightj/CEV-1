@@ -285,6 +285,7 @@ func _on_Next_Month_gui_input(event):
 		GameStats.logger.log_level_action(Logger.Actions.NextMonthClicked)
 		
 		if $NextMonth/Label.text == "Restart":
+			GameStats.logger.log_level_action(Logger.Actions.RestartClicked)
 			GameStats.reset_game(true)
 			return
 		
