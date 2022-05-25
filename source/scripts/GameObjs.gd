@@ -184,7 +184,7 @@ class Resources:
 	func hash() -> int:
 		var res = 0
 		for type in GameData.ResourceType.values():
-			if type != GameData.ResourceType.SCIENCE and type != GameData.ResourceType.PEOPLE:
+			if type != GameData.ResourceType.PEOPLE:
 				res = res * 31 + resources[type].hash()
 		return res
 
