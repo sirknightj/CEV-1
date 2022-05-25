@@ -84,6 +84,7 @@ var turns_shown_correct_text_already : Dictionary
 func show_correct_text():
 	var turn = GameStats.turn
 	var text = "" # bbcode
+	var ppl = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
 	
 	if turns_shown_correct_text_already.has(turn):
 		print("An extra MainGameScene.show_correct_text was called!")
@@ -147,15 +148,15 @@ func show_correct_text():
 		else:
 			text = ""
 	else:
-		if GameStats.just_won == 1:
+		if GameStats.just_won == 1 and not ppl < 1:
 			text = "A meteor crashes into the Cryonic Chamber and the colonists wake up from their slumber. You insist on building another one but the colonists refuse. They want their freedom."
-		elif GameStats.just_won == 2:
+		elif GameStats.just_won == 2 and not ppl < 1:
 			text = "Your objective function remains the same: keep the humans alive for as long as possible."
 		else:
 			text = ""
 		if GameStats.just_won:
 			GameStats.just_won += 1
-	if num_died and 0 < floor(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)):
+	if num_died and not ppl < 1:
 			var deaths_left = GameStats.colonist_death_threshold - GameStats.dead
 			var plural_colonists = "colonist" if num_died == 1 else "colonists"
 			plural_colonists = str(num_died) + " " + plural_colonists
@@ -166,6 +167,8 @@ func show_correct_text():
 				text += "Only %s more %s will be tolerated before you get shut down!" % [deaths_left, plural_deaths]
 			num_died = 0
 			death_reasons = []
+	elif ppl < 1:
+		text += "\nAll your remaining colonists died from %s and your colony is now deserted..." % format_death_reasons_as_bbcode(death_reasons)
 	$UpperLayer/TutorialText.bbcode_text = text.strip_edges()
 	update_all()
 

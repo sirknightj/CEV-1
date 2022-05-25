@@ -241,6 +241,7 @@ func _on_Building_building_released(building : Building):
 			GameStats.buildings_owned[building.building_id] = 1
 		placed_building(building.building_id)
 		if building.building_id == GameData.BuildingType.END1:
+			$NextMonth/Label.text = "Freeplay"
 			GameStats.show_win_lose_screen(true)
 	else:
 		building.destroy()
@@ -268,6 +269,9 @@ func _on_Next_Month_gui_input(event):
 		if $NextMonth/Label.text == "Restart":
 			GameStats.reset_game(true)
 			return
+		
+		if $NextMonth/Label.text == "Freeplay":
+			$NextMonth/Label.text = "Next Month"
 		
 		# print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:

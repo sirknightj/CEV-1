@@ -128,7 +128,7 @@ func _to_str(number: float, include_plus: bool, people : float = 0.0) -> String:
 	if not people:
 		return prefix + str(floor(number))
 	else:
-		return prefix + str(floor(people + number) - floor(people))
+		return prefix + str(max(floor(people + number) - floor(people), 0))
 
 func _animate_store(name: String, val: float) -> void:
 	get_node("HBoxContainer/" + name + "/TextReserve").text = _to_str(val, false)
