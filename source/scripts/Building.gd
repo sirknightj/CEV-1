@@ -604,6 +604,9 @@ func _on_building_grab():
 	_original_rot = _main.rotation
 	set_physics_process(true)
 	log_building_action(Logger.Actions.BuildingGrabbed)
+	if _mouse_state != MouseState.MULTISELECTDRAGGING and GameStats.current_selected_building != null:
+		set_state(MouseState.NONE)
+		return
 	if _mouse_state == MouseState.DRAGGING:
 		GameStats.current_selected_building = self
 	emit_signal("building_grabbed", self)
