@@ -4,9 +4,9 @@ var all_links : Array # Array of Line2Ds
 
 var item_scene = preload("res://scenes/TreeItem.tscn")
 
-var selected_upgrade : int = -1
-var hovered_upgrade : int = -1
-var just_purchased : bool = false
+var selected_upgrade : int
+var hovered_upgrade : int
+var just_purchased : bool
 
 var COLORS : Dictionary = {
 	"unlocked" : [Color("#049F0C"), Color("#049F0C").darkened(0.4)],
@@ -17,6 +17,9 @@ const DEFAULT_LINK_COLOR = Color("#4AD0CCD0")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	selected_upgrade = -1
+	hovered_upgrade = -1
+	just_purchased = false
 	GameStats.upgrade_tree.load_upgrade_tree(self)
 	$SelectedUpgrade/BuyButton.connect("gui_input", self, "_on_BuyButton_gui_input")
 

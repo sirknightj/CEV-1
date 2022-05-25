@@ -85,7 +85,6 @@ var refund_icon = preload("res://assets/images/refund.png")
 var _global_pos_next : Vector2
 var _global_rot_next : float
 var _emit_release_on_next_physics : bool = false
-var _check_enter_on_next_physics : bool = false
 var _main_flipped_next : bool = false
 var _ghost_flipped_next : bool = false
 var _shadow_flipped_next : bool = false
@@ -288,14 +287,14 @@ func setup_ghost_square(grid_square : GridSquare):
 func building_mouse_entered():
 	if ((_mouse_state == MouseState.NONE and GameStats.current_selected_building == null)
 			or _mouse_state == MouseState.MULTISELECT):
+		GameStats.current_hovered_building = self
 		if _mouse_state == MouseState.MULTISELECT:
 			set_state(MouseState.MULTISELECTHOVER)
 		else:
 			set_state(MouseState.HOVER)
 			emit_signal("building_hovered", self)
-		GameStats.current_hovered_building = self
 		if locked:
-			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+			Input.set_default_cursor_shape(Input.CURSOR_FORBIDDEN)
 		else:
 			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
 
@@ -390,8 +389,7 @@ func check_trash():
 	if is_in_trash_area():
 		if has_moved() or purchased:
 			if not saleable:
-				# TODO - custom icon maybe?
-				Input.set_custom_mouse_cursor(null)
+				Input.set_default_cursor_shape(Input.CURSOR_FORBIDDEN)
 			elif refundable():
 				if GameStats.show_sell_yes_refund_message and purchased:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Since this building was built on this turn, you'll receive a full refund!"
@@ -407,6 +405,7 @@ func check_trash():
 				Input.set_custom_mouse_cursor(trash_icon)
 		_shadow.visible = false
 	else:
+		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		Input.set_custom_mouse_cursor(null)
 		if has_moved():
 			_shadow.visible = true
@@ -468,9 +467,6 @@ func _physics_process(_delta):
 		_emit_release_on_next_physics = false
 		set_physics_process(false)
 		emit_signal("building_released", self)
-	if _check_enter_on_next_physics:
-		_check_enter_on_next_physics = false
-		set_physics_process(false)
 		if _mouse_enters > 0:
 			building_mouse_entered()
 	if (_main_flipped_next != _main_flipped
@@ -570,10 +566,7 @@ func _on_building_place():
 	else:
 		set_state(MouseState.NONE)
 		force_set(_original_pos, _original_rot, _original_flipped)
-	if old == MouseState.DRAGGING:
-		_on_building_release()
-	else:
-		_check_enter_on_next_physics = true
+	_on_building_release()
 
 func possible_enter():
 	if _mouse_enters > 0:
@@ -583,10 +576,12 @@ func force_update():
 	_last_mouse_pos = get_global_mouse_position()
 
 func is_in_trash_area():
-	return not GameStats.grid.is_within_grid(get_global_mouse_position())
+	return get_global_mouse_position().x > GameStats.grid.get_pos_edge() * 1.1
 
 func multiselect_on():
 	set_state(MouseState.MULTISELECT)
+	if _mouse_enters > 0:
+		building_mouse_entered()
 
 func multiselect_off():
 	set_state(MouseState.NONE)
@@ -611,7 +606,7 @@ func _on_building_grab():
 	log_building_action(Logger.Actions.BuildingGrabbed)
 	if _mouse_state == MouseState.DRAGGING:
 		GameStats.current_selected_building = self
-		emit_signal("building_grabbed", self)
+	emit_signal("building_grabbed", self)
 
 func _on_building_rotate():
 	rotate_around(get_global_mouse_position(), PI/2)
@@ -628,7 +623,7 @@ func _on_building_drag():
 	_last_mouse_pos = get_global_mouse_position()
 	_update_main()
 
-func _input(event : InputEvent):
+func _unhandled_input(event : InputEvent):
 	if locked:
 		return
 	if not is_instance_valid(self):
@@ -651,7 +646,9 @@ func _input(event : InputEvent):
 			building_mouse_exited()
 	elif event.is_action_pressed("building_rotate") and any_dragging:
 		_on_building_rotate()
-	elif event.is_action_pressed("building_flip") and _mouse_state == MouseState.DRAGGING:
+	elif (event.is_action_pressed("building_flip")
+			and (_mouse_state == MouseState.DRAGGING
+				or _mouse_state == MouseState.MULTISELECTDRAGGING and GameStats.multiselect_drag == MultiSelector.DragMode.Drag)):
 		_on_building_flip()
 	elif (event is InputEventMouseMotion
 			and event.relative != Vector2(0.0, 0.0)

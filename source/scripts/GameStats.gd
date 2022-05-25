@@ -11,10 +11,10 @@ var game : Game
 
 var is_playing : bool # true if the game is still being played, false if it has ended
 var win_status : bool # true if the player won. false if they lost
-var just_won : int = 0 # number of turns since winning
-var selling_enabled : bool = false # true if selling is enabled. false if disabled
+var just_won : int # number of turns since winning
+var selling_enabled : bool # true if selling is enabled. false if disabled
 var colonist_death_threshold : int
-var scroll_down_queued : bool = false # true if we should scroll down after clicking
+var scroll_down_queued : bool # true if we should scroll down after clicking
 									  # the "back" button in the upgrades menu
 
 var show_sell_no_refund_message : bool # true if we should show this when the player sells
@@ -223,7 +223,7 @@ var _initial_reserves = {
 
 var current_selected_building = null
 var current_hovered_building = null
-var multiselect_drag : bool = false
+var multiselect_drag : int = 0
 
 class BuildingStats:
 	var shape : Array
@@ -258,6 +258,13 @@ func _init():
 	load_buildings_json()
 
 func _ready():
+	reset_game(false)
+
+"""
+	Resets the game to the original state.
+	is_restart : true iff the game is restarting
+"""
+func reset_game(is_restart : bool):
 	show_sell_no_refund_message = true
 	show_sell_yes_refund_message = true
 	is_playing = true
@@ -267,6 +274,20 @@ func _ready():
 	colonist_death_threshold = 100
 	resources = GameObjs.Resources.new()
 	resources.set_reserves(_initial_reserves)
+	buildings_unlocked = []
+	buildings_owned = {}
+	restrictions = {}
+	current_selected_building = null
+	current_hovered_building = null
+	multiselect_drag = false
+	just_won = 0
+	selling_enabled = false
+	scroll_down_queued = false
+	show_sell_no_refund_message = true
+	show_sell_yes_refund_message = true
+	upgrade_tree = GameObjs.UpgradeTree.new()
+	if is_restart:
+		get_tree().reload_current_scene()
 
 """
 	Show the win/lose screen

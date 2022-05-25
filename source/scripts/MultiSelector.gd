@@ -1,9 +1,16 @@
 extends Node2D
+class_name MultiSelector
 
 var active : bool = false
 var dragging : bool = false
 var selected : Dictionary = {}
 var start_pos : Vector2
+
+enum DragMode {
+	None,
+	Drag
+	DragRotateOnly
+}
 
 onready var rect = $ColorRect
 onready var area = $Area2D
@@ -40,6 +47,8 @@ func _on_area_entered(area : Area2D):
 	if not active:
 		return
 	var building = area.get_parent().get_parent()
+	if building.locked:
+		return
 	if not selected.has(building):
 		building.call_deferred("multiselect_on")
 		selected[building] = 0
@@ -70,7 +79,7 @@ func _physics_process(_delta):
 	for building in selected.keys():
 		building._update_shadow()
 
-func _input(event):
+func _unhandled_input(event):
 	var mouse_pos = get_global_mouse_position()
 	var x : float
 	var y : float
@@ -86,7 +95,8 @@ func _input(event):
 
 	if (event.is_action_pressed("building_grab")
 			and GameStats.grid.is_within_grid(mouse_pos)
-			and GameStats.current_hovered_building == null):
+			and GameStats.current_hovered_building == null
+			and not active):
 		GameStats.current_selected_building = self
 		active = true
 		start_pos = pos
@@ -95,10 +105,15 @@ func _input(event):
 	elif (event.is_action_pressed("building_grab")
 			and GameStats.current_selected_building == self):
 		if GameStats.current_hovered_building == null:
+			active = false
+			GameStats.current_selected_building = null
 			deselect()
 		else:
 			dragging = true
-			GameStats.multiselect_drag = true
+			if selected.size() == 1 and not selected.keys()[0].is_symmetrical():
+				GameStats.multiselect_drag = DragMode.Drag
+			else:
+				GameStats.multiselect_drag = DragMode.DragRotateOnly
 			set_physics_process(true)
 	elif event.is_action_released("building_grab"):
 		if active:
@@ -110,7 +125,7 @@ func _input(event):
 		elif dragging:
 			set_physics_process(false)
 			dragging = false
-			GameStats.multiselect_drag = false
+			GameStats.multiselect_drag = DragMode.None
 			selected = {}
 			GameStats.current_selected_building = null
 			GameStats.current_hovered_building = null

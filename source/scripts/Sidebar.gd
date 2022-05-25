@@ -7,21 +7,25 @@ var game : Game # The node representing the game
 var Turn_Count_Text # The node holding the turn count text
 
 var show_resources : Dictionary = {}
-var ignore_next_month : bool = false # default = clickable
-var ignore_upgrades_button = true # default = unclickable
+var ignore_next_month : bool # default = clickable
+var ignore_upgrades_button : bool  # default = unclickable
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 onready var row_scene = preload("res://scenes/BuildingRow.tscn")
 
-var ending_shown_once: bool = false  # set to true after ending shown for the first time so it isn't shown again
+var ending_shown_once: bool  # set to true after ending shown for the first time so it isn't shown again
 
 func _setup_control_element(control : Control):
 	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	ignore_next_month = false
+	ignore_upgrades_button = true
+	ending_shown_once = false
 	game = get_parent().get_parent()
 	Turn_Count_Text = get_node("TurnCount")
+	$NextMonth/Label.text = "Next Month"
 
 func start_game():
 	for resource in GameData.ResourceType.values():
@@ -34,6 +38,7 @@ func show_all():
 	GameStats.shown_resources = GameData.ResourceType.values()
 	show_resources()
 	toggle_next_month_button(true)
+	$NextMonth.show()
 	toggle_upgrades_button(true)
 	GameStats.restrictions.clear()
 	GameStats.selling_enabled = true
@@ -96,6 +101,12 @@ func populate_sidebar_correctly() -> void:
 	check_buttons()
 	if GameStats.colonist_death_threshold <= GameStats.dead or GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 1:
 		GameStats.show_win_lose_screen(false)
+		$NextMonth/Label.text = "Restart"
+		
+		# Lock all the buildings
+		for _building in GameStats.game.get_buildings():
+			if _building.purchased:
+				_building.locked = true
 	
 	var turn = GameStats.turn
 	if turn <= 2:
@@ -200,8 +211,12 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		entry.get_node("CostContainer/Text").bbcode_text = cost_text
 		entry.get_node("EffectsContainer/Text").bbcode_text = effects_text
 
+"""
+	Returns true if the building is available
+	false if not
+"""
 func available(building) -> bool:
-	return GameStats.restrictions.empty() or GameStats.restrictions.has(building)
+	return (GameStats.restrictions.empty() or GameStats.restrictions.has(building)) and not (not GameStats.win_status and not GameStats.is_playing)
 
 func _on_Building_building_destroy(_building):
 	repopulate_sidebar()
@@ -226,6 +241,7 @@ func _on_Building_building_released(building : Building):
 			GameStats.buildings_owned[building.building_id] = 1
 		placed_building(building.building_id)
 		if building.building_id == GameData.BuildingType.END1:
+			$NextMonth/Label.text = "Freeplay"
 			GameStats.show_win_lose_screen(true)
 	else:
 		building.destroy()
@@ -249,7 +265,14 @@ func update_displays() -> void:
 func _on_Next_Month_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_level_action(Logger.Actions.NextMonthClicked)
-		# TODO(vishal)
+		
+		if $NextMonth/Label.text == "Restart":
+			GameStats.reset_game(true)
+			return
+		
+		if $NextMonth/Label.text == "Freeplay":
+			$NextMonth/Label.text = "Next Month"
+		
 		# print("People that will die next turn: " + str(how_many_people_will_die_next_turn()))
 		if ignore_next_month:
 			if GameStats.restrictions.keys().size() > 0:
@@ -339,7 +362,7 @@ func placed_building(building : int):
 	
 	if GameStats.turn == 1:
 		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = "Great work! Advance to the next month."
-	
+		$NextMonth.show()
 	check_buttons()
 
 """

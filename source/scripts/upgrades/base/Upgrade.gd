@@ -28,6 +28,9 @@ func purchase():
 	else:
 		return false
 
+func get_name_for(_building) -> String:
+	return upgrade_name
+
 """
 	Apply the upgrade
 """

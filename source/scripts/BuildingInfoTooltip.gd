@@ -12,20 +12,23 @@ var active_building = null
 func _ready():
 	add_to_group("preparable")
 
+func is_selected(building : Building):
+	return building == GameStats.current_hovered_building
+
 func _on_building_changed(building):
-	if building != active_building:
+	if not is_selected(building):
 		return
 	show_building(building)
 
 func _on_building_active(building):
-	if not building.purchased:
+	if (not building.purchased
+			or not is_selected(building)):
 		return
-	active_building = building
 	show_building(building)
 	show()
 
 func _on_building_inactive(building):
-	if building != active_building:
+	if GameStats.current_hovered_building != null and not is_selected(building):
 		return
 	hide()
 
@@ -47,7 +50,7 @@ func show_building(building : Building):
 	var building_upgrades = building.building_effect_upgrades
 	var upgrade_names = []
 	for upgrade in building_upgrades:
-		upgrade_names.append(upgrade.upgrade_name)
+		upgrade_names.append(upgrade.get_name_for(building))
 	var has_upgrades = len(building_upgrades) > 0
 	if has_upgrades:
 		upgrades.text = "Active upgrades: %s" % [GameData.natural_join(upgrade_names)]

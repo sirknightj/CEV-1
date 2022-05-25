@@ -9,7 +9,7 @@ cost = {
 }
 upgrade_name = "Astrobiology"
 description = "Research space organisms and gain new insights into the interactions between space and biological organisms."
-effects = "+10% food output to each farm adjacent to a science building."
+effects = "+10% food output to farms adjacent to a science building."
 multipliers = {
 0: 1.1
 }
