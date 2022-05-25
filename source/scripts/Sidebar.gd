@@ -78,11 +78,12 @@ func check_buttons() -> void:
 	var current = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.strip_edges()
 	var not_enough_energy_message : String = "You don't have enough [color=%s]energy[/color] to keep your buildings running! You'll need to sell some buildings or generate more [color=%s]energy[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY), GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)]
 	var not_enough_metal_message : String = "You don't have enough [color=%s]metal[/color] to keep your buildings running! You'll need to sell some buildings or generate more [color=%s]metal[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.METAL), GameData.get_resource_color_as_hex(GameData.ResourceType.METAL)]
-	if not has_enough_electricity() and GameStats.turn >= 12:
+	var ppl = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
+	if not has_enough_electricity() and GameStats.turn >= 12 and not ppl < 1:
 		if not current.ends_with(not_enough_energy_message):
 			current += "\n" + not_enough_energy_message
 		toggle_next_month_button(false)
-	elif not has_enough_metal() and GameStats.turn >= 12 and not current.ends_with("more metal!"):
+	elif not has_enough_metal() and GameStats.turn >= 12 and not current.ends_with("more metal!") and not ppl < 1:
 		current = current.strip_edges().trim_suffix(not_enough_energy_message).strip_edges()
 		if not current.ends_with(not_enough_metal_message):
 			current += "\n" + not_enough_metal_message
