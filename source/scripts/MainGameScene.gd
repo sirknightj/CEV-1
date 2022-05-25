@@ -256,6 +256,7 @@ func update_all():
 	update_resources()
 	update_stats()
 	sidebar.check_buttons()
+	sidebar.repopulate_sidebar()
 
 func _on_Building_building_changed(building):
 	update_all()
