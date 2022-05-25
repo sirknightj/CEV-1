@@ -13,7 +13,7 @@ var ignore_upgrades_button : bool  # default = unclickable
 onready var building_scene = preload("res://scenes/Building.tscn")
 onready var row_scene = preload("res://scenes/BuildingRow.tscn")
 
-var ending_shown_once: bool  # set to true after ending shown for the first time so it isn't shown again
+var ending_shown_on_this_turn: bool  # set to true after ending shown for the first time so it isn't shown again
 
 func _setup_control_element(control : Control):
 	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -22,7 +22,7 @@ func _setup_control_element(control : Control):
 func _ready():
 	ignore_next_month = false
 	ignore_upgrades_button = true
-	ending_shown_once = false
+	ending_shown_on_this_turn = false
 	game = get_parent().get_parent()
 	Turn_Count_Text = get_node("TurnCount")
 	$NextMonth/Label.text = "Next Month"
@@ -47,7 +47,7 @@ func show_all():
 	update_turn_display()
 
 func cheat():
-	var cheat_alot = false
+	var cheat_alot = true
 	GameStats.turn = max(GameStats.turn, 20)
 	GameStats.buildings_unlocked = GameData.BuildingType.values()
 	if cheat_alot:
@@ -100,9 +100,23 @@ func repopulate_sidebar():
 
 func populate_sidebar_correctly() -> void:
 	check_buttons()
-	if GameStats.colonist_death_threshold <= GameStats.dead or GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 1:
+	var ppl = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
+	if GameStats.colonist_death_threshold <= GameStats.dead or ppl < 1:
+		if ending_shown_on_this_turn:
+			return
+		if ppl < 1:
+			GameStats.resources.set_reserve(GameData.ResourceType.PEOPLE, 0)
+		if GameStats.resources.get_reserve(GameData.ResourceType.FOOD) < 0:
+			GameStats.resources.set_reserve(GameData.ResourceType.FOOD, 0)
+		if GameStats.resources.get_reserve(GameData.ResourceType.OXYGEN) < 0:
+			GameStats.resources.set_reserve(GameData.ResourceType.OXYGEN, 0)
+		if GameStats.resources.get_reserve(GameData.ResourceType.WATER) < 0:
+			GameStats.resources.set_reserve(GameData.ResourceType.WATER, 0)
 		GameStats.show_win_lose_screen(false)
+		GameStats.game.update_all()
+		
 		$NextMonth/Label.text = "Restart"
+		toggle_next_month_button(true)
 		
 		# Lock all the buildings
 		for _building in GameStats.game.get_buildings():
@@ -217,6 +231,8 @@ func populate_sidebar(buildings : Dictionary) -> void:
 	false if not
 """
 func available(building) -> bool:
+	if GameData.BuildingType.END1 == building and GameStats.buildings_owned.has(building) and GameStats.buildings_owned[building] == 1:
+		return false
 	return (GameStats.restrictions.empty() or GameStats.restrictions.has(building)) and not (not GameStats.win_status and not GameStats.is_playing)
 
 func _on_Building_building_destroy(_building):
@@ -265,6 +281,7 @@ func update_displays() -> void:
 """
 func _on_Next_Month_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
+		ending_shown_on_this_turn = false
 		GameStats.logger.log_level_action(Logger.Actions.NextMonthClicked)
 		
 		if $NextMonth/Label.text == "Restart":
@@ -335,9 +352,10 @@ func scroll_down():
 
 
 func on_ending() -> void:
-	if ending_shown_once:
+	if ending_shown_on_this_turn:
 		return
-	ending_shown_once = true
+	GameStats.game.update_all()
+	ending_shown_on_this_turn = true
 	GameStats.just_won = 1
 	$CanvasLayer/EndScreen.set_condition(GameStats.win_status)
 	$CanvasLayer/EndScreen.show()
@@ -345,6 +363,8 @@ func on_ending() -> void:
 	$CanvasLayer/EndScreen.connect("on_close_clicked", self, "on_endingscreen_close")
 
 func on_endingscreen_close() -> void:
+	GameStats.game.update_all()
+	get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = ""
 	$CanvasLayer/EndScreen.hide()
 
 """

@@ -14,6 +14,8 @@ var sidebar : Control
 # The graph object
 var graph : Control
 
+var _dirty = false
+
 onready var building_scene = preload("res://scenes/Building.tscn")
 
 # Called when the node enters the scene tree for the first time.
@@ -88,6 +90,7 @@ var death_reasons : Array = []
 var turns_shown_correct_text_already : Dictionary
 
 func show_correct_text():
+	update_resources()
 	var turn = GameStats.turn
 	var text = "" # bbcode
 	var ppl = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
@@ -167,12 +170,14 @@ func show_correct_text():
 			var plural_colonists = "colonist" if num_died == 1 else "colonists"
 			plural_colonists = str(num_died) + " " + plural_colonists
 			text += ("\nOh no! %s died from %s." % [plural_colonists, format_death_reasons_as_bbcode(death_reasons)])
-			if deaths_left > 0:
+			if deaths_left > 0 and not ppl < 1:
 				var plural_deaths = "death" if deaths_left == 1 else "deaths"
 				text += (" " if text else "")
 				text += "Only %s more %s will be tolerated before you get shut down!" % [deaths_left, plural_deaths]
 			num_died = 0
 			death_reasons = []
+	if GameStats.colonist_death_threshold <= GameStats.dead:
+		text += "\nMore than " + str(GameStats.colonist_death_threshold) + " colonists have perished, no more will be tolerated!"
 	elif ppl < 1:
 		text += "\nAll your remaining colonists died from %s and your colony is now deserted..." % format_death_reasons_as_bbcode(death_reasons)
 	$UpperLayer/TutorialText.bbcode_text = text.strip_edges()
@@ -252,11 +257,16 @@ func _unhandled_input(event):
 	if event.is_action_pressed("toggle_fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
 
+func _process(_delta):
+	if _dirty:
+		_dirty = false
+		update_resources()
+		update_stats()
+		sidebar.check_buttons()
+		sidebar.repopulate_sidebar()
+
 func update_all():
-	update_resources()
-	update_stats()
-	sidebar.check_buttons()
-	sidebar.repopulate_sidebar()
+	_dirty = true
 
 func _on_Building_building_changed(building):
 	update_all()

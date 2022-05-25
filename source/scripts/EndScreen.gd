@@ -78,7 +78,7 @@ func _set_stats(is_win: bool) -> void:
 	var deaths = GameStats.dead
 	var upgrades_purchased = GameStats.upgrade_tree.get_num_bought()
 	
-	var buildings_placed = -1  # do not count city center
+	var buildings_placed = 0  # do not count city center
 	for n in GameStats.buildings_owned.values():
 		buildings_placed += n
 	
