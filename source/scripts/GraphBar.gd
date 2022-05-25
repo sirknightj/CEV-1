@@ -160,8 +160,8 @@ func update_bar(is_next_turn_update: bool, production: float, consumption: float
 		_stage_animation(1, tween, diff_text, "rect_position:y", diff_text_y_stage_1, reference_y + (9 if resource_delta < 0 else -20), Tween.TRANS_EXPO, Tween.EASE_OUT)
 		
 		_stage_animation(0, tween, triangle, "position:y", null, reference_y_old + (4 if next_reserve > reserve else -4), Tween.TRANS_EXPO, Tween.EASE_OUT)
-		if node_name == "Water":
-			print("[B] Setting scale:y to ", sign(resource_delta))
+		# if node_name == "Water":
+		# 	print("[B] Setting scale:y to ", sign(resource_delta))
 		_stage_animation(0, tween, triangle, "scale:y", null, sign(resource_delta), Tween.TRANS_EXPO, Tween.EASE_OUT)
 		_stage_animation(1, tween, triangle, "position:y", reference_y_old + (4 if next_reserve > reserve else -4), reference_y + (4 if next_reserve > reserve else -4), Tween.TRANS_EXPO, Tween.EASE_OUT)
 

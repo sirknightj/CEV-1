@@ -48,7 +48,7 @@ func show_all():
 
 func cheat():
 	var cheat_alot = false
-	GameStats.turn = 20
+	GameStats.turn = max(GameStats.turn, 20)
 	GameStats.buildings_unlocked = GameData.BuildingType.values()
 	if cheat_alot:
 		GameStats.resources.set_reserves({
@@ -327,7 +327,6 @@ func scroll_down():
 	var current : float = $ScrollContainer.get_v_scrollbar().value
 	var target : float = $ScrollContainer.get_v_scrollbar().max_value
 	if not tween.is_active() and current != target:
-		print("Scrolling down...")
 		var duration : float = 1.0
 		tween.interpolate_property($ScrollContainer.get_v_scrollbar(), "value",
 									current, target, 1.5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
@@ -351,7 +350,7 @@ func on_endingscreen_close() -> void:
 	Tells the restrictions that the player has placed a building
 """
 func placed_building(building : int):
-	print("placed_building was called")
+	# print("placed_building was called")
 	if GameStats.restrictions.has(building) and GameStats.restrictions[building] > 1:
 		GameStats.restrictions[building] -= 1
 	elif GameStats.restrictions.has(building) and GameStats.restrictions[building] == 1:
@@ -443,8 +442,10 @@ func toggle_upgrades_button(_clickable) -> void:
 	else:
 		$Upgrades.hide()
 
-const SCROLL_SPEED = 12
+const SCROLL_SPEED = 13
 func _unhandled_input(event : InputEvent):
+	# if GameStats.turn < 20:
+	#	cheat()
 	if event.is_action_pressed("debug"):
 		cheat()
 	elif event is InputEventMouseButton:

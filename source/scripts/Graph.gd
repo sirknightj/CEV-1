@@ -149,7 +149,7 @@ func update_graph(turn: int, resources: GameObjs.Resources, new_resource_dict : 
 	resources_saved = resources
 	resources_saved_hash = resources.hash()
 	
-	print("update_graph with next_turn=", is_next_turn_update)
+	# print("update_graph with next_turn=", is_next_turn_update)
 
 	for type in RESOURCE_TYPE_TO_STRING.keys():
 		var node_name = RESOURCE_TYPE_TO_STRING.get(type)
