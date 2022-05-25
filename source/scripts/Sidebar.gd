@@ -38,6 +38,7 @@ func show_all():
 	GameStats.shown_resources = GameData.ResourceType.values()
 	show_resources()
 	toggle_next_month_button(true)
+	$NextMonth.show()
 	toggle_upgrades_button(true)
 	GameStats.restrictions.clear()
 	GameStats.selling_enabled = true
@@ -101,6 +102,11 @@ func populate_sidebar_correctly() -> void:
 	if GameStats.colonist_death_threshold <= GameStats.dead or GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE) < 1:
 		GameStats.show_win_lose_screen(false)
 		$NextMonth/Label.text = "Restart"
+		
+		# Lock all the buildings
+		for _building in GameStats.game.get_buildings():
+			if _building.purchased:
+				_building.locked = true
 	
 	var turn = GameStats.turn
 	if turn <= 2:
