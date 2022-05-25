@@ -39,6 +39,7 @@ func _ready():
 	get_tree().call_group("preparable", "prepare")
 	update_stats()
 	show_correct_text()
+	update_all()
 	sidebar.start_game()
 
 """
@@ -50,12 +51,15 @@ func update_stats():
 	var shown_resources : Dictionary = {}
 	for resource in $UILayer/Sidebar.show_resources:
 		shown_resources[resource] = all_resources[resource]
-	graph.update_graph(GameStats.resources, shown_resources)
+	graph.update_graph(GameStats.turn, GameStats.resources, shown_resources)
 
 """
 	Handles the logic for the next turn
 """
 func on_next_turn():
+	var cb = GameStats.resources.get_callback()
+	GameStats.resources.set_callback(null)
+
 	GameStats.logger.log_level_end({
 		"resource_hovers": graph.hover_durations,
 		"game": GameStats.serialize()
@@ -64,14 +68,16 @@ func on_next_turn():
 	GameStats.turn += 1
 	emit_signal("next_turn")
 	"""
-		SAVED GAME DEBUGGING
-		DISABLE IN PRODUCTION
+	SAVED GAME DEBUGGING
+	DISABLE IN PRODUCTION
 	"""
 	#GameStats.save_game()
 	"""
 	"""
 	GameStats.logger.log_level_start(GameStats.turn)
 	show_correct_text()
+	update_all()
+	GameStats.resources.set_callback(cb)
 	if GameStats.turn == 6 or GameStats.turn == 9 or GameStats.turn == 11:
 		$UILayer/Sidebar.scroll_down()
 
@@ -159,7 +165,6 @@ func show_correct_text():
 			num_died = 0
 			death_reasons = []
 	$UpperLayer/TutorialText.bbcode_text = text.strip_edges()
-	update_all()
 
 """
 	Place the building at the grid square (_x, _y).

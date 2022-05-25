@@ -48,8 +48,8 @@ text = "Month 0"
 valign = 1
 
 [node name="Graph" parent="." instance=ExtResource( 6 )]
-margin_top = 78.0
-margin_bottom = 338.0
+margin_top = 95.0
+margin_bottom = 355.0
 
 [node name="NextMonth" type="Polygon2D" parent="."]
 position = Vector2( 845, 282 )

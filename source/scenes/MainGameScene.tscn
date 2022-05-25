@@ -92,8 +92,9 @@ margin_bottom = 118.0
 mouse_filter = 2
 
 [node name="RectLeft" type="ColorRect" parent="UpperLayer/GraphTooltip"]
+margin_top = 46.0
 margin_right = 158.0
-margin_bottom = 92.0
+margin_bottom = 138.0
 mouse_filter = 2
 color = Color( 0.2, 0.2, 0.2, 1 )
 
@@ -108,8 +109,9 @@ text = "Production"
 
 [node name="RectRight" type="ColorRect" parent="UpperLayer/GraphTooltip"]
 margin_left = 164.0
+margin_top = 46.0
 margin_right = 336.0
-margin_bottom = 92.0
+margin_bottom = 138.0
 mouse_filter = 2
 color = Color( 0.2, 0.2, 0.2, 1 )
 
