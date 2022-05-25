@@ -95,7 +95,7 @@ func _on_hover_on(type: int) -> void:
 	for t in consumption_texts:
 		consumption_text += t[1]
 	
-	var reserve_text = "Reserve: %s\n\n%s per month" % [resources_saved.get_reserve(type), _to_str(total_production - total_consumption, true)]
+	var reserve_text = "Reserve: %s\n\n%s next month" % [resources_saved.get_reserve(type), _to_str(total_production - total_consumption, true)]
 	
 	tooltip_control.get_node("RectLeft/Text").text = production_text + "\n\n" + consumption_text
 	tooltip_control.get_node("RectRight/Text").text = reserve_text
