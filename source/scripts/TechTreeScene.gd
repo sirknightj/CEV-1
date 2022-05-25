@@ -189,7 +189,6 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	_update_reserve_text()
 	just_purchased = true
 	selected_upgrade = -1
-	print("This was called")
 	GameStats.game.update_all()
 
 """
