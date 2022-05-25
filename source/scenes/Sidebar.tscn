@@ -248,10 +248,6 @@ visible = false
 
 [node name="Tween" type="Tween" parent="."]
 
-[node name="MouseBlocker" type="Control" parent="."]
-margin_right = 809.0
-margin_bottom = 351.0
-
 [connection signal="gui_input" from="NextMonth/Label" to="." method="_on_Next_Month_gui_input"]
 [connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Upgrades_gui_input"]
 [connection signal="gui_input" from="Stats/Label" to="." method="_on_Stats_gui_input"]
