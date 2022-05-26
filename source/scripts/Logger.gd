@@ -2,6 +2,7 @@ extends Object
 class_name Logger
 
 enum Actions {
+	RestartClicked = 10,
 	NextMonthClicked = 12,
 	StatsClicked = 14,
 	UpgradeMenuClicked = 17,
@@ -19,6 +20,7 @@ enum Actions {
 	BuildingRotated = 70,
 	BuildingFlipped = 71,
 
+	# if you change these, remember to change them in logging.js too:
 	Lose = 666,
 	Win = 777,
 }

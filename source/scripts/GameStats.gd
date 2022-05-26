@@ -362,7 +362,8 @@ func serialize():
 		"is_playing": is_playing,
 		"resources": resources.serialize(),
 		"upgrades": upgrade_tree.serialize(),
-		"buildings": serialize_buildings()
+		"buildings": serialize_buildings(),
+		"grid_size": grid_size,
 	}
 
 func deserialize(data):

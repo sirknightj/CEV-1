@@ -1,3 +1,62 @@
+const turns = [];
+let currentBuildings = [];
+let currentGridSize = 1;
+
+function serialize(b) {
+	return [b.id, b.pos.x, b.pos.y, b.rot, b.flip ? 1 : 0].join(",");
+}
+
+function handleBuildingsData(details, changeCurrentBuildings=true) {
+	let currentBuildingsCopy;
+	let currentGridSizeCopy;
+	if (!changeCurrentBuildings) {
+		currentGridSizeCopy = currentGridSize;
+		currentBuildingsCopy = [...currentBuildings]
+	}
+
+	const buildings = details.game.buildings.map((b) => serialize({
+		id: b.id,
+		pos: b.current_pos,
+		rot: Math.round((b.rotation * 2 / Math.PI) % 4),
+		flip: b.flipped,
+	}));
+
+	let res = [];
+
+	const size = details.game.grid_size;
+	if (currentGridSize != size) {
+		currentGridSize = size;
+		res.push("g" + size);
+	}
+
+	for (let i = 0; i < currentBuildings.length; i++) {
+		if (!buildings.includes(currentBuildings[i])) {
+			res.push(i);
+		}
+	}
+	currentBuildings = currentBuildings.filter((_, i) => !res.includes(i));
+
+	for (const b of buildings) {
+		if (!currentBuildings.includes(b)) {
+			currentBuildings.push(b);
+			res.push(b);
+		}
+	}
+	turns.push(res.join("|"));
+
+	if (!changeCurrentBuildings) {
+		currentBuildings = currentBuildingsCopy;
+		currentGridSize = currentGridSizeCopy;
+		const ret = getReplayData();
+		turns.pop();
+		return ret;
+	}
+}
+
+function getReplayData() {
+	return turns.join("$");
+}
+
 function md5(inputString) {
 	let hc = "0123456789abcdef";
 	function rh(n) {
@@ -260,7 +319,7 @@ class CapstoneLogger {
 	}
 
 	async startNewSessionWithUuid(userId) {
-		console.log("[START NEW SESSION] uid=", userId);
+		// console.log("[START NEW SESSION] uid=", userId);
 		await this.mutex.lock();
 		this.currentUserId = userId;
 		this.currentLevelSeqInSession = 0;
@@ -302,7 +361,7 @@ class CapstoneLogger {
 	async logLevelStart(levelId, details) {
 		await this.mutex.lock();
 		details = this.parseArgs(details);
-		console.log("[LOG LEVEL START]", levelId, details);
+		// console.log("[LOG LEVEL START]", levelId, details);
 
 		try {
 			this.flushBufferedLevelActions();
@@ -343,10 +402,11 @@ class CapstoneLogger {
 	async logLevelEnd(details) {
 		await this.mutex.lock();
 		details = this.parseArgs(details);
-		console.log("[LOG LEVEL END]", details);
+		// console.log("[LOG LEVEL END]", details);
+		handleBuildingsData(details);
+		details.game.buildings = getReplayData();
 
 		try {
-
 			this.flushBufferedLevelActions();
 			if (this.levelActionTimer) {
 				clearInterval(this.levelActionTimer);
@@ -374,7 +434,14 @@ class CapstoneLogger {
 	async logLevelAction(actionId, details) {
 		await this.mutex.lock();
 		details = this.parseArgs(details);
-		console.log("[LOG LEVEL ACTION]", actionId, details);
+		// console.log("[LOG LEVEL ACTION]", actionId, details);
+
+		if (actionId === 666 || actionId === 777) {
+			// win or lose
+			let replay = handleBuildingsData(details, false);
+			details.game.buildings = replay;
+			console.log(replay);
+		}
 
 		// Per action, figure out the time since the start of the level
 		const timestampOfAction = Date.now();
@@ -394,7 +461,7 @@ class CapstoneLogger {
 	async logActionWithNoLevel(actionId, details) {
 		await this.mutex.lock();
 		details = this.parseArgs(details);
-		console.log("[LOG ACTION NO LEVEL]", actionId, details);
+		// console.log("[LOG ACTION NO LEVEL]", actionId, details);
 
 		try {
 			this._request("loggingactionnoquest/set/", {

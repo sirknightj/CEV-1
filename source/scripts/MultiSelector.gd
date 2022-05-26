@@ -50,7 +50,7 @@ func _on_area_entered(area : Area2D):
 	if building.locked:
 		return
 	if not selected.has(building):
-		building.call_deferred("multiselect_on")
+		building.multiselect_on()
 		selected[building] = 0
 	selected[building] += 1
 
@@ -62,12 +62,12 @@ func _on_area_exited(area : Area2D):
 		return
 	selected[building] -= 1
 	if selected[building] == 0:
-		building.call_deferred("multiselect_off")
+		building.multiselect_off()
 		selected.erase(building)
 
 func deselect():
 	for building in selected.keys():
-		building.call_deferred("multiselect_off")
+		building.multiselect_off()
 	selected = {}
 
 func _physics_process(_delta):
@@ -97,6 +97,7 @@ func _unhandled_input(event):
 			and GameStats.grid.is_within_grid(mouse_pos)
 			and GameStats.current_hovered_building == null
 			and not active):
+		deselect()
 		GameStats.current_selected_building = self
 		active = true
 		start_pos = pos

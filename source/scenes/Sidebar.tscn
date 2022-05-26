@@ -224,14 +224,14 @@ mouse_filter = 2
 scroll_horizontal_enabled = false
 
 [node name="BuildingEntries" type="VBoxContainer" parent="ScrollContainer"]
-margin_bottom = 102.0
+margin_bottom = 100.0
 mouse_filter = 2
 
 [node name="Control" parent="ScrollContainer/BuildingEntries" instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 0.0
-margin_bottom = 102.0
+margin_bottom = 100.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 128

@@ -138,13 +138,12 @@ func are_resources_same(resources: GameObjs.Resources) -> bool:
 		return resources.hash() == resources_saved_hash
 	return false
 
-func update_graph(turn: int, resources: GameObjs.Resources, new_resource_dict : Dictionary) -> void:
-	print("Update graph was called")
+func _update_graph(turn : int, resources: GameObjs.Resources, new_resource_dict : Dictionary, force : bool) -> void:
 	var is_next_turn_update = (turn != last_turn_animated)
 	last_turn_animated = turn
 
 	resource_dict = new_resource_dict
-	if are_resources_same(resources) and not is_next_turn_update:
+	if are_resources_same(resources) and not is_next_turn_update and not force:
 		# no need to animate anything
 		return
 	resources_saved = resources
@@ -179,3 +178,8 @@ func update_graph(turn: int, resources: GameObjs.Resources, new_resource_dict : 
 	
 	tween.start()
 
+func force_update_graph(turn : int, resources: GameObjs.Resources, new_resource_dict : Dictionary) -> void:
+	_update_graph(turn, resources, new_resource_dict, true)
+		
+func update_graph(turn : int, resources: GameObjs.Resources, new_resource_dict : Dictionary) -> void:
+	_update_graph(turn, resources, new_resource_dict, false)
