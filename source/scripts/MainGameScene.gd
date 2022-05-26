@@ -130,6 +130,7 @@ func show_correct_text():
 		text = "Humans consume 1 [color=%s]oxygen[/color] unit per month. Make sure you have enough or they'll suffocate!\nYour colony will also need [color=%s]metal[/color] to construct more buildings." % [GameData.get_resource_color_as_hex(GameData.ResourceType.OXYGEN), GameData.get_resource_color_as_hex(GameData.ResourceType.METAL)]
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		GameStats.resources.give(GameData.ResourceType.METAL, 146)
+		GameStats.resources.set_reserve(GameData.ResourceType.OXYGEN, 326)
 		GameStats.restrictions = {GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 1}
 		# GameStats.restrictions = {GameData.BuildingType.WATER1: 1, GameData.BuildingType.METAL1: 1, GameData.BuildingType.OXY1: 1}
 	elif turn == 7:
