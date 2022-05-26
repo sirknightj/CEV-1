@@ -10,8 +10,8 @@ var just_purchased : bool
 
 var COLORS : Dictionary = {
 	"unlocked" : [Color("#049F0C"), Color("#049F0C").darkened(0.4)],
-	"available" : [Color("#CCA700"), Color("#CCA700").darkened(0.4)],
-	"locked" : [Color("#FFFFFF"), Color("#B3A8A8")]
+	"available" : [Color("#0467A9"), Color("#0467A9").darkened(0.4)],
+	"locked" : [Color("#E3E3E3"), Color("#E3E3E3").darkened(0.5)]
 }
 const DEFAULT_LINK_COLOR = Color("#4AD0CCD0")
 
