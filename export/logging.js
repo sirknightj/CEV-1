@@ -6,7 +6,14 @@ function serialize(b) {
 	return [b.id, b.pos.x, b.pos.y, b.rot, b.flip ? 1 : 0].join(",");
 }
 
-function handleBuildingsData(details) {
+function handleBuildingsData(details, changeCurrentBuildings=true) {
+	let currentBuildingsCopy;
+	let currentGridSizeCopy;
+	if (!changeCurrentBuildings) {
+		currentGridSizeCopy = currentGridSize;
+		currentBuildingsCopy = [...currentBuildings]
+	}
+
 	const buildings = details.game.buildings.map((b) => serialize({
 		id: b.id,
 		pos: b.current_pos,
@@ -36,6 +43,14 @@ function handleBuildingsData(details) {
 		}
 	}
 	turns.push(res.join("|"));
+
+	if (!changeCurrentBuildings) {
+		currentBuildings = currentBuildingsCopy;
+		currentGridSize = currentGridSizeCopy;
+		const ret = getReplayData();
+		turns.pop();
+		return ret;
+	}
 }
 
 function getReplayData() {
@@ -389,7 +404,7 @@ class CapstoneLogger {
 		details = this.parseArgs(details);
 		// console.log("[LOG LEVEL END]", details);
 		handleBuildingsData(details);
-		details.replay = getReplayData();
+		details.game.buildings = getReplayData();
 
 		try {
 			this.flushBufferedLevelActions();
@@ -420,6 +435,13 @@ class CapstoneLogger {
 		await this.mutex.lock();
 		details = this.parseArgs(details);
 		// console.log("[LOG LEVEL ACTION]", actionId, details);
+
+		if (actionId === 666 || actionId === 777) {
+			// win or lose
+			let replay = handleBuildingsData(details, false);
+			details.game.buildings = replay;
+			console.log(replay);
+		}
 
 		// Per action, figure out the time since the start of the level
 		const timestampOfAction = Date.now();
