@@ -154,6 +154,7 @@ func serialize():
 
 func log_building_action(action, metadata = null):
 	var data = {
+		"group": GameStats.logger.get_group(),
 		"building": serialize()
 	}
 	if metadata != null:

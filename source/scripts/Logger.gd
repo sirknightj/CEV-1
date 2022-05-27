@@ -25,9 +25,15 @@ enum Actions {
 	Win = 777,
 }
 
+"""
+	Number of groups for A/B testing
+"""
+const NUM_GROUPS : int = 2
+
 class Log:
 	var _logger
 	var enabled: bool
+	var uid : String
 	
 	func _init() -> void:
 		self.enabled = OS.has_feature('JavaScript')
@@ -35,12 +41,15 @@ class Log:
 			print("Has JavaScript support, enabling logging")
 		else:
 			print("No JavaScript support, disabling logging")
-	
+
+	func get_group():
+		return uid.ord_at(uid.length() - 1) % NUM_GROUPS
+
 	func start_new_session(category_id: int) -> void:
 		if not self.enabled:
 			return
 		self._logger = JavaScript.get_interface("window").getLogger(category_id)
-		self._logger.startNewSession()
+		self.uid = self._logger.startNewSession()
 	
 	func log_level_start(level_id: int, details: Dictionary={}) -> void:
 		if not self.enabled:

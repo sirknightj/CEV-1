@@ -315,7 +315,8 @@ class CapstoneLogger {
 			uuid = this.generateUuid();
 			this.setSavedUserId(uuid);
 		}
-		return this.startNewSessionWithUuid(uuid);
+		this.startNewSessionWithUuid(uuid);
+		return uuid;
 	}
 
 	async startNewSessionWithUuid(userId) {
