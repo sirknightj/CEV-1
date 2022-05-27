@@ -17,12 +17,13 @@ var colonist_death_threshold : int
 var scroll_down_queued : bool # true if we should scroll down after clicking
 									  # the "back" button in the upgrades menu
 
-var show_sell_no_refund_message : bool # true if we should show this when the player sells
-var show_sell_yes_refund_message : bool # true if we should show this when the player sells
+var show_sell_no_refund_message : int # greater than 0 if we should show this when the player sells
+var show_sell_yes_refund_message : int # greater than 0 if we should show this when the player sells
 
 var shown_resources : Array # The resources to show. Resources in this array are shown.
 
 var logger : Logger.Log
+var group : int
 
 """
 	Each upgrade object defines its individual properties and mechanics
@@ -265,8 +266,10 @@ func _ready():
 	is_restart : true iff the game is restarting
 """
 func reset_game(is_restart : bool):
-	show_sell_no_refund_message = true
-	show_sell_yes_refund_message = true
+	group = GameStats.logger.get_group()
+	print("Group " + str(group))
+	show_sell_no_refund_message = 2
+	show_sell_yes_refund_message = 2
 	is_playing = true
 	grid_size = 15
 	turn = 1
@@ -283,8 +286,6 @@ func reset_game(is_restart : bool):
 	just_won = 0
 	selling_enabled = false
 	scroll_down_queued = false
-	show_sell_no_refund_message = true
-	show_sell_yes_refund_message = true
 	upgrade_tree = GameObjs.UpgradeTree.new()
 	if is_restart:
 		get_tree().reload_current_scene()

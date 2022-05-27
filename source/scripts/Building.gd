@@ -389,21 +389,30 @@ func purchase_building():
 func check_trash():
 	if is_in_trash_area():
 		if has_moved() or purchased:
-			if not saleable:
+			if not saleable or not GameStats.selling_enabled:
+				if not GameStats.selling_enabled:
+					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled!"
 				Input.set_default_cursor_shape(Input.CURSOR_FORBIDDEN)
 			elif refundable():
 				if GameStats.show_sell_yes_refund_message and purchased:
-					# get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Since this building was built on this turn, you'll receive a full refund!"
-					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Demolishing a building will give you a full refund!"
-					GameStats.show_sell_yes_refund_message = false
+					var to_show = ""
+					if GameStats.group == 0 or GameStats.group == 2:
+						to_show = "Since this building was built on this turn, you'll receive a full refund!"
+					else:
+						to_show = "Demolishing a building will give you a full refund!"
+					if get_node("../../MainGameScene/UpperLayer/TutorialText").text != to_show:
+						get_node("../../MainGameScene/UpperLayer/TutorialText").text = to_show
+						GameStats.show_sell_yes_refund_message -= 1
 				if purchased:
 					Input.set_custom_mouse_cursor(refund_icon)
 				else:
 					Input.set_custom_mouse_cursor(null)
 			else:
 				if GameStats.show_sell_no_refund_message:
-					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "You won't get a refund for destroying this building. You only get a refund if you build and destroy it on the same turn!"
-					GameStats.show_sell_no_refund_message = false
+					var to_show = "You won't get a refund for destroying this building. You only get a refund if you build and destroy it on the same turn!"
+					if get_node("../../MainGameScene/UpperLayer/TutorialText").text != to_show:
+						get_node("../../MainGameScene/UpperLayer/TutorialText").text = to_show
+						GameStats.show_sell_no_refund_message -= 1
 				Input.set_custom_mouse_cursor(trash_icon)
 		_shadow.visible = false
 	else:
@@ -519,7 +528,10 @@ func refund():
 			GameStats.restrictions[building_id] = 1
 
 func refundable():
-	return true # not purchased or GameStats.turn == purchase_turn
+	if GameStats.group == 1:
+		return true
+	else:
+		return not purchased or GameStats.turn == purchase_turn
 
 func destroy():
 	if _mouse_state == MouseState.DRAGGING:

@@ -28,7 +28,7 @@ enum Actions {
 """
 	Number of groups for A/B testing
 """
-const NUM_GROUPS : int = 2
+const NUM_GROUPS : int = 3
 
 class Log:
 	var _logger
