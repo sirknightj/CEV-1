@@ -268,7 +268,6 @@ func _ready():
 """
 func reset_game(is_restart : bool):
 	group = GameStats.logger.get_group()
-	group = 1
 	if group == 1:
 		
 		upgrades_data[GameData.UpgradeType.GRID_3].scene._bundled.variants[4] = 23
