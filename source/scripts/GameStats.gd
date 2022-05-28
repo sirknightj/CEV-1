@@ -35,169 +35,169 @@ var cid : int = 696
 var upgrades_data = {
 	GameData.UpgradeType.UNLOCK_WATER1: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockWater1.tscn"),
-		"position": Vector2(9.1, 2.1),
+		"position": Vector2(6, 1),
 		"prereqs": [],
 		"starting": true
 	},
 	GameData.UpgradeType.UNLOCK_WATER2: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockWater2.tscn"),
-		"position": Vector2(7.7, 6.3),
+		"position": Vector2(5, 4),
 		"prereqs": [GameData.UpgradeType.IMPROVE_FARM1],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_WATER3: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockWater3.tscn"),
-		"position": Vector2(9.1, 7.7),
+		"position": Vector2(6, 5),
 		"prereqs": [GameData.UpgradeType.UNLOCK_METAL2],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_FOOD1: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockFood1.tscn"),
-		"position": Vector2(7.7, 3.5),
+		"position": Vector2(5, 2),
 		"prereqs": [GameData.UpgradeType.UNLOCK_WATER1],
 		"starting": true
 	},
 	GameData.UpgradeType.UNLOCK_FOOD2: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockFood2.tscn"),
-		"position": Vector2(4.9, 6.3),
+		"position": Vector2(3, 4),
 		"prereqs": [GameData.UpgradeType.ASTRO],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_FOOD3: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockFood3.tscn"),
-		"position": Vector2(4.9, 7.7),
+		"position": Vector2(3, 5),
 		"prereqs": [GameData.UpgradeType.UNLOCK_FOOD2],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_OXY1: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockOxy1.tscn"),
-		"position": Vector2(2.1, 2.1),
+		"position": Vector2(1, 2),
 		"prereqs": [GameData.UpgradeType.UNLOCK_ELEC1],
 		"starting": true
 	},
 	GameData.UpgradeType.UNLOCK_OXY2: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockOxy2.tscn"),
-		"position": Vector2(2.1, 3.5),
+		"position": Vector2(1, 3),
 		"prereqs": [GameData.UpgradeType.UNLOCK_OXY1, GameData.UpgradeType.IMPROVE_ELEC1],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_OXY3: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockOxy3.tscn"),
-		"position": Vector2(2.1, 4.9),
+		"position": Vector2(1, 4),
 		"prereqs": [GameData.UpgradeType.UNLOCK_OXY2],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_ELEC1: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockElec1.tscn"),
-		"position": Vector2(0.7, 0.7),
+		"position": Vector2(0, 1),
 		"prereqs": [],
 		"starting": true
 	},
 	GameData.UpgradeType.UNLOCK_ELEC2: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockElec2.tscn"),
-		"position": Vector2(0.7, 3.5),
+		"position": Vector2(0, 3),
 		"prereqs": [GameData.UpgradeType.IMPROVE_ELEC1],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_ELEC3: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockElec3.tscn"),
-		"position": Vector2(0.7, 4.9),
+		"position": Vector2(0, 4),
 		"prereqs": [GameData.UpgradeType.UNLOCK_ELEC2],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_SCI1: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockSci1.tscn"),
-		"position": Vector2(4.9, 2.1),
+		"position": Vector2(3, 1),
 		"prereqs": [],
 		"starting": true
 	},
 	GameData.UpgradeType.UNLOCK_SCI2: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockSci2.tscn"),
-		"position": Vector2(4.9, 3.5),
+		"position": Vector2(3, 2),
 		"prereqs": [GameData.UpgradeType.UNLOCK_SCI1],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_METAL1: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockMetal1.tscn"),
-		"position": Vector2(9.1, 3.5),
+		"position": Vector2(6, 2),
 		"prereqs": [GameData.UpgradeType.UNLOCK_WATER1],
 		"starting": true
 	},
 	GameData.UpgradeType.UNLOCK_METAL2: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockMetal2.tscn"),
-		"position": Vector2(9.1, 6.3),
+		"position": Vector2(6, 4),
 		"prereqs": [GameData.UpgradeType.IMPROVE_MINE1],
 		"starting": false
 	},
 	GameData.UpgradeType.UNLOCK_END1: {
 		"scene": preload("res://scenes/upgrades/impl/UnlockEnd1.tscn"),
-		"position": Vector2(9.1, 9.1),
+		"position": Vector2(6, 6),
 		"prereqs": [GameData.UpgradeType.IMPROVE_PEOPLE2, GameData.UpgradeType.UNLOCK_WATER3],
 		"starting": false
 	},
 	GameData.UpgradeType.GRID_1: {
 		"scene": preload("res://scenes/upgrades/impl/Grid1.tscn"),
-		"position": Vector2(3.5, 3.5),
+		"position": Vector2(2, 2),
 		"prereqs": [],
 		"starting": true
 	},
 	GameData.UpgradeType.GRID_2: {
 		"scene": preload("res://scenes/upgrades/impl/Grid2.tscn"),
-		"position": Vector2(3.5, 4.9),
+		"position": Vector2(2, 3),
 		"prereqs": [GameData.UpgradeType.GRID_1],
 		"starting": false
 	},
 	GameData.UpgradeType.GRID_3: {
 		"scene": preload("res://scenes/upgrades/impl/Grid3.tscn"),
-		"position": Vector2(3.5, 6.3),
+		"position": Vector2(2, 4),
 		"prereqs": [GameData.UpgradeType.GRID_2, GameData.UpgradeType.ASTRO],
 		"starting": false
 	},
 	GameData.UpgradeType.GRID_4: {
 		"scene": preload("res://scenes/upgrades/impl/Grid4.tscn"),
-		"position": Vector2(3.5, 7.7),
+		"position": Vector2(2, 5),
 		"prereqs": [GameData.UpgradeType.GRID_3],
 		"starting": false
 	},
 	GameData.UpgradeType.IMPROVE_MINE1: {
 		"scene": preload("res://scenes/upgrades/impl/ImproveMine1.tscn"),
-		"position": Vector2(9.1, 4.9),
+		"position": Vector2(6, 3),
 		"prereqs": [GameData.UpgradeType.UNLOCK_METAL1],
 		"starting": false
 	},
 	GameData.UpgradeType.IMPROVE_ELEC1: {
 		"scene": preload("res://scenes/upgrades/impl/ImproveElec1.tscn"),
-		"position": Vector2(0.7, 2.1),
+		"position": Vector2(0, 2),
 		"prereqs": [GameData.UpgradeType.UNLOCK_ELEC1],
 		"starting": false
 	},
 	GameData.UpgradeType.IMPROVE_FARM1: {
 		"scene": preload("res://scenes/upgrades/impl/ImproveFarm1.tscn"),
-		"position": Vector2(7.7, 4.9),
+		"position": Vector2(5, 3),
 		"prereqs": [GameData.UpgradeType.UNLOCK_FOOD1],
 		"starting": false
 	},
 	GameData.UpgradeType.IMPROVE_FARM2: {
 		"scene": preload("res://scenes/upgrades/impl/ImproveFarm2.tscn"),
-		"position": Vector2(6.3, 6.3),
+		"position": Vector2(4, 4),
 		"prereqs": [GameData.UpgradeType.ASTRO],
 		"starting": false
 	},
 	GameData.UpgradeType.ASTRO: {
 		"scene": preload("res://scenes/upgrades/impl/Astro.tscn"),
-		"position": Vector2(4.9, 4.9),
+		"position": Vector2(3, 3),
 		"prereqs": [GameData.UpgradeType.UNLOCK_FOOD1, GameData.UpgradeType.UNLOCK_SCI2],
 		"starting": false
 	},
 	GameData.UpgradeType.IMPROVE_PEOPLE1: {
 		"scene": preload("res://scenes/upgrades/impl/ImprovePeople1.tscn"),
-		"position": Vector2(6.3, 7.7),
+		"position": Vector2(4, 5),
 		"prereqs": [GameData.UpgradeType.IMPROVE_FARM2],
 		"starting": false
 	},
 	GameData.UpgradeType.IMPROVE_PEOPLE2: {
 		"scene": preload("res://scenes/upgrades/impl/ImprovePeople2.tscn"),
-		"position": Vector2(7.7, 7.7),
+		"position": Vector2(5, 5),
 		"prereqs": [GameData.UpgradeType.IMPROVE_FARM2],
 		"starting": false
 	}

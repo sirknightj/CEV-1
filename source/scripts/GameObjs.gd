@@ -268,15 +268,15 @@ class UpgradeTreeNode:
 		enabled = data.starting
 		tree = parent_tree
 
-		var minX = 0.7
-		var maxX = 9.1
-		var minY = 0.7
-		var maxY = 9.1
+		var minX = 0
+		var maxX = 6
+		var minY = 0
+		var maxY = 6
 
-		var minScreenX = 100
-		var maxScreenX = 800
-		var minScreenY = 100
-		var maxScreenY = 720 - 90
+		var minScreenX = 80
+		var maxScreenX = 820
+		var minScreenY = 55
+		var maxScreenY = 650
 
 		var x = (data.x-minX) / (maxX-minX) * (maxScreenX-minScreenX) + minScreenX
 		var y = (data.y-minY) / (maxY-minY) * (maxScreenY-minScreenY) + minScreenY
