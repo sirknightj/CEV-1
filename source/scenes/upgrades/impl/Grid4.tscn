@@ -6,6 +6,6 @@
 cost = {
 5: 1000.0
 }
-upgrade_name = "Planetary Engineering"
-description = "Engineer Mars' enviornment on a planetary scale to make it more suitable for humans."
+upgrade_name = "Planetary engineering"
+description = "Engineer Mars' environment on a planetary scale to make it more suitable for humans."
 size = 31

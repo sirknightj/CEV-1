@@ -6,6 +6,6 @@
 cost = {
 5: 8000.0
 }
-upgrade_name = "Aeropolesis"
-description = "Harness the untapped power of the Marsian atmosphere to make it easier for your colonists to continue construction along your colony's borders."
+upgrade_name = "Gray Goo"
+description = "Create self-replicating nanobots that convert the entirety of Mars into an Earth-like environment. Hopefully your nanobot code doesn't have any bugs..."
 size = 31

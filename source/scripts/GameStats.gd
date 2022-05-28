@@ -156,7 +156,7 @@ var upgrades_data = {
 	GameData.UpgradeType.GRID_4: {
 		"scene": preload("res://scenes/upgrades/impl/Grid4.tscn"),
 		"position": Vector2(2, 5),
-		"prereqs": [GameData.UpgradeType.GRID_3],
+		"prereqs": [GameData.UpgradeType.GRID_3, GameData.UpgradeType.UNLOCK_OXY3],
 		"starting": false
 	},
 	GameData.UpgradeType.IMPROVE_MINE1: {
@@ -269,21 +269,14 @@ func _ready():
 func reset_game(is_restart : bool):
 	group = GameStats.logger.get_group()
 	if group == 1:
-		
 		upgrades_data[GameData.UpgradeType.GRID_3].scene._bundled.variants[4] = 23
-		
-		upgrades_data[GameData.UpgradeType.GRID_4].scene._bundled.variants[4] = 31
-		upgrades_data[GameData.UpgradeType.GRID_4].prereqs = [GameData.UpgradeType.GRID_5]
-		upgrades_data[GameData.UpgradeType.GRID_4].position = Vector2(2, 6)
-		upgrades_data[GameData.UpgradeType.GRID_4].scene._bundled.variants[1] = { GameData.ResourceType.SCIENCE: 8000 }
-		
+		upgrades_data[GameData.UpgradeType.GRID_4].scene._bundled.variants[4] = 27
 		var sc = preload("res://scenes/upgrades/impl/Grid5.tscn");
-		sc._bundled.variants[4] = 27
-		sc._bundled.variants[1] = { GameData.ResourceType.SCIENCE: 1000 }
+		sc._bundled.variants[4] = 31
 		upgrades_data[GameData.UpgradeType.GRID_5] = {
 			"scene": sc,
-			"position": Vector2(2, 5),
-			"prereqs": [GameData.UpgradeType.GRID_3],
+			"position": Vector2(2, 6),
+			"prereqs": [GameData.UpgradeType.GRID_4],
 			"starting": false
 		}
 	
