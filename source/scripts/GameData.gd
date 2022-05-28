@@ -72,6 +72,7 @@ enum UpgradeType {
 	IMPROVE_PEOPLE1
 	IMPROVE_PEOPLE2
 	IMPROVE_ELEC1
+	GRID_5
 }
 
 """

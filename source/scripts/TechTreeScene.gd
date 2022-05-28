@@ -41,6 +41,7 @@ func add_nodes() -> void:
 
 	for upgrade in tree_dict.values():
 		var item = item_scene.instance()
+
 		item.position = upgrade.pos
 		add_child(item)
 		var label = item.get_node("NameLabel")

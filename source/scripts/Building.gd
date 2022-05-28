@@ -396,7 +396,7 @@ func check_trash():
 			elif refundable():
 				if GameStats.show_sell_yes_refund_message and purchased:
 					var to_show = ""
-					if GameStats.group == 0 or GameStats.group == 2:
+					if true: # TODO: possible upgrade for refunds?
 						to_show = "Since this building was built on this turn, you'll receive a full refund!"
 					else:
 						to_show = "Demolishing a building will give you a full refund!"
@@ -528,7 +528,7 @@ func refund():
 			GameStats.restrictions[building_id] = 1
 
 func refundable():
-	if GameStats.group == 1:
+	if false: # TODO: possible upgrade to make refunds always happen?
 		return true
 	else:
 		return not purchased or GameStats.turn == purchase_turn

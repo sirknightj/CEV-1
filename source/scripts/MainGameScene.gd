@@ -108,10 +108,7 @@ func show_correct_text():
 		$UILayer/Sidebar/NextMonth.hide()
 		GameStats.resources.give(GameData.ResourceType.METAL, 6)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1}
-		if GameStats.group == 0 or GameStats.group == 1:
-			GameStats.selling_enabled = true
-		else: # I KNOW THIS IS BAD STYLE OK BUT I COULDN'T BE BOTHERED TO THINK OUT THE LOGIC.
-			GameStats.selling_enabled = false
+		GameStats.selling_enabled = false
 	elif turn == 2:
 		text = "More colonists have arrived!\nYou'll need another %s to support the growing population." % GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(1)
 		# $UILayer/Sidebar.toggle_next_month_button(false)
@@ -150,8 +147,7 @@ func show_correct_text():
 		text = "Your city has generated enough [color=%s]science[/color] for an upgrade! Spend [color=%s]science[/color] to unlock new buildings and increase building efficiency." % [GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE), GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)]
 		$UILayer/Sidebar.toggle_next_month_button(false)
 		$UILayer/Sidebar.toggle_upgrades_button(true)
-		if GameStats.group == 2:
-			GameStats.selling_enabled = true
+		GameStats.selling_enabled = true
 	elif turn == 11:
 		text = "Building a %s will significantly speed up your research progress." % GameStats.buildings_dict[GameData.BuildingType.SCI1].format_str(1)
 	elif turn == 12:
