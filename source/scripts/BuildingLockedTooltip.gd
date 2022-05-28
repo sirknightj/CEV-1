@@ -34,7 +34,7 @@ func show_building(building : Building):
 
 	var output_text : String
 	if missing_text.empty() or not GameStats.restrictions.empty() or GameStats.turn < 6 or (GameStats.win_status and building.building_id == GameData.BuildingType.END1) or (not GameStats.win_status and not GameStats.is_playing):
-		output_text = "Currently\nUnavailable"
+		output_text = "Currently\nunavailable"
 	else:
 		output_text = "Missing:\n\n" + missing_text.join("\n")
 

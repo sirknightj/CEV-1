@@ -16,9 +16,9 @@ size = 48
 use_filter = true
 font_data = ExtResource( 2 )
 
-[sub_resource type="DynamicFont" id=4]
-size = 30
-use_filter = true
+[sub_resource type="DynamicFont" id=7]
+size = 32
+extra_spacing_bottom = 10
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=5]
@@ -58,14 +58,20 @@ text = "Upgrade Tree
 "
 align = 1
 
-[node name="Instructions" type="Label" parent="."]
+[node name="Instructions" type="RichTextLabel" parent="."]
 margin_left = 930.0
 margin_top = 113.0
 margin_right = 1254.0
 margin_bottom = 677.0
-custom_fonts/font = SubResource( 4 )
-text = "Upgrades allow you to unlock new buildings, improve building efficiency, increase colony size, or change the population. Spend science to buy upgrades."
-autowrap = true
+theme = ExtResource( 4 )
+custom_fonts/normal_font = SubResource( 7 )
+bbcode_enabled = true
+bbcode_text = "Upgrades allow you to unlock new buildings, improve building efficiency, increase colony size, or change the population.
+
+Spend [color=#cc66ff]science[/color] to buy upgrades."
+text = "Upgrades allow you to unlock new buildings, improve building efficiency, increase colony size, or change the population.
+
+Spend science to buy upgrades."
 
 [node name="SelectedUpgrade" parent="." instance=ExtResource( 3 )]
 visible = false
@@ -73,7 +79,7 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-margin_left = -392.0
+margin_left = -380.0
 margin_top = -360.0
 margin_right = 0.0
 margin_bottom = 360.0

@@ -1,7 +1,74 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=1]
 [ext_resource path="res://scripts/TreeItem.gd" type="Script" id=2]
+
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+render_mode unshaded;
+const float PI = 3.14159265358979323846;
+
+uniform float progress : hint_range(0.0, 1.0);
+uniform bool is_rainbow;
+
+float atan2(float x, float y) {
+    if (x > 0.0) {
+        return atan(y / x);
+    } else if (x < 0.0) {
+		float s = (y >= 0.0) ? 1.0 : -1.0;
+        return atan(y / x) + s * PI;
+    } else {
+		float s = (y > 0.0) ? 1.0 : -1.0;
+        return s * PI / 2.0;
+    }
+}
+
+vec2 cartesian_to_polar(vec2 XY) {
+    float r = length(XY);
+    float phi = (atan2(XY[0], XY[1]) + PI) / (2.0 * PI);
+    return vec2(r, phi);
+}
+
+// Converts from pure Hue to linear RGB
+vec3 hue_to_rgb(float hue) {
+    float R = abs(hue * 6.0 - 3.0) - 1.0;
+    float G = 2.0 - abs(hue * 6.0 - 2.0);
+    float B = 2.0 - abs(hue * 6.0 - 4.0);
+    return clamp(vec3(R, G, B), 0., 1.);
+}
+
+vec3 hcy_to_rgb(vec3 hcy) {
+    const vec3 HCYwts = vec3(0.299, 0.587, 0.114);
+    vec3 RGB = hue_to_rgb(hcy.x);
+    float Z = dot(RGB, HCYwts);
+    if (hcy.z < Z) {
+        hcy.y *= hcy.z / Z;
+    } else if (Z < 1.0) {
+        hcy.y *= (1.0 - hcy.z) / (1.0 - Z);
+    }
+    return (RGB - Z) * hcy.y + hcy.z;
+}
+
+void fragment() {
+	vec2 pos = UV.xy - vec2(0.5);
+	vec2 p = cartesian_to_polar(pos) * 1.0;
+	float hue = mod(p.y + progress, 1.);
+	float c = 0.8;
+	float y = 0.5;
+	if (!is_rainbow) {
+		hue = hue / 4. + 0.4;
+		hue = mod(hue, 1.);
+		c = 0.9;
+		y = 0.45;
+	}
+	COLOR = vec4(hcy_to_rgb(vec3(hue, c, y)), 1.0); 
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
+resource_local_to_scene = true
+shader = SubResource( 3 )
+shader_param/progress = 1.0
+shader_param/is_rainbow = false
 
 [sub_resource type="Gradient" id=1]
 offsets = PoolRealArray( 0, 0.346939, 0.670068, 1 )
@@ -28,8 +95,8 @@ margin_bottom = 60.0
 mouse_default_cursor_shape = 2
 color = Color( 0.909804, 0.913725, 0.941176, 1 )
 
-[node name="CryonicsGradientRect" type="TextureRect" parent="."]
-visible = false
+[node name="GradientRect" type="TextureRect" parent="."]
+material = SubResource( 4 )
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -70,9 +137,13 @@ align = 1
 valign = 1
 autowrap = true
 
+[node name="Tween" type="Tween" parent="."]
+repeat = true
+playback/repeat = true
+
 [connection signal="gui_input" from="BorderRect" to="." method="_on_BorderRect_gui_input"]
 [connection signal="mouse_entered" from="BorderRect" to="." method="_on_BorderRect_mouse_entered"]
 [connection signal="mouse_exited" from="BorderRect" to="." method="_on_BorderRect_mouse_exited"]
-[connection signal="gui_input" from="CryonicsGradientRect" to="." method="_on_BorderRect_gui_input"]
-[connection signal="mouse_entered" from="CryonicsGradientRect" to="." method="_on_BorderRect_mouse_entered"]
-[connection signal="mouse_exited" from="CryonicsGradientRect" to="." method="_on_BorderRect_mouse_exited"]
+[connection signal="gui_input" from="GradientRect" to="." method="_on_BorderRect_gui_input"]
+[connection signal="mouse_entered" from="GradientRect" to="." method="_on_BorderRect_mouse_entered"]
+[connection signal="mouse_exited" from="GradientRect" to="." method="_on_BorderRect_mouse_exited"]

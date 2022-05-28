@@ -53,9 +53,8 @@ func add_nodes() -> void:
 		item.connect("click", self, "_on_item_click")
 		upgrade.node = item
 		
-		if upgrade.name == "Cryonics":
-			item.get_node("CryonicsGradientRect").show()
-
+		item.set_always_animate(upgrade.name == "Cryonics")
+	
 	set_node_styles()
 	_on_item_hover_off(-1)
 
@@ -69,6 +68,8 @@ func set_node_styles() -> void:
 			type = "available"
 		item.get_node("BackgroundRect").color = COLORS[type][1]
 		item.get_node("BorderRect").color = COLORS[type][0]
+		
+		item.set_gradient_animation(not upgrade.unlocked and upgrade.available and upgrade.can_afford())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
@@ -175,6 +176,7 @@ func _on_item_click(_name: int) -> void:
 
 func show() -> void:
 	_update_reserve_text()
+	set_node_styles()
 	.show()  # Godot equivalent of super.show()
 
 func _on_BuyButton_gui_input(event: InputEvent) -> void:
