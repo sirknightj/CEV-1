@@ -339,6 +339,8 @@ func _on_Upgrades_gui_input(event):
 			get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.trim_prefix("Your city has generated enough [color=%s]science[/color] for an upgrade! Spend [color=%s]science[/color] to unlock new buildings and increase building efficiency." % [GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE), GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)]).strip_edges()
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
+			$Upgrades/AnimationPlayer.stop()
+			$Upgrades/AnimationPlayer.seek(0, true)
 			$CanvasLayer/TechTree.show()
 
 func scroll_down():
@@ -461,6 +463,9 @@ func toggle_upgrades_button(_clickable) -> void:
 	ignore_upgrades_button = not _clickable
 	if _clickable:
 		$Upgrades.show()
+		
+		# TODO: only do in A/B test
+		$Upgrades/AnimationPlayer.play("Shake")
 	else:
 		$Upgrades.hide()
 

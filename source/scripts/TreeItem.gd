@@ -18,7 +18,6 @@ func _ready() -> void:
 
 func set_always_animate(val: bool) -> void:
 	always_animate = val
-	print("[%s] Setting is_rainbow to %s" % [item_name, val])
 	$GradientRect.get_material().set_shader_param("is_rainbow", val)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
