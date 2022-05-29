@@ -103,6 +103,7 @@ margin_left = -156.0
 margin_top = -85.0
 margin_right = 160.0
 margin_bottom = 40.0
+grow_vertical = 0
 rect_pivot_offset = Vector2( 90, 135 )
 custom_fonts/font = SubResource( 4 )
 text = "+10% energy output from each solar panel adjacent to another solar panel."
