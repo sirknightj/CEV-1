@@ -83,6 +83,10 @@ func on_next_turn():
 	GameStats.resources.set_callback(cb)
 	if GameStats.turn == 6 or GameStats.turn == 9 or GameStats.turn == 11:
 		$UILayer/Sidebar.scroll_down()
+	
+	get_node("/root/MainGameScene/AudioNextTurn").play()
+	if $UpperLayer/TutorialText.text != "":
+		get_node("/root/MainGameScene/AudioAlert").play()
 
 var num_died : int = 0
 var death_reasons : Array = []
@@ -182,7 +186,10 @@ func show_correct_text():
 		text += "\nMore than " + str(GameStats.colonist_death_threshold) + " colonists have perished, no more will be tolerated!"
 	elif ppl < 1:
 		text += "\nAll your remaining colonists died from %s and your colony is now deserted..." % format_death_reasons_as_bbcode(death_reasons)
-	$UpperLayer/TutorialText.bbcode_text = text.strip_edges()
+	text = text.strip_edges()
+	$UpperLayer/TutorialText.bbcode_text = text
+	if text != "":
+		get_node("/root/MainGameScene/AudioAlert").play()
 
 """
 	Place the building at the grid square (_x, _y).

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://scripts/Grid.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Sidebar.tscn" type="PackedScene" id=2]
@@ -10,6 +10,13 @@
 [ext_resource path="res://scenes/BuildingInfoTooltip.tscn" type="PackedScene" id=8]
 [ext_resource path="res://scenes/BuildingLockedTooltip.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/MultiSelector.tscn" type="PackedScene" id=10]
+[ext_resource path="res://assets/sounds/pickup.wav" type="AudioStream" id=11]
+[ext_resource path="res://assets/sounds/pop.wav" type="AudioStream" id=12]
+[ext_resource path="res://assets/sounds/unlock.wav" type="AudioStream" id=13]
+[ext_resource path="res://assets/sounds/lose.wav" type="AudioStream" id=14]
+[ext_resource path="res://assets/sounds/win.wav" type="AudioStream" id=15]
+[ext_resource path="res://assets/sounds/next-turn.wav" type="AudioStream" id=16]
+[ext_resource path="res://assets/sounds/alert.wav" type="AudioStream" id=17]
 
 [sub_resource type="DynamicFont" id=1]
 size = 20
@@ -126,3 +133,36 @@ text = "Consumption"
 
 [node name="MultiSelector" parent="." instance=ExtResource( 10 )]
 visible = false
+
+[node name="AudioPop" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 12 )
+
+[node name="AudioPickup" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 11 )
+volume_db = -10.0
+
+[node name="AudioUnlock" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 13 )
+volume_db = -3.0
+
+[node name="AudioLose" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 14 )
+volume_db = -3.0
+
+[node name="AudioWin" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 15 )
+volume_db = -3.0
+
+[node name="AudioNextTurn" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 16 )
+volume_db = -1.0
+
+[node name="AudioAlert" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 17 )

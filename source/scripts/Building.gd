@@ -395,6 +395,7 @@ func check_trash():
 			if not saleable or not GameStats.selling_enabled:
 				if not GameStats.selling_enabled:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled!"
+					get_node("/root/MainGameScene/AudioAlert").play()
 				Input.set_default_cursor_shape(Input.CURSOR_FORBIDDEN)
 			elif refundable():
 				if GameStats.show_sell_yes_refund_message and purchased:
@@ -405,6 +406,7 @@ func check_trash():
 						to_show = "Demolishing a building will give you a full refund!"
 					if get_node("../../MainGameScene/UpperLayer/TutorialText").text != to_show:
 						get_node("../../MainGameScene/UpperLayer/TutorialText").text = to_show
+						get_node("/root/MainGameScene/AudioAlert").play()
 						GameStats.show_sell_yes_refund_message -= 1
 				if purchased:
 					Input.set_custom_mouse_cursor(refund_icon)
@@ -415,6 +417,7 @@ func check_trash():
 					var to_show = "You won't get a refund for destroying this building. You only get a refund if you build and destroy it on the same turn!"
 					if get_node("../../MainGameScene/UpperLayer/TutorialText").text != to_show:
 						get_node("../../MainGameScene/UpperLayer/TutorialText").text = to_show
+						get_node("/root/MainGameScene/AudioAlert").play()
 						GameStats.show_sell_no_refund_message -= 1
 				Input.set_custom_mouse_cursor(trash_icon)
 		_shadow.visible = false
@@ -558,11 +561,13 @@ func _on_building_place():
 			if GameStats.selling_enabled:
 				if not saleable and purchased:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "This building cannot be sold."
+					get_node("/root/MainGameScene/AudioAlert").play()
 				else:
 					destroy()
 					return
 			else:
 				get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled."
+				get_node("/root/MainGameScene/AudioAlert").play()
 				Input.set_custom_mouse_cursor(null)
 		else:
 			check_trash()
@@ -572,6 +577,8 @@ func _on_building_place():
 			var time = 1.8 if was_purchased else 0.5
 			$Tween.interpolate_property(get_material(), "shader_param/" + param, 0, 1, time, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 			$Tween.start()
+			get_node("/root/MainGameScene/AudioPop").stop()
+			get_node("/root/MainGameScene/AudioPop").play()
 	var old = _mouse_state
 	if purchased:
 		if _mouse_state == MouseState.DRAGGING:
@@ -630,6 +637,8 @@ func _on_building_grab():
 		return
 	if _mouse_state == MouseState.DRAGGING:
 		GameStats.current_selected_building = self
+	var audio = "AudioPop" if purchased else "AudioPickup"
+	get_node("/root/MainGameScene/" + audio).play()
 	emit_signal("building_grabbed", self)
 
 func _on_building_rotate():

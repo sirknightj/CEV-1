@@ -94,6 +94,7 @@ func check_buttons() -> void:
 		toggle_next_month_button(true)
 	if current:
 		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = current.strip_edges()
+		get_node("/root/MainGameScene/AudioAlert").play()
 
 func repopulate_sidebar():
 	populate_sidebar_correctly()
@@ -313,8 +314,10 @@ func _on_Next_Month_gui_input(event):
 					required_placements += GameStats.buildings_dict[building].format_str(quantity) + ", "
 				required_placements.erase(required_placements.length() - 2, 2)
 				get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = required_placements + "."
+				get_node("/root/MainGameScene/AudioAlert").play()
 			elif GameStats.turn == 10:
 				get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = "Please check out the [color=%s]Upgrades[/color] menu!" % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)
+				get_node("/root/MainGameScene/AudioAlert").play()
 		else:
 			game.on_next_turn()
 			$Graph.reset_for_next_turn()
@@ -329,6 +332,7 @@ func _on_Upgrades_gui_input(event):
 		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuClicked)
 		if GameStats.turn == 10:
 			get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.trim_prefix("Your city has generated enough [color=%s]science[/color] for an upgrade! Spend [color=%s]science[/color] to unlock new buildings and increase building efficiency." % [GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE), GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)]).strip_edges()
+			get_node("/root/MainGameScene/AudioAlert").play()
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
 			$Upgrades/AnimationPlayer.stop()
@@ -357,6 +361,9 @@ func on_ending() -> void:
 
 	$CanvasLayer/EndScreen.connect("on_close_clicked", self, "on_endingscreen_close")
 
+	var audio = "AudioWin" if GameStats.win_status else "AudioLose"
+	get_node("/root/MainGameScene/" + audio).play()
+
 func on_endingscreen_close() -> void:
 	GameStats.game.update_all()
 	get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = ""
@@ -377,6 +384,7 @@ func placed_building(building : int):
 	
 	if GameStats.turn == 1:
 		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = "Great work! Advance to the next month."
+		get_node("/root/MainGameScene/AudioAlert").play()
 		$NextMonth.show()
 	check_buttons()
 

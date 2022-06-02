@@ -199,6 +199,7 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	var upgrade : GameObjs.UpgradeTreeNode = GameStats.upgrade_tree.tree_dict.get(selected_upgrade)
 	
 	upgrade.unlock()
+	get_node("/root/MainGameScene/AudioUnlock").play()
 	GameStats.logger.log_level_action(Logger.Actions.UpgradeBought, {
 		"upgrade": upgrade.name
 	})
