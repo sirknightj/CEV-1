@@ -4,10 +4,78 @@
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
+const float PI = 3.14159265358979323846;
+
 uniform float saturation: hint_range(0.0, 1.0) = 0.0;
+uniform float progress_rainbow: hint_range(0.0, 1.0) = 1.0;
+uniform float progress_highlight: hint_range(0.0, 1.0) = 1.0;
+
+float atan2(float x, float y) {
+	if (x > 0.0) {
+		return atan(y / x);
+	} else if (x < 0.0) {
+	float s = (y >= 0.0) ? 1.0 : -1.0;
+		return atan(y / x) + s * PI;
+	} else {
+		float s = (y > 0.0) ? 1.0 : -1.0;
+		return s * PI / 2.0;
+	}
+}
+
+vec2 cartesian_to_polar(vec2 XY) {
+	float r = length(XY);
+	float phi = (atan2(XY.x, XY.y) + PI) / (2.0 * PI);
+	return vec2(r, phi);
+}
+
+// Converts from pure Hue to linear RGB
+vec3 hue_to_rgb(float hue) {
+	float R = abs(hue * 6.0 - 3.0) - 1.0;
+	float G = 2.0 - abs(hue * 6.0 - 2.0);
+	float B = 2.0 - abs(hue * 6.0 - 4.0);
+	return clamp(vec3(R, G, B), 0., 1.);
+}
+
+vec3 hcy_to_rgb(float h, float c, float y) {
+	const vec3 HCYwts = vec3(0.299, 0.587, 0.114);
+	vec3 RGB = hue_to_rgb(h);
+	float Z = dot(RGB, HCYwts);
+	if (y < Z) {
+		c *= y / Z;
+	} else if (Z < 1.0) {
+		c *= (1.0 - y) / (1.0 - Z);
+	}
+	return (RGB - Z) * c + y;
+}
+
 void fragment() {
 	vec4 tex = texture(TEXTURE, UV);
-	COLOR.rgb = mix(vec3(dot(tex.rgb, vec3(0.3, 0.5, 0.2))), tex.rgb, saturation);
+	vec4 borderColor = max(texture(TEXTURE, vec2(0.)), texture(TEXTURE, vec2(1.))); // top left or bottom right corner
+	
+	vec4 innerColor = max(texture(TEXTURE, vec2(0.001) + TEXTURE_PIXEL_SIZE), texture(TEXTURE, vec2(0.999) - TEXTURE_PIXEL_SIZE)); // top left or bottom right corner, but inner
+	
+	bool isBorderColor = tex == borderColor;
+	bool isInnerColor = tex == innerColor;
+	vec2 p = cartesian_to_polar(UV.xy - vec2(0.5));
+	
+	COLOR.rgb = tex.rgb;
+	
+	if (isBorderColor) {
+		if (progress_rainbow < 1.) {
+			float hue = mod(p.y + progress_rainbow, 1.);
+			float c = 0.8;
+			float y = 0.6;
+			vec3 other = hcy_to_rgb(hue, c, y);
+			COLOR.rgb = mix(other, tex.rgb, progress_rainbow);
+		} else if (progress_highlight < 1.) {
+			COLOR.rgb = mix(innerColor.rgb * 1.2, tex.rgb, progress_highlight);
+		}
+	}
+	
+	if (saturation < 1.) {
+		COLOR.rgb = mix(vec3(dot(tex.rgb, vec3(0.3, 0.5, 0.2))), tex.rgb, saturation);
+	}
+	
 	COLOR.a = tex.a;
 }"
 
@@ -15,6 +83,8 @@ void fragment() {
 resource_local_to_scene = true
 shader = SubResource( 1 )
 shader_param/saturation = 1.0
+shader_param/progress_rainbow = 1.0
+shader_param/progress_highlight = 1.0
 
 [node name="Building" type="Node2D"]
 material = SubResource( 2 )
@@ -40,3 +110,5 @@ z_index = 1
 [node name="Sprite" type="Sprite" parent="Main"]
 use_parent_material = true
 centered = false
+
+[node name="Tween" type="Tween" parent="."]

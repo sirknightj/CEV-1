@@ -464,7 +464,6 @@ func toggle_upgrades_button(_clickable) -> void:
 	if _clickable:
 		$Upgrades.show()
 		
-		# TODO: only do in A/B test
 		$Upgrades/AnimationPlayer.play("Shake")
 	else:
 		$Upgrades.hide()

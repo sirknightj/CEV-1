@@ -376,15 +376,18 @@ func get_adjacent_buildings() -> Array:
 """
 	Buy the Building with our stored cost if needed (the building has not been
 	purchased yet) and possible (there are enough resources to buy it).
+	Returns true iff purchase successful (and not previously purchased)
 """
-func purchase_building():
-	if not purchased and GameStats.resources.try_consume(building_cost):
-		purchased = true
-		purchase_turn = GameStats.turn
-		# Automatically enable on purchase
-		enabled = true
-		emit_signal("building_hovered", self)
-		log_building_action(Logger.Actions.BuildingPlaced)
+func purchase_building() -> bool:
+	if purchased or not GameStats.resources.try_consume(building_cost):
+		return false
+	purchased = true
+	purchase_turn = GameStats.turn
+	# Automatically enable on purchase
+	enabled = true
+	emit_signal("building_hovered", self)
+	log_building_action(Logger.Actions.BuildingPlaced)
+	return true
 
 func check_trash():
 	if is_in_trash_area():
@@ -564,7 +567,11 @@ func _on_building_place():
 		else:
 			check_trash()
 		if has_moved():
-			purchase_building()
+			var was_purchased = purchase_building()
+			var param = "progress_rainbow" if was_purchased else "progress_highlight"
+			var time = 1.8 if was_purchased else 0.5
+			$Tween.interpolate_property(get_material(), "shader_param/" + param, 0, 1, time, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			$Tween.start()
 	var old = _mouse_state
 	if purchased:
 		if _mouse_state == MouseState.DRAGGING:
