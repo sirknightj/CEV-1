@@ -4,7 +4,6 @@ class_name Logger
 enum Actions {
 	RestartClicked = 10,
 	NextMonthClicked = 12,
-	StatsClicked = 14,
 	UpgradeMenuClicked = 17,
 	UpgradeMenuBackClicked = 18,
 	UpgradeBought = 32,

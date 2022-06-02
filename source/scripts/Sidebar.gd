@@ -322,14 +322,6 @@ func _on_Next_Month_gui_input(event):
 			populate_sidebar_correctly()
 
 """
-	Called when the Stats button is clicked
-"""
-func _on_Stats_gui_input(event):
-	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
-		print("Stats was clicked!")
-		GameStats.logger.log_level_action(Logger.Actions.StatsClicked)
-
-"""
 	Called when the Upgrades button is clicked
 """
 func _on_Upgrades_gui_input(event):
