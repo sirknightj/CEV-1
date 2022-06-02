@@ -33,6 +33,14 @@ func set_gradient_animation(show: bool) -> void:
 		$Tween.stop_all()
 		$GradientRect.hide()
 
+func set_locked(locked: bool) -> void:
+	if locked:
+		$LockIcon.show()
+		$NameLabel.modulate = Color("#888")
+	else:
+		$LockIcon.hide()
+		$NameLabel.modulate = Color("#fff")
+
 func _on_BorderRect_mouse_entered() -> void:
 	emit_signal("hover_on", item_name)
 

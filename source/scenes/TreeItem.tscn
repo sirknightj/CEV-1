@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=1]
 [ext_resource path="res://scripts/TreeItem.gd" type="Script" id=2]
+[ext_resource path="res://assets/images/lock.png" type="Texture" id=3]
 
 [sub_resource type="Shader" id=3]
 code = "shader_type canvas_item;
@@ -105,7 +106,7 @@ margin_left = -112.5
 margin_top = -62.0
 margin_right = 112.5
 margin_bottom = 62.0
-mouse_default_cursor_shape = 2
+mouse_filter = 2
 texture = SubResource( 2 )
 expand = true
 
@@ -121,6 +122,15 @@ margin_bottom = 53.0
 mouse_filter = 2
 mouse_default_cursor_shape = 2
 color = Color( 0.0941176, 0.0745098, 0.145098, 1 )
+
+[node name="LockIcon" type="TextureRect" parent="."]
+modulate = Color( 0.0117647, 0.0117647, 0.0117647, 0.490196 )
+margin_left = 34.0
+margin_top = -34.0
+margin_right = 89.0
+margin_bottom = 35.0
+mouse_filter = 2
+texture = ExtResource( 3 )
 
 [node name="NameLabel" type="Label" parent="."]
 anchor_left = 0.5
