@@ -268,18 +268,16 @@ func _ready():
 """
 func reset_game(is_restart : bool):
 	group = GameStats.logger.get_group()
-	if group == 1:
-		upgrades_data[GameData.UpgradeType.GRID_3].scene._bundled.variants[4] = 23
-		upgrades_data[GameData.UpgradeType.GRID_4].scene._bundled.variants[4] = 27
-		var sc = preload("res://scenes/upgrades/impl/Grid5.tscn");
-		sc._bundled.variants[4] = 31
-		upgrades_data[GameData.UpgradeType.GRID_5] = {
-			"scene": sc,
-			"position": Vector2(2, 6),
-			"prereqs": [GameData.UpgradeType.GRID_4],
-			"starting": false
-		}
-	
+	upgrades_data[GameData.UpgradeType.GRID_3].scene._bundled.variants[4] = 23
+	upgrades_data[GameData.UpgradeType.GRID_4].scene._bundled.variants[4] = 27
+	var sc = preload("res://scenes/upgrades/impl/Grid5.tscn");
+	sc._bundled.variants[4] = 31
+	upgrades_data[GameData.UpgradeType.GRID_5] = {
+		"scene": sc,
+		"position": Vector2(2, 6),
+		"prereqs": [GameData.UpgradeType.GRID_4],
+		"starting": false
+	}
 	
 	print("Group " + str(group))
 	show_sell_no_refund_message = 2

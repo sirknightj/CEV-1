@@ -23,6 +23,9 @@ func _ready() -> void:
 	just_purchased = false
 	GameStats.upgrade_tree.load_upgrade_tree(self)
 	$SelectedUpgrade/BuyButton.connect("gui_input", self, "_on_BuyButton_gui_input")
+	
+	$Legend/ColorRect4/Tween.interpolate_property($Legend/ColorRect4.get_material(), "shader_param/progress", 0, 1, 2.1, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	$Legend/ColorRect4/Tween.start()
 
 func add_nodes() -> void:
 	var tree_dict = GameStats.upgrade_tree.tree_dict
