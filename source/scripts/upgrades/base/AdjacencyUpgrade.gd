@@ -30,3 +30,13 @@ func apply():
 	GameStats.game.connect("building_added", self, "_on_Game_building_added")
 	GameStats.game.connect("building_grabbed", self, "_on_Game_building_grabbed")
 	apply_to(buildings)
+
+# Disgusting hack to properly refresh updates when new buildings are loaded from a saved game
+var i = 2
+func _physics_process(_delta):
+	if i == 0:
+		set_physics_process(false)
+		if purchased:
+			var buildings = GameStats.game.get_buildings()
+			apply_to(buildings)
+	i -= 1
