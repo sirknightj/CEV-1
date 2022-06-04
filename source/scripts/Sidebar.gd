@@ -479,3 +479,11 @@ func _unhandled_input(event : InputEvent):
 			$ScrollContainer.scroll_vertical += SCROLL_SPEED
 		elif event.button_index == BUTTON_WHEEL_UP:
 			$ScrollContainer.scroll_vertical -= SCROLL_SPEED
+
+func _on_MuteButton_pressed():
+	var mstr = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_mute(mstr, not AudioServer.is_bus_mute(mstr))
+	if AudioServer.is_bus_mute(mstr):
+		$MuteButton.icon = preload("res://assets/images/mute.png")
+	else:
+		$MuteButton.icon = preload("res://assets/images/unmute.png")
