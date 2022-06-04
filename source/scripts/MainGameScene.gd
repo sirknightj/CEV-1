@@ -33,8 +33,8 @@ func _ready():
 		SAVED GAME DEBUGGING
 		DISABLE IN PRODUCTION
 	"""
-	#if not GameStats.load_game():
-	#	sidebar.start_game()
+	if not GameStats.load_game():
+		sidebar.start_game()
 	"""
 	"""
 	sidebar.get_node("CanvasLayer/TechTree").add_nodes()
@@ -74,7 +74,7 @@ func on_next_turn():
 	SAVED GAME DEBUGGING
 	DISABLE IN PRODUCTION
 	"""
-	#GameStats.save_game()
+	GameStats.save_game()
 	"""
 	"""
 	GameStats.logger.log_level_start(GameStats.turn)
