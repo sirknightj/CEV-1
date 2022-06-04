@@ -172,9 +172,9 @@ align = 1
 valign = 1
 
 [node name="ScienceReserve" type="Label" parent="."]
-margin_left = 917.0
+margin_left = 910.0
 margin_top = 28.0
-margin_right = 1015.0
+margin_right = 1008.0
 margin_bottom = 47.0
 theme = ExtResource( 4 )
 custom_colors/font_color = Color( 0.8, 0.4, 1, 1 )
