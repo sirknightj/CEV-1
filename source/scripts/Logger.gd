@@ -42,7 +42,8 @@ class Log:
 			print("No JavaScript support, disabling logging")
 
 	func get_group():
-		# return 1
+		if not enabled:
+			return 0
 		return uid.ord_at(uid.length() - 1) % NUM_GROUPS
 
 	func start_new_session(category_id: int) -> void:
