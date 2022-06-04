@@ -258,6 +258,7 @@ func _init():
 	logger = Logger.Log.new()
 	upgrade_tree = GameObjs.UpgradeTree.new()
 	load_buildings_json()
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), true)
 
 func _ready():
 	reset_game(false)
