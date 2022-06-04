@@ -85,8 +85,6 @@ func on_next_turn():
 		$UILayer/Sidebar.scroll_down()
 	
 	get_node("/root/MainGameScene/AudioNextTurn").play()
-	if $UpperLayer/TutorialText.text != "":
-		get_node("/root/MainGameScene/AudioAlert").play()
 
 var num_died : int = 0
 var death_reasons : Array = []
@@ -187,8 +185,9 @@ func show_correct_text():
 	elif ppl < 1:
 		text += "\nAll your remaining colonists died from %s and your colony is now deserted..." % format_death_reasons_as_bbcode(death_reasons)
 	text = text.strip_edges()
+	var old = $UpperLayer/TutorialText.bbcode_text
 	$UpperLayer/TutorialText.bbcode_text = text
-	if text != "":
+	if text != old:
 		get_node("/root/MainGameScene/AudioAlert").play()
 
 """

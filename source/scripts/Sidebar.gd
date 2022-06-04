@@ -75,6 +75,7 @@ func cheat():
 	GameStats.game.on_next_turn()
 
 func check_buttons() -> void:
+	var old = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text
 	var current = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.strip_edges()
 	var not_enough_energy_message : String = "You don't have enough [color=%s]energy[/color] to keep your buildings running! You'll need to sell some buildings or generate more [color=%s]energy[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY), GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)]
 	var not_enough_metal_message : String = "You don't have enough [color=%s]metal[/color] to keep your buildings running! You'll need to sell some buildings or generate more [color=%s]metal[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.METAL), GameData.get_resource_color_as_hex(GameData.ResourceType.METAL)]
@@ -92,7 +93,7 @@ func check_buttons() -> void:
 		current = current.strip_edges().trim_suffix(not_enough_energy_message).strip_edges()
 		current = current.strip_edges().trim_suffix(not_enough_metal_message).strip_edges()
 		toggle_next_month_button(true)
-	if current:
+	if old != current:
 		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = current.strip_edges()
 		get_node("/root/MainGameScene/AudioAlert").play()
 
