@@ -394,8 +394,11 @@ func check_trash():
 		if has_moved() or purchased:
 			if purchased and (not saleable or not GameStats.selling_enabled):
 				if not GameStats.selling_enabled:
-					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled!"
-					get_node("/root/MainGameScene/AudioAlert").play()
+					var text = "Selling is currently disabled!"
+					var tt = get_node("../../MainGameScene/UpperLayer/TutorialText")
+					if tt.text != text:
+						tt.text = text
+						get_node("/root/MainGameScene/AudioAlert").play()
 				Input.set_default_cursor_shape(Input.CURSOR_FORBIDDEN)
 			elif refundable():
 				if GameStats.show_sell_yes_refund_message and purchased:
