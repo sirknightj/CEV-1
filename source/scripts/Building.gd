@@ -394,7 +394,7 @@ func check_trash():
 		if has_moved() or purchased:
 			if purchased and (not saleable or not GameStats.selling_enabled):
 				if not GameStats.selling_enabled:
-					var text = "Selling is currently disabled!"
+					var text = "Selling is currently disabled."
 					var tt = get_node("../../MainGameScene/UpperLayer/TutorialText")
 					if tt.text != text:
 						tt.text = text
@@ -572,8 +572,8 @@ func _on_building_place():
 					destroy()
 					return
 			else:
-				get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled."
-				get_node("/root/MainGameScene/AudioAlert").play()
+				#get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled."
+				#get_node("/root/MainGameScene/AudioAlert").play()
 				Input.set_custom_mouse_cursor(null)
 		else:
 			check_trash()

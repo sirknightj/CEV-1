@@ -333,7 +333,7 @@ func _on_Upgrades_gui_input(event):
 		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuClicked)
 		if GameStats.turn == 10:
 			get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.trim_prefix("Your city has generated enough [color=%s]science[/color] for an upgrade! Spend [color=%s]science[/color] to unlock new buildings and increase building efficiency." % [GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE), GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)]).strip_edges()
-			get_node("/root/MainGameScene/AudioAlert").play()
+			# get_node("/root/MainGameScene/AudioAlert").play()
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
 			$Upgrades/AnimationPlayer.stop()
