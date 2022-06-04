@@ -341,7 +341,7 @@ func deserialize_buildings(buildings):
 		game._on_SceneTree_node_added(building)
 
 const SERIALIZATION_VERSION = 1
-const SAVE_FILE = "res://savegame.save"
+const SAVE_FILE = "user://savegame.save"
 
 func delete_save():
 	var dir = Directory.new()
