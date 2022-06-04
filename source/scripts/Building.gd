@@ -392,7 +392,7 @@ func purchase_building() -> bool:
 func check_trash():
 	if is_in_trash_area():
 		if has_moved() or purchased:
-			if not saleable or not GameStats.selling_enabled:
+			if purchased and (not saleable or not GameStats.selling_enabled):
 				if not GameStats.selling_enabled:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled!"
 					get_node("/root/MainGameScene/AudioAlert").play()
@@ -410,6 +410,8 @@ func check_trash():
 						GameStats.show_sell_yes_refund_message -= 1
 				if purchased:
 					Input.set_custom_mouse_cursor(refund_icon)
+				elif has_moved():
+					Input.set_custom_mouse_cursor(trash_icon)
 				else:
 					Input.set_custom_mouse_cursor(null)
 			else:
@@ -556,9 +558,10 @@ func destroy():
 	emit_signal("building_hovered_off", self)
 
 func _on_building_place():
+	var old_purchased = purchased
 	if _mouse_state == MouseState.DRAGGING:
 		if is_in_trash_area():
-			if GameStats.selling_enabled:
+			if not purchased or GameStats.selling_enabled:
 				if not saleable and purchased:
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "This building cannot be sold."
 					get_node("/root/MainGameScene/AudioAlert").play()
@@ -571,14 +574,7 @@ func _on_building_place():
 				Input.set_custom_mouse_cursor(null)
 		else:
 			check_trash()
-		if has_moved():
-			var was_purchased = purchase_building()
-			var param = "progress_rainbow" if was_purchased else "progress_highlight"
-			var time = 1.8 if was_purchased else 0.5
-			$Tween.interpolate_property(get_material(), "shader_param/" + param, 0, 1, time, Tween.TRANS_LINEAR, Tween.EASE_OUT)
-			$Tween.start()
-			get_node("/root/MainGameScene/AudioPop").stop()
-			get_node("/root/MainGameScene/AudioPop").play()
+		purchase_building()
 	var old = _mouse_state
 	if purchased:
 		if _mouse_state == MouseState.DRAGGING:
@@ -594,6 +590,13 @@ func _on_building_place():
 	else:
 		set_state(MouseState.NONE)
 		force_set(_original_pos, _original_rot, _original_flipped)
+	var was_purchased = purchased and not old_purchased
+	var param = "progress_rainbow" if was_purchased else "progress_highlight"
+	var time = 1.8 if was_purchased else 0.5
+	$Tween.interpolate_property(get_material(), "shader_param/" + param, 0, 1, time, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	$Tween.start()
+	if GameStats.current_hovered_building == self:
+		play(get_node("/root/MainGameScene/AudioPop"))
 	_on_building_release()
 
 func possible_enter():
@@ -625,6 +628,10 @@ func _on_building_release():
 		building_mouse_exited()
 	log_building_action(Logger.Actions.BuildingReleased)
 
+func play(audio : AudioStreamPlayer):
+	audio.stop()
+	audio.play()
+
 func _on_building_grab():
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	_last_mouse_pos = get_global_mouse_position()
@@ -638,7 +645,7 @@ func _on_building_grab():
 	if _mouse_state == MouseState.DRAGGING:
 		GameStats.current_selected_building = self
 	var audio = "AudioPop" if purchased else "AudioPickup"
-	get_node("/root/MainGameScene/" + audio).play()
+	play(get_node("/root/MainGameScene/" + audio))
 	emit_signal("building_grabbed", self)
 
 func _on_building_rotate():
