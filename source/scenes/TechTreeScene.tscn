@@ -5,11 +5,11 @@
 [ext_resource path="res://scenes/TechTreeSidebar.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=4]
 
-[sub_resource type="Gradient" id=2]
+[sub_resource type="Gradient" id=11]
 colors = PoolColorArray( 0.0929254, 0.0693811, 0.162109, 1, 0.101961, 0.101961, 0.101961, 1 )
 
 [sub_resource type="GradientTexture" id=3]
-gradient = SubResource( 2 )
+gradient = SubResource( 11 )
 
 [sub_resource type="DynamicFont" id=1]
 size = 48

@@ -7,8 +7,8 @@
 [ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=5]
 [ext_resource path="res://scenes/Graph.tscn" type="PackedScene" id=6]
 [ext_resource path="res://BAHNSCHRIFT.TTF" type="DynamicFontData" id=7]
-[ext_resource path="res://assets/images/mute.png" type="Texture" id=8]
-[ext_resource path="res://scripts/MuteButton.gd" type="Script" id=9]
+[ext_resource path="res://assets/images/settings.png" type="Texture" id=8]
+[ext_resource path="res://scenes/MenuScreen.tscn" type="PackedScene" id=11]
 
 [sub_resource type="DynamicFont" id=1]
 size = 30
@@ -287,9 +287,12 @@ margin_right = 0.0
 [node name="EndScreen" parent="CanvasLayer" instance=ExtResource( 3 )]
 visible = false
 
+[node name="MenuScreen" parent="CanvasLayer" instance=ExtResource( 11 )]
+visible = false
+
 [node name="Tween" type="Tween" parent="."]
 
-[node name="MuteButton" type="Button" parent="."]
+[node name="SettingsButton" type="Button" parent="."]
 margin_left = 462.0
 margin_top = 10.0
 margin_right = 512.0
@@ -300,8 +303,7 @@ custom_styles/focus = SubResource( 7 )
 icon = ExtResource( 8 )
 flat = true
 expand_icon = true
-script = ExtResource( 9 )
 
 [connection signal="gui_input" from="NextMonth/Label" to="." method="_on_Next_Month_gui_input"]
 [connection signal="gui_input" from="Upgrades/Label" to="." method="_on_Upgrades_gui_input"]
-[connection signal="pressed" from="MuteButton" to="MuteButton" method="_on_MuteButton_pressed"]
+[connection signal="pressed" from="SettingsButton" to="." method="_on_SettingsButton_pressed"]
