@@ -300,6 +300,7 @@ func reset_game(is_restart : bool):
 	scroll_down_queued = false
 	upgrade_tree = GameObjs.UpgradeTree.new()
 	if is_restart:
+		delete_save()
 		get_tree().reload_current_scene()
 
 """
@@ -340,6 +341,10 @@ func deserialize_buildings(buildings):
 
 const SERIALIZATION_VERSION = 1
 const SAVE_FILE = "res://savegame.save"
+
+func delete_save():
+	var dir = Directory.new()
+	dir.remove(SAVE_FILE)
 
 func save_game():
 	var save_game = File.new()
