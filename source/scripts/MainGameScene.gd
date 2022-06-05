@@ -13,6 +13,7 @@ signal building_changed(building)
 var sidebar : Control
 # The graph object
 var graph : Control
+var autosave : Control
 
 var _dirty = false
 
@@ -24,6 +25,7 @@ func _ready():
 	GameStats.logger.start_new_session(GameStats.cid)
 	sidebar = get_node("UILayer/Sidebar")
 	graph = get_node("UILayer/Sidebar/Graph")
+	autosave = get_node("UpperLayer/Autosave")
 	for building in get_tree().get_nodes_in_group("buildings"):
 		_on_SceneTree_node_added(building)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
@@ -72,6 +74,7 @@ func on_next_turn():
 	GameStats.resources.step()
 	GameStats.turn += 1
 	emit_signal("next_turn")
+	autosave.begin()
 	"""
 	SAVED GAME DEBUGGING
 	DISABLE IN PRODUCTION
@@ -79,6 +82,7 @@ func on_next_turn():
 	GameStats.save_game()
 	"""
 	"""
+	autosave.complete()
 	GameStats.logger.log_level_start(GameStats.turn)
 	show_correct_text()
 	update_all()
