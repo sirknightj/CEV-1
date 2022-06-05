@@ -399,7 +399,6 @@ func deserialize(data):
 	if not is_playing:
 		show_win_lose_screen(data.win_status)
 	else:
-		game.update_stats()
 		game.sidebar.show_all()
 
 """
