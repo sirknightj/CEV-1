@@ -70,7 +70,7 @@ _global_script_classes=[ {
 "path": "res://scripts/MultiSelector.gd"
 }, {
 "base": "Control",
-"class": "SidebarX",
+"class": "Sidebar",
 "language": "GDScript",
 "path": "res://scripts/Sidebar.gd"
 }, {
@@ -97,7 +97,7 @@ _global_script_class_icons={
 "GridSquare": "",
 "Logger": "",
 "MultiSelector": "",
-"SidebarX": "",
+"Sidebar": "",
 "Tooltip": "",
 "Upgrade": ""
 }

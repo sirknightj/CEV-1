@@ -1,5 +1,5 @@
 extends Control
-class_name SidebarX
+class_name Sidebar
 
 onready var grid : Node2D = $"../../Grid"
 
