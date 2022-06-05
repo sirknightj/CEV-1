@@ -563,7 +563,7 @@ func _on_building_place():
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "This building cannot be sold."
 					get_node("/root/MainGameScene/AudioAlert").play()
 				else:
-					if purchased and GameStats.show_sell_no_refund_message:
+					if purchased and GameStats.show_sell_no_refund_message and not refundable():
 						GameStats.show_sell_no_refund_message = 0
 						Input.set_custom_mouse_cursor(null)
 						GameStats.dialog_box.prompt("Are you sure you want to delete this building? You will not receive a refund because you purchased it in a previous month.", "Delete", "Cancel")
@@ -580,7 +580,11 @@ func _on_building_place():
 				Input.set_custom_mouse_cursor(null)
 		else:
 			check_trash()
-		purchase_building()
+		if has_moved():
+			purchase_building()
+		elif not purchased:
+			destroy()
+			return
 	var old = _mouse_state
 	if purchased:
 		if _mouse_state == MouseState.DRAGGING:

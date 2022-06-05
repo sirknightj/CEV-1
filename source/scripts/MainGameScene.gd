@@ -33,7 +33,9 @@ func _ready():
 		SAVED GAME DEBUGGING
 		DISABLE IN PRODUCTION
 	"""
-	if not GameStats.load_game():
+	if GameStats.load_game():
+		$UILayer/Sidebar/CanvasLayer/MenuScreen.show()
+	else:
 		sidebar.start_game()
 	"""
 	"""
@@ -293,7 +295,7 @@ func _on_Building_building_released(building):
 	emit_signal("building_released", building)
 
 func _on_SceneTree_node_removed(_node):
-	if _node is Building:
+	if _node is Building and _node.purchased:
 		_on_Building_building_changed(_node)
 
 func _on_Building_ready(building):

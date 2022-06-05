@@ -262,8 +262,6 @@ func _on_Building_building_released(building : Building):
 		if building.building_id == GameData.BuildingType.END1:
 			$NextMonth/Label.text = "Freeplay"
 			GameStats.show_win_lose_screen(true)
-	else:
-		building.destroy()
 	repopulate_sidebar()
 
 """
