@@ -16,6 +16,7 @@ var graph : Control
 var autosave : Control
 
 var _dirty = false
+var _updates_enabled = false
 
 onready var building_scene = preload("res://scenes/Building.tscn")
 
@@ -68,9 +69,9 @@ func on_next_turn():
 	GameStats.resources.step()
 	GameStats.turn += 1
 	emit_signal("next_turn")
-	autosave.begin()
+	autosave.call_deferred("begin")
 	GameStats.save_game()
-	autosave.complete()
+	autosave.call_deferred("complete")
 	GameStats.logger.log_level_start(GameStats.turn)
 	show_correct_text()
 	update_all()
@@ -259,7 +260,13 @@ func _unhandled_input(event):
 	if event.is_action_pressed("toggle_fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
 
-func _process(_delta):
+var i = 3
+func _physics_process(_delta):
+	if not _updates_enabled:
+		i -= 1
+		if i == 0:
+			_updates_enabled = true
+		return
 	if _dirty:
 		_dirty = false
 		update_resources()
