@@ -31,16 +31,10 @@ func _ready():
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 	get_tree().connect("node_removed", self, "_on_SceneTree_node_removed")
 	GameStats.resources.set_callback(funcref(self, "update_all"))
-	"""
-		SAVED GAME DEBUGGING
-		DISABLE IN PRODUCTION
-	"""
 	if GameStats.load_game():
 		$UILayer/Sidebar/CanvasLayer/MenuScreen.show()
 	else:
 		sidebar.start_game()
-	"""
-	"""
 	sidebar.get_node("CanvasLayer/TechTree").add_nodes()
 	get_tree().call_group("preparable", "prepare")
 	show_correct_text()
@@ -75,13 +69,7 @@ func on_next_turn():
 	GameStats.turn += 1
 	emit_signal("next_turn")
 	autosave.begin()
-	"""
-	SAVED GAME DEBUGGING
-	DISABLE IN PRODUCTION
-	"""
 	GameStats.save_game()
-	"""
-	"""
 	autosave.complete()
 	GameStats.logger.log_level_start(GameStats.turn)
 	show_correct_text()
