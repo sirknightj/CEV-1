@@ -275,7 +275,7 @@ margin_right = 0.0
 margin_bottom = 102.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-layer = 128
+layer = 127
 
 [node name="TechTree" parent="CanvasLayer" instance=ExtResource( 1 )]
 visible = false

@@ -8,6 +8,7 @@ var resources : GameObjs.Resources
 var upgrade_tree : GameObjs.UpgradeTree
 var grid : Grid
 var game : Game
+var dialog_box : DialogBox
 
 var is_playing : bool # true if the game is still being played, false if it has ended
 var win_status : bool # true if the player won. false if they lost

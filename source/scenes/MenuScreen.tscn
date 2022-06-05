@@ -71,6 +71,9 @@ mouse_filter = 0
 mouse_default_cursor_shape = 2
 theme = ExtResource( 2 )
 text = "New Game"
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [node name="Title" type="RichTextLabel" parent="."]
 margin_left = 516.0

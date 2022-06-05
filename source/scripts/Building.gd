@@ -418,12 +418,6 @@ func check_trash():
 				else:
 					Input.set_custom_mouse_cursor(null)
 			else:
-				if GameStats.show_sell_no_refund_message:
-					var to_show = "You won't get a refund for destroying this building. You only get a refund if you build and destroy it on the same turn!"
-					if get_node("../../MainGameScene/UpperLayer/TutorialText").text != to_show:
-						get_node("../../MainGameScene/UpperLayer/TutorialText").text = to_show
-						get_node("/root/MainGameScene/AudioAlert").play()
-						GameStats.show_sell_no_refund_message -= 1
 				Input.set_custom_mouse_cursor(trash_icon)
 		_shadow.visible = false
 	else:
@@ -569,8 +563,17 @@ func _on_building_place():
 					get_node("../../MainGameScene/UpperLayer/TutorialText").text = "This building cannot be sold."
 					get_node("/root/MainGameScene/AudioAlert").play()
 				else:
-					destroy()
-					return
+					if purchased and GameStats.show_sell_no_refund_message:
+						GameStats.show_sell_no_refund_message = 0
+						Input.set_custom_mouse_cursor(null)
+						GameStats.dialog_box.prompt("Are you sure you want to delete this building? You will not receive a refund because you purchased it in a previous month.", "Delete", "Cancel")
+						var delete = yield(GameStats.dialog_box, "answer")
+						if delete:
+							destroy()
+							return
+					else:
+						destroy()
+						return
 			else:
 				#get_node("../../MainGameScene/UpperLayer/TutorialText").text = "Selling is currently disabled."
 				#get_node("/root/MainGameScene/AudioAlert").play()
