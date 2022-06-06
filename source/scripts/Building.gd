@@ -567,7 +567,7 @@ func _on_building_place():
 					if purchased and GameStats.show_sell_no_refund_message and not refundable():
 						GameStats.show_sell_no_refund_message = 0
 						Input.set_custom_mouse_cursor(null)
-						GameStats.dialog_box.prompt("Are you sure you want to delete this building? You will not receive a refund because you purchased it in a previous month.", "Delete", "Cancel")
+						GameStats.dialog_box.prompt("Are you sure you want to remove this building? You cannot receive a refund for its material cost since it was built in a previous month.", "Demolish", "Cancel")
 						var delete = yield(GameStats.dialog_box, "answer")
 						if delete:
 							destroy()

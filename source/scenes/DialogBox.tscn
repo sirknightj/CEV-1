@@ -5,20 +5,21 @@
 [ext_resource path="res://scripts/DialogBox.gd" type="Script" id=3]
 
 [sub_resource type="StyleBoxFlat" id=1]
-bg_color = Color( 0.333333, 0.109804, 0.388235, 1 )
+bg_color = Color( 0.141176, 0.141176, 0.141176, 1 )
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="DynamicFont" id=2]
-size = 17
+size = 20
 use_mipmaps = true
 use_filter = true
+extra_spacing_top = 3
 font_data = ExtResource( 1 )
 
 [sub_resource type="DynamicFont" id=3]
-size = 60
+size = 50
 use_mipmaps = true
 use_filter = true
 font_data = ExtResource( 1 )
@@ -35,22 +36,26 @@ margin_left = 4.0
 margin_top = 5.0
 margin_right = 4.0
 margin_bottom = 5.0
-color = Color( 0.133333, 0.113725, 0.113725, 0.411765 )
+color = Color( 0.113725, 0.129412, 0.117647, 0.517647 )
 
 [node name="Panel" type="Panel" parent="."]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -144.5
-margin_top = -82.0
-margin_right = 144.5
-margin_bottom = 82.0
+margin_left = -170.0
+margin_top = -120.0
+margin_right = 170.0
+margin_bottom = 120.0
 custom_styles/panel = SubResource( 1 )
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 12.0
+margin_top = 10.0
+margin_right = -12.0
+margin_bottom = -10.0
 custom_constants/margin_right = 20
 custom_constants/margin_top = 15
 custom_constants/margin_left = 20
@@ -59,47 +64,47 @@ custom_constants/margin_bottom = 15
 [node name="RichTextLabel" type="RichTextLabel" parent="Panel/MarginContainer"]
 margin_left = 20.0
 margin_top = 15.0
-margin_right = 269.0
-margin_bottom = 149.0
+margin_right = 296.0
+margin_bottom = 205.0
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 custom_fonts/normal_font = SubResource( 2 )
-text = "Are you sure you want to delete this building? You will not receive a refund because you purchased it in a previous month.
-"
+text = "Are you sure you want to remove this building? The material cost won't be refunded since it was built in a previous month."
 fit_content_height = true
 
 [node name="CancelButton" type="Polygon2D" parent="Panel/MarginContainer"]
-position = Vector2( 32.5499, 128.05 )
-scale = Vector2( 0.27, 0.27 )
-color = Color( 0.294118, 0.278431, 0.333333, 1 )
+position = Vector2( 80, 174.05 )
+scale = Vector2( 0.35, 0.35 )
+color = Color( 0.294118, 0.278431, 0.333333, 0 )
 offset = Vector2( -65, -15 )
 antialiased = true
-polygon = PoolVector2Array( 45, 0, 0, 90, 420, 90, 465, 0 )
+polygon = PoolVector2Array( 45, 0, 0, 90, 240, 90, 285, 0 )
 
 [node name="Label" type="Label" parent="Panel/MarginContainer/CancelButton"]
-margin_left = -15.0
-margin_top = -15.0
-margin_right = 355.0
-margin_bottom = 75.0
+margin_left = -28.5714
+margin_top = -14.4285
+margin_right = 188.429
+margin_bottom = 75.5715
 mouse_filter = 0
 mouse_default_cursor_shape = 2
 theme = ExtResource( 2 )
+custom_colors/font_color = Color( 0.784314, 0.784314, 0.784314, 0.784314 )
 custom_fonts/font = SubResource( 3 )
 text = "Cancel"
 align = 1
 valign = 1
 
 [node name="OkButton" type="Polygon2D" parent="Panel/MarginContainer"]
-position = Vector2( 166.55, 128.05 )
-scale = Vector2( 0.27, 0.27 )
-color = Color( 0.85098, 0, 0, 1 )
+position = Vector2( 181, 174.05 )
+scale = Vector2( 0.35, 0.35 )
+color = Color( 0.8, 0.4, 1, 1 )
 offset = Vector2( -65, -15 )
 antialiased = true
-polygon = PoolVector2Array( 45, 0, 0, 90, 420, 90, 465, 0 )
+polygon = PoolVector2Array( 45, 0, 0, 90, 320, 90, 365, 0 )
 
 [node name="Label" type="Label" parent="Panel/MarginContainer/OkButton"]
-margin_left = -18.5184
+margin_left = -45.7143
 margin_top = -14.8148
-margin_right = 351.482
+margin_right = 284.286
 margin_bottom = 75.1852
 mouse_filter = 0
 mouse_default_cursor_shape = 2
