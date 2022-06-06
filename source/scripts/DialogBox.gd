@@ -26,3 +26,8 @@ func _on_CancelButton_Label_gui_input(event):
 func _on_OkButton_Label_gui_input(event):
 	if isClick(event):
 		answer(true)
+
+func _unhandled_input(event : InputEvent):
+	if event.is_action_pressed("ui_cancel") and is_visible_in_tree():
+		get_tree().set_input_as_handled()
+		answer(false)

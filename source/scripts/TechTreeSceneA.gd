@@ -209,3 +209,8 @@ func _on_Back_gui_input(event):
 		if GameStats.scroll_down_queued:
 			GameStats.game.get_node("UILayer/Sidebar").scroll_down()
 			GameStats.scroll_down_queued = false
+
+func _unhandled_input(event : InputEvent):
+	if event.is_action_pressed("ui_cancel") and is_visible_in_tree():
+		get_tree().set_input_as_handled()
+		.hide()
