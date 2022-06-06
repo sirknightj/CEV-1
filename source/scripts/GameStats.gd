@@ -337,7 +337,7 @@ func deserialize_buildings(buildings):
 		building.deserialize(data)
 		game._on_SceneTree_node_added(building)
 
-const SERIALIZATION_VERSION = 3
+const SERIALIZATION_VERSION = 2
 var SAVE_FILE = "user://cev-savegame-v%d.save" % [SERIALIZATION_VERSION]
 
 func delete_save():
@@ -377,6 +377,7 @@ func serialize():
 		"win_status": win_status,
 		"is_playing": is_playing,
 		"buildings_unlocked": buildings_unlocked,
+		"shown_resources": shown_resources,
 		"resources": resources.serialize(),
 		"upgrades": upgrade_tree.serialize(),
 		"buildings": serialize_buildings(),
@@ -392,6 +393,7 @@ func deserialize(data):
 	dead = data.dead
 	is_playing = data.is_playing
 	buildings_unlocked = GameData.fix_array_types(data.buildings_unlocked)
+	shown_resources = GameData.fix_array_types(data.shown_resources)
 	resources.deserialize(data.resources)
 	deserialize_buildings(data.buildings)
 	upgrade_tree.deserialize(data.upgrades)
