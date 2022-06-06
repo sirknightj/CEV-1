@@ -24,8 +24,8 @@ func get_base_effect(resource : int) -> float:
 	var turn = GameStats.turn
 	
 	if GameStats.logger.get_group(0):
-		if peopleOnTurn.has(turn):
-			return peopleOnTurn[turn]
+		if peopleOnTurn.has(str(turn)):
+			return peopleOnTurn[str(turn)]
 
 	var turn_progression = GameData.TURN_PROGRESSION
 	var factor = turn_progression[0]
