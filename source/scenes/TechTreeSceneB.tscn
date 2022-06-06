@@ -1,8 +1,8 @@
 [gd_scene load_steps=14 format=2]
 
-[ext_resource path="res://scripts/TechTreeScene.gd" type="Script" id=1]
+[ext_resource path="res://scripts/TechTreeSceneB.gd" type="Script" id=1]
 [ext_resource path="res://BAHNSCHRIFT.TTF" type="DynamicFontData" id=2]
-[ext_resource path="res://scenes/TechTreeSidebar.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/TechTreeSidebarB.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=4]
 
 [sub_resource type="Gradient" id=11]

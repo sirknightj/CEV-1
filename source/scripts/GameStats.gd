@@ -269,7 +269,6 @@ func _ready():
 	is_restart : true iff the game is restarting
 """
 func reset_game(is_restart : bool):
-	group = GameStats.logger.get_group()
 	upgrades_data[GameData.UpgradeType.GRID_3].scene._bundled.variants[4] = 23
 	upgrades_data[GameData.UpgradeType.GRID_4].scene._bundled.variants[4] = 27
 	var sc = preload("res://scenes/upgrades/impl/Grid5.tscn");
@@ -280,8 +279,6 @@ func reset_game(is_restart : bool):
 		"prereqs": [GameData.UpgradeType.GRID_4],
 		"starting": false
 	}
-	
-	print("Group " + str(group))
 	show_sell_no_refund_message = 2
 	show_sell_yes_refund_message = 2
 	is_playing = true

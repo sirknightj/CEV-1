@@ -337,7 +337,6 @@ func _on_Upgrades_gui_input(event):
 			$Upgrades/AnimationPlayer.stop()
 			$Upgrades/AnimationPlayer.seek(0, true)
 			$CanvasLayer/TechTree.show()
-			
 
 func _on_SettingsButton_pressed():
 	# TODO - Log this

@@ -2,19 +2,18 @@ extends Control
 
 var all_links : Array # Array of Line2Ds
 
-var item_scene = preload("res://scenes/TreeItem.tscn")
+var item_scene = preload("res://scenes/TreeItemA.tscn")
 
 var selected_upgrade : int
 var hovered_upgrade : int
 var just_purchased : bool
 
 var COLORS : Dictionary = {
-	"unlocked" : [Color("#238A0F"), Color("#238A0F").darkened(0.4)],
-	"available" : [Color("#0580D1"), Color("#0580D1").darkened(0.4)],
-	"locked" : [Color("#444"), Color("#444").darkened(0.3)],
-	"locked_highlight" : [Color("#AAA"), Color("#AAA")]
+	"unlocked" : [Color("#049F0C"), Color("#049F0C").darkened(0.4)],
+	"available" : [Color("#0467A9"), Color("#0467A9").darkened(0.4)],
+	"locked" : [Color("#E3E3E3"), Color("#E3E3E3").darkened(0.5)]
 }
-const DEFAULT_LINK_COLOR = Color("#66DDCFDD")
+const DEFAULT_LINK_COLOR = Color("#4AD0CCD0")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -23,9 +22,6 @@ func _ready() -> void:
 	just_purchased = false
 	GameStats.upgrade_tree.load_upgrade_tree(self)
 	$SelectedUpgrade/BuyButton.connect("gui_input", self, "_on_BuyButton_gui_input")
-	
-	$Legend/ColorRect4/Tween.interpolate_property($Legend/ColorRect4.get_material(), "shader_param/progress", 0, 1, 2.1, Tween.TRANS_LINEAR, Tween.EASE_OUT)
-	$Legend/ColorRect4/Tween.start()
 
 func add_nodes() -> void:
 	var tree_dict = GameStats.upgrade_tree.tree_dict
@@ -62,7 +58,7 @@ func add_nodes() -> void:
 	set_node_styles()
 	_on_item_hover_off(-1)
 
-func set_node_styles(reset_animations: bool = true) -> void:
+func set_node_styles() -> void:
 	for upgrade in GameStats.upgrade_tree.tree_dict.values():
 		var item = upgrade.node
 		var type = "locked"
@@ -71,15 +67,9 @@ func set_node_styles(reset_animations: bool = true) -> void:
 		elif upgrade.available:
 			type = "available"
 		item.get_node("BackgroundRect").color = COLORS[type][1]
-		item.get_node("BorderRect").color = COLORS[type][1]
-		item.set_locked(type == "locked")
-
-		if upgrade.id == selected_upgrade || (selected_upgrade == -1 && upgrade.id == hovered_upgrade):
-			item.get_node("BackgroundRect").color = COLORS[type][0]
-			item.get_node("BorderRect").color = COLORS[type][0].lightened(0.45)
+		item.get_node("BorderRect").color = COLORS[type][0]
 		
-		if reset_animations:
-			item.set_gradient_animation(not upgrade.unlocked and upgrade.available and upgrade.can_afford())
+		item.set_gradient_animation(not upgrade.unlocked and upgrade.available and upgrade.can_afford())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
@@ -98,10 +88,14 @@ func set_sidebar(name: int) -> void:
 	$SelectedUpgrade/Name.text = upgrade.name
 	
 	if upgrade.unlocked:
-		$SelectedUpgrade/Cost.text = "Unlocked for %s science" % upgrade.cost[GameData.ResourceType.SCIENCE]
+		$SelectedUpgrade/Cost.text = "UNLOCKED"
 	else:
-		$SelectedUpgrade/Cost.text = "Cost: %s science\n" % upgrade.cost[GameData.ResourceType.SCIENCE]
-	if not upgrade.unlocked and upgrade.available and upgrade.can_afford():
+		$SelectedUpgrade/Cost.text = "Cost: "
+		for resource_type in upgrade.cost.keys():
+			$SelectedUpgrade/Cost.text += (str(upgrade.cost[resource_type])
+					+ " " + str(GameData.ResourceType.keys()[resource_type]).to_lower()) + "\n"
+	var can_afford : bool = upgrade.can_afford()
+	if not upgrade.unlocked and upgrade.available and can_afford:
 		$SelectedUpgrade/BuyButton.show()
 	else:
 		var prereqs = upgrade.recalculate_available()
@@ -109,7 +103,7 @@ func set_sidebar(name: int) -> void:
 			var names : Array = [];
 			for upgr in prereqs:
 				names.append(upgr.name)
-			$SelectedUpgrade/Cost.text += "Needs: " + PoolStringArray(names).join(", ")
+			$SelectedUpgrade/Cost.text += "Need" + ("" if names.size() == 1 else "s") + ": " + PoolStringArray(names).join(", ")
 		$SelectedUpgrade/BuyButton.hide()
 	$SelectedUpgrade/Description.text = desc
 	$SelectedUpgrade/Effects.text = effects
@@ -137,7 +131,7 @@ func set_link_colors() -> void:
 		var links = tree_dict.get(name).get_all_pre_links()
 		for line in links:
 			var pre = tree_dict.get(line.get_meta('pre'))
-			var type = "locked_highlight"
+			var type = "locked"
 			if pre.unlocked:
 				type = "unlocked"
 			elif pre.available:
@@ -153,21 +147,12 @@ func _on_item_hover_on(name: int) -> void:
 		return
 	hovered_upgrade = name
 	set_link_colors()
-	set_node_styles(false)
-
-	var item = GameStats.upgrade_tree.tree_dict.get(name)
-	var border_rect = item.node.get_node("BorderRect")
-	if item.unlocked or item.available:
-		border_rect.mouse_default_cursor_shape = Input.CURSOR_POINTING_HAND
-	else:
-		border_rect.mouse_default_cursor_shape = Input.CURSOR_FORBIDDEN
 
 func _on_item_hover_off(_name: int) -> void:
 	if selected_upgrade == -1:
 		clear_sidebar()
 	hovered_upgrade = -1
 	set_link_colors()
-	set_node_styles(false)
 
 func _on_item_click(_name: int) -> void:
 	var action
@@ -188,7 +173,6 @@ func _on_item_click(_name: int) -> void:
 		"upgrade": _name
 	})
 	set_link_colors()
-	set_node_styles(false)
 
 func show() -> void:
 	_update_reserve_text()
@@ -202,7 +186,6 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	var upgrade : GameObjs.UpgradeTreeNode = GameStats.upgrade_tree.tree_dict.get(selected_upgrade)
 	
 	upgrade.unlock()
-	get_node("/root/MainGameScene/AudioUnlock").play()
 	GameStats.logger.log_level_action(Logger.Actions.UpgradeBought, {
 		"upgrade": upgrade.name
 	})

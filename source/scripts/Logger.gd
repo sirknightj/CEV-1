@@ -41,10 +41,10 @@ class Log:
 		else:
 			print("No JavaScript support, disabling logging")
 
-	func get_group():
+	func get_group(test_number : int):
 		if not enabled:
 			return 0
-		return uid.ord_at(uid.length() - 1) % NUM_GROUPS
+		return uid.ord_at(uid.length() - test_number + 1) % NUM_GROUPS
 
 	func start_new_session(category_id: int) -> void:
 		if not self.enabled:

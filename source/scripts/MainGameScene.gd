@@ -27,6 +27,14 @@ func _ready():
 	sidebar = get_node("UILayer/Sidebar")
 	graph = get_node("UILayer/Sidebar/Graph")
 	autosave = get_node("UpperLayer/Autosave")
+	var inst : Node
+	if GameStats.logger.get_group(1) == 0:
+		inst = preload("res://scenes/TechTreeSceneA.tscn").instance()
+	else:
+		inst = preload("res://scenes/TechTreeSceneB.tscn").instance()
+	inst.name = "TechTree"
+	inst.hide()
+	sidebar.get_node("CanvasLayer").add_child(inst)
 	for building in get_tree().get_nodes_in_group("buildings"):
 		_on_SceneTree_node_added(building)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
