@@ -105,6 +105,9 @@ func show_correct_text():
 		return
 	turns_shown_correct_text_already[turn] = true
 	
+	GameStats.selling_enabled = turn >= 10
+	$UILayer/Sidebar.toggle_upgrades_button(turn >= 10)
+	
 	if turn == 1:
 		text = "Welcome to consciousness! You're an AI put in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + ".\n"
 		text += "Each colonist needs 1 unit of [color=%s]water[/color].\nBuild a %s to generate some [color=%s]water[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.WATER), GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(1), GameData.get_resource_color_as_hex(GameData.ResourceType.WATER)]
@@ -113,7 +116,7 @@ func show_correct_text():
 		$UILayer/Sidebar/NextMonth.hide()
 		GameStats.resources.give(GameData.ResourceType.METAL, 6)
 		GameStats.restrictions = {GameData.BuildingType.WATER1: 1}
-		GameStats.selling_enabled = false
+
 	elif turn == 2:
 		text = "More colonists have arrived!\nYou'll need another %s to support the growing population." % GameStats.buildings_dict[GameData.BuildingType.WATER1].format_str(1)
 		# $UILayer/Sidebar.toggle_next_month_button(false)

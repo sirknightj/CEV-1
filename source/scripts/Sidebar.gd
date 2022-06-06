@@ -35,6 +35,7 @@ func start_game():
 	update_turn_display()
 
 func show_all():
+	return
 	GameStats.shown_resources = GameData.ResourceType.values()
 	show_resources()
 	toggle_next_month_button(true)
@@ -127,24 +128,24 @@ func populate_sidebar_correctly() -> void:
 	
 	var turn = GameStats.turn
 	if turn <= 2:
-		GameStats.buildings_unlocked.append(GameData.BuildingType.WATER1)
+		GameStats.buildings_unlocked = [GameData.BuildingType.WATER1]
 		GameStats.shown_resources = [GameData.ResourceType.PEOPLE, GameData.ResourceType.WATER]
 		show_resources()
 	elif turn <= 5:
-		GameStats.buildings_unlocked.append(GameData.BuildingType.FOOD1)
+		GameStats.buildings_unlocked = [GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1]
 		populate_sidebar_with_buildings([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1])
 		GameStats.shown_resources = [GameData.ResourceType.PEOPLE, GameData.ResourceType.WATER, GameData.ResourceType.FOOD]
 		show_resources()
 	elif turn <= 8:
-		GameStats.buildings_unlocked.append_array([GameData.BuildingType.OXY1, GameData.BuildingType.METAL1])
+		GameStats.buildings_unlocked = [GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1]
 		GameStats.shown_resources = [GameData.ResourceType.PEOPLE, GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL]
 		show_resources()
 	elif turn <= 9:
-		GameStats.buildings_unlocked.append(GameData.BuildingType.ELEC1)
+		GameStats.buildings_unlocked = [GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1]
 		GameStats.shown_resources = [GameData.ResourceType.PEOPLE, GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY]
 		show_resources()
 	elif turn <= 10:
-		GameStats.buildings_unlocked.append(GameData.BuildingType.SCI1)
+		GameStats.buildings_unlocked = [GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1, GameData.BuildingType.SCI1]
 		GameStats.shown_resources = [GameData.ResourceType.PEOPLE, GameData.ResourceType.WATER, GameData.ResourceType.FOOD, GameData.ResourceType.OXYGEN, GameData.ResourceType.METAL, GameData.ResourceType.ELECTRICITY, GameData.ResourceType.SCIENCE]
 		show_resources()
 	populate_sidebar_with_buildings(GameStats.buildings_unlocked)
