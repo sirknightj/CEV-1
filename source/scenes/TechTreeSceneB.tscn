@@ -13,16 +13,20 @@ gradient = SubResource( 11 )
 
 [sub_resource type="DynamicFont" id=1]
 size = 48
+use_mipmaps = true
 use_filter = true
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=7]
 size = 32
+use_mipmaps = true
+use_filter = true
 extra_spacing_bottom = 10
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=5]
 size = 18
+use_mipmaps = true
 use_filter = true
 font_data = ExtResource( 2 )
 
@@ -33,6 +37,8 @@ font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=8]
 size = 20
+use_mipmaps = true
+use_filter = true
 font_data = ExtResource( 2 )
 
 [sub_resource type="Shader" id=9]
