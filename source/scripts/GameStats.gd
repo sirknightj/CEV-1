@@ -381,7 +381,8 @@ func serialize():
 		"upgrades": upgrade_tree.serialize(),
 		"buildings": serialize_buildings(),
 		"grid_size": grid_size,
-		"group": GameStats.logger.get_group()
+		"group0": GameStats.logger.get_group(0),
+		"group1": GameStats.logger.get_group(1)
 	}
 
 func deserialize(data):

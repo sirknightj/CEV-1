@@ -5,8 +5,8 @@ onready var timer = $Timer
 onready var tween = $Tween
 
 const WAIT_BEFORE_SAVED_SECONDS = 1
-const WAIT_BEFORE_FADE_SECONDS = 2
-const FADE_TWEEN_SECONDS = 2
+const WAIT_BEFORE_FADE_SECONDS = 1
+const FADE_TWEEN_SECONDS = 1
 
 var current = 1
 
@@ -25,10 +25,10 @@ func wait(seconds):
 func complete():
 	current += 1
 	var mine = current
-	wait(WAIT_BEFORE_SAVED_SECONDS)
-	yield(timer, "timeout")
-	if mine != current:
-		return
+	#wait(WAIT_BEFORE_SAVED_SECONDS)
+	#yield(timer, "timeout")
+	#if mine != current:
+	#	return
 	label.text = "Saved."
 	wait(WAIT_BEFORE_FADE_SECONDS)
 	yield(timer, "timeout")
