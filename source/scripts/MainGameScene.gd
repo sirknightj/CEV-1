@@ -105,9 +105,8 @@ func show_correct_text():
 		return
 	turns_shown_correct_text_already[turn] = true
 	
-	GameStats.selling_enabled = turn < 10
-	$UILayer/Sidebar.toggle_upgrades_button(turn < 10)
-	print("This code was called with turn " + str(turn))
+	GameStats.selling_enabled = turn >= 10
+	$UILayer/Sidebar.toggle_upgrades_button(turn >= 10)
 	
 	if turn == 1:
 		text = "Welcome to consciousness! You're an AI put in charge of a Mars colony of " + str(GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)) + ".\n"

@@ -35,6 +35,7 @@ func start_game():
 	update_turn_display()
 
 func show_all():
+	return
 	GameStats.shown_resources = GameData.ResourceType.values()
 	show_resources()
 	toggle_next_month_button(true)
