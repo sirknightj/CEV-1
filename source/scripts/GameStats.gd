@@ -25,7 +25,7 @@ var shown_resources : Array # The resources to show. Resources in this array are
 
 var logger : Logger.Log
 var group : int
-var cid : int = 696
+var cid : int = 769
 
 """
 	Each upgrade object defines its individual properties and mechanics
