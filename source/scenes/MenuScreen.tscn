@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scripts/MuteButton.gd" type="Script" id=1]
 [ext_resource path="res://scenes/MyTheme.tres" type="Theme" id=2]
@@ -8,30 +8,8 @@
 [ext_resource path="res://BAHNSCHRIFT.TTF" type="DynamicFontData" id=6]
 [ext_resource path="res://assets/images/settings.png" type="Texture" id=7]
 
-[sub_resource type="Shader" id=10]
-code = "shader_type canvas_item;
-
-uniform float brightness = 0.2;
-uniform float contrast = 0.85;
-uniform float saturation = 0.25;
-
-void fragment() {
-	vec3 c = textureLod(SCREEN_TEXTURE, SCREEN_UV, 0.0).rgb;
-	c.rgb = mix(vec3(0.0), c.rgb, brightness);
-	c.rgb = mix(vec3(0.5), c.rgb, contrast);
-	c.rgb = mix(vec3(dot(vec3(1.0), c.rgb) * 0.33333), c.rgb, saturation);
-	COLOR.rgb = c;
-}"
-
-[sub_resource type="ShaderMaterial" id=11]
-shader = SubResource( 10 )
-shader_param/brightness = 0.2
-shader_param/contrast = 0.85
-shader_param/saturation = 0.25
-
 [sub_resource type="Gradient" id=2]
-offsets = PoolRealArray( 0.953488, 1 )
-colors = PoolColorArray( 0.10251, 0.0895386, 0.140625, 1, 0.101961, 0.101961, 0.101961, 1 )
+colors = PoolColorArray( 0.117647, 0.0980392, 0.180392, 0.576471, 0.105882, 0.109804, 0.113725, 0.658824 )
 
 [sub_resource type="GradientTexture" id=4]
 gradient = SubResource( 2 )
@@ -49,7 +27,7 @@ use_filter = true
 font_data = ExtResource( 6 )
 
 [sub_resource type="DynamicFont" id=1]
-size = 100
+size = 128
 font_data = ExtResource( 4 )
 
 [sub_resource type="StyleBoxEmpty" id=8]
@@ -66,7 +44,6 @@ anchor_bottom = 1.0
 script = ExtResource( 5 )
 
 [node name="TextureRect" type="TextureRect" parent="."]
-material = SubResource( 11 )
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -80,7 +57,7 @@ texture = SubResource( 4 )
 expand = true
 
 [node name="ContinueShape" type="Polygon2D" parent="."]
-position = Vector2( 512, 470 )
+position = Vector2( 512, 438.5 )
 scale = Vector2( 0.7, 0.7 )
 color = Color( 0.329412, 0.129412, 0.819608, 1 )
 offset = Vector2( -65, -15 )
@@ -101,7 +78,7 @@ align = 1
 valign = 1
 
 [node name="NewGameShape" type="Polygon2D" parent="."]
-position = Vector2( 512, 580 )
+position = Vector2( 512, 548.5 )
 scale = Vector2( 0.7, 0.7 )
 color = Color( 0.25098, 0.25098, 0.25098, 1 )
 offset = Vector2( -65, -15 )
@@ -124,10 +101,10 @@ valign = 1
 [node name="Title" type="RichTextLabel" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -140.0
-margin_top = 50.0
-margin_right = 140.0
-margin_bottom = 208.0
+margin_left = -173.0
+margin_top = 75.0
+margin_right = 175.0
+margin_bottom = 262.0
 custom_fonts/normal_font = SubResource( 1 )
 text = "CEV-1"
 
