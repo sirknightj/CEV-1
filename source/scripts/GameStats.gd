@@ -324,6 +324,8 @@ func serialize_buildings():
 func deserialize_buildings(buildings):
 	for data in buildings:
 		var type = int(data.id)
+		if type == GameData.BuildingType.END1:
+			win_status = true
 		if type == GameData.BuildingType.CENTER:
 			continue
 		var building = building_scene.instance()
@@ -336,6 +338,9 @@ func deserialize_buildings(buildings):
 		get_tree().current_scene.add_child(building)
 		building.deserialize(data)
 		game._on_SceneTree_node_added(building)
+		if not buildings_owned.has(type):
+			buildings_owned[type] = 0
+		buildings_owned[type] += 1
 
 const SERIALIZATION_VERSION = 2
 var SAVE_FILE = "user://cev-savegame-v%d.save" % [SERIALIZATION_VERSION]
@@ -392,13 +397,15 @@ func deserialize(data):
 	turn = data.turn
 	dead = data.dead
 	is_playing = data.is_playing
+	win_status = data.win_status
 	buildings_unlocked = GameData.fix_array_types(data.buildings_unlocked)
 	shown_resources = GameData.fix_array_types(data.shown_resources)
 	resources.deserialize(data.resources)
 	deserialize_buildings(data.buildings)
 	upgrade_tree.deserialize(data.upgrades)
-	if not is_playing:
-		show_win_lose_screen(data.win_status)
+	if not is_playing and dead >= colonist_death_threshold:
+		win_status = false
+		show_win_lose_screen(false)
 
 """
 	Reads the building data from assets/data/buildings.json and loads it into
