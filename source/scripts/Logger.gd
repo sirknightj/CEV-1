@@ -19,6 +19,9 @@ enum Actions {
 	BuildingRotated = 70,
 	BuildingFlipped = 71,
 
+	AudioUnmuted = 80,
+	AudioMuted = 81,
+
 	# if you change these, remember to change them in logging.js too:
 	Lose = 666,
 	Win = 777,

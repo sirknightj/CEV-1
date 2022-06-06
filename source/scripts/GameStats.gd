@@ -338,7 +338,7 @@ func deserialize_buildings(buildings):
 		game._on_SceneTree_node_added(building)
 
 const SERIALIZATION_VERSION = 1
-const SAVE_FILE = "user://savegame.save"
+var SAVE_FILE = "user://cev-savegame-v%d.save" % [SERIALIZATION_VERSION]
 
 func delete_save():
 	var dir = Directory.new()
@@ -395,8 +395,6 @@ func deserialize(data):
 	upgrade_tree.deserialize(data.upgrades)
 	if not is_playing:
 		show_win_lose_screen(data.win_status)
-	else:
-		game.sidebar.show_all()
 
 """
 	Reads the building data from assets/data/buildings.json and loads it into
