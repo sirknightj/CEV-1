@@ -155,6 +155,7 @@ margin_left = -90.0
 margin_top = 31.0
 margin_right = 41.0
 margin_bottom = 69.0
+mouse_filter = 2
 custom_styles/panel = SubResource( 4 )
 script = ExtResource( 19 )
 
@@ -165,6 +166,7 @@ script = ExtResource( 19 )
 [node name="MarginContainer" type="MarginContainer" parent="UpperLayer/Autosave"]
 margin_right = 131.0
 margin_bottom = 38.0
+mouse_filter = 2
 custom_constants/margin_right = 8
 custom_constants/margin_top = 8
 custom_constants/margin_left = 8
