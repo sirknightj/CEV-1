@@ -337,7 +337,7 @@ func deserialize_buildings(buildings):
 		building.deserialize(data)
 		game._on_SceneTree_node_added(building)
 
-const SERIALIZATION_VERSION = 1
+const SERIALIZATION_VERSION = 3
 var SAVE_FILE = "user://cev-savegame-v%d.save" % [SERIALIZATION_VERSION]
 
 func delete_save():
@@ -376,6 +376,7 @@ func serialize():
 		"colonist_death_threshold": colonist_death_threshold,
 		"win_status": win_status,
 		"is_playing": is_playing,
+		"buildings_unlocked": buildings_unlocked,
 		"resources": resources.serialize(),
 		"upgrades": upgrade_tree.serialize(),
 		"buildings": serialize_buildings(),
@@ -390,6 +391,7 @@ func deserialize(data):
 	turn = data.turn
 	dead = data.dead
 	is_playing = data.is_playing
+	buildings_unlocked = GameData.fix_array_types(data.buildings_unlocked)
 	resources.deserialize(data.resources)
 	deserialize_buildings(data.buildings)
 	upgrade_tree.deserialize(data.upgrades)
@@ -420,5 +422,5 @@ func load_buildings_json() -> void:
 			stats.cost[resource_type] = building[resource.to_lower() + "_cost"]
 			stats.effects[resource_type] = building[resource.to_lower() + "_effect"]
 		buildings_dict[building_type] = stats
-	# ("Loaded the buildings: " + str(buildings_dict.keys()))
+	#print("Loaded the buildings: " + str(buildings_dict.keys()))
 	file.close()

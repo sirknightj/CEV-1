@@ -168,8 +168,9 @@ func toggle_visibility(resource : int, hide : bool) -> void:
 func populate_sidebar_with_buildings(_buildings : Array) -> void:
 	var buildings : Dictionary = {}
 	for building in _buildings:
-		assert(GameData.BuildingType.values().has(building))
+		assert(GameData.is_building_type(building))
 		buildings[building] = GameStats.buildings_dict[building]
+
 	populate_sidebar(buildings)
 
 func populate_sidebar(buildings : Dictionary) -> void:

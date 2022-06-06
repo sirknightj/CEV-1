@@ -249,6 +249,7 @@ class UpgradeTreeNode:
 	var unlocked: bool
 	var available: bool
 	var enabled: bool
+	var starting: bool
 	var node: Node
 	var links: Array
 	var pos: Vector2
@@ -266,6 +267,7 @@ class UpgradeTreeNode:
 		unlocked = data.starting
 		available = false # correctly set by recalculate_available later
 		enabled = data.starting
+		starting = data.starting
 		tree = parent_tree
 
 		var minX = 0
@@ -323,4 +325,5 @@ class UpgradeTreeNode:
 			unlocked = true
 			enabled = true
 			instance.purchased = true
-			instance.apply()
+			if not starting:
+				instance.apply()

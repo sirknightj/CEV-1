@@ -173,6 +173,12 @@ static func fix_types(va) -> Dictionary:
 		fixed[type] = va[str_type]
 	return fixed
 
+static func fix_array_types(va) -> Array:
+	var fixed = []
+	for v in va:
+		fixed.append(int(v))
+	return fixed
+
 static func natural_join(arr : Array):
 	if len(arr) == 1:
 		return arr[0]
