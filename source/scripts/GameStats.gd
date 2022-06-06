@@ -24,7 +24,6 @@ var show_sell_yes_refund_message : int # greater than 0 if we should show this w
 var shown_resources : Array # The resources to show. Resources in this array are shown.
 
 var logger : Logger.Log
-var group : int
 var cid : int = 769
 
 """

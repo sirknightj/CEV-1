@@ -23,7 +23,7 @@ func get_base_effect(resource : int) -> float:
 		return 0.0
 	var turn = GameStats.turn
 	
-	if GameStats.group == 1:
+	if GameStats.logger.get_group(0):
 		if peopleOnTurn.has(turn):
 			return peopleOnTurn[turn]
 
