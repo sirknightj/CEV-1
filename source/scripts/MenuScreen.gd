@@ -27,7 +27,7 @@ func _on_SettingsButton_pressed() -> void:
 	show_original_button()
 
 func show_original_button() -> void:
-	get_parent().get_parent().get_node("SettingsButton").show()
+	get_parent().get_parent().get_node_or_null("SettingsButton").show()
 
 func _unhandled_input(event : InputEvent):
 	if event.is_action_pressed("ui_cancel") and is_visible_in_tree():

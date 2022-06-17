@@ -48,7 +48,7 @@ func add_nodes() -> void:
 
 		item.position = upgrade.pos
 		add_child(item)
-		var label = item.get_node("NameLabel")
+		var label = item.get_node_or_null("NameLabel")
 		label.text = upgrade.name
 
 		item.item_name = upgrade.id
@@ -70,13 +70,13 @@ func set_node_styles(reset_animations: bool = true) -> void:
 			type = "unlocked"
 		elif upgrade.available:
 			type = "available"
-		item.get_node("BackgroundRect").color = COLORS[type][1]
-		item.get_node("BorderRect").color = COLORS[type][1]
+		item.get_node_or_null("BackgroundRect").color = COLORS[type][1]
+		item.get_node_or_null("BorderRect").color = COLORS[type][1]
 		item.set_locked(type == "locked")
 
 		if upgrade.id == selected_upgrade || (selected_upgrade == -1 && upgrade.id == hovered_upgrade):
-			item.get_node("BackgroundRect").color = COLORS[type][0]
-			item.get_node("BorderRect").color = COLORS[type][0].lightened(0.45)
+			item.get_node_or_null("BackgroundRect").color = COLORS[type][0]
+			item.get_node_or_null("BorderRect").color = COLORS[type][0].lightened(0.45)
 		
 		if reset_animations:
 			item.set_gradient_animation(not upgrade.unlocked and upgrade.available and upgrade.can_afford())
@@ -139,6 +139,7 @@ func set_link_colors() -> void:
 	if name != -1:
 		var links = tree_dict.get(name).get_all_pre_links()
 		for line in links:
+			assert(line.has_meta("pre"))
 			var pre = tree_dict.get(line.get_meta('pre'))
 			var type = "locked_highlight"
 			if pre.unlocked:
@@ -159,7 +160,7 @@ func _on_item_hover_on(name: int) -> void:
 	set_node_styles(false)
 
 	var item = GameStats.upgrade_tree.tree_dict.get(name)
-	var border_rect = item.node.get_node("BorderRect")
+	var border_rect = item.node.get_node_or_null("BorderRect")
 	if item.unlocked or item.available:
 		border_rect.mouse_default_cursor_shape = Input.CURSOR_POINTING_HAND
 	else:
@@ -205,7 +206,7 @@ func _on_BuyButton_gui_input(event: InputEvent) -> void:
 	var upgrade : GameObjs.UpgradeTreeNode = GameStats.upgrade_tree.tree_dict.get(selected_upgrade)
 	
 	upgrade.unlock()
-	get_node("/root/MainGameScene/AudioUnlock").play()
+	get_node_or_null("/root/MainGameScene/AudioUnlock").play()
 	GameStats.logger.log_level_action(Logger.Actions.UpgradeBought, {
 		"upgrade": upgrade.name
 	})
@@ -227,7 +228,7 @@ func _on_Back_gui_input(event):
 		clear_sidebar()
 		self.hide()
 		if GameStats.scroll_down_queued:
-			GameStats.game.get_node("UILayer/Sidebar").scroll_down()
+			GameStats.game.get_node_or_null("UILayer/Sidebar").scroll_down()
 			GameStats.scroll_down_queued = false
 
 func _unhandled_input(event : InputEvent):

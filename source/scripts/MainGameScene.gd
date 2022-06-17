@@ -24,13 +24,13 @@ onready var building_scene = preload("res://scenes/Building.tscn")
 func _ready():
 	GameStats.game = self
 	GameStats.logger.start_new_session(GameStats.cid)
-	sidebar = get_node("UILayer/Sidebar")
-	graph = get_node("UILayer/Sidebar/Graph")
-	autosave = get_node("UpperLayer/Autosave")
+	sidebar = get_node_or_null("UILayer/Sidebar")
+	graph = get_node_or_null("UILayer/Sidebar/Graph")
+	autosave = get_node_or_null("UpperLayer/Autosave")
 	var inst : Node = preload("res://scenes/TechTreeSceneB.tscn").instance()
 	inst.name = "TechTree"
 	inst.hide()
-	sidebar.get_node("CanvasLayer").add_child(inst)
+	sidebar.get_node_or_null("CanvasLayer").add_child(inst)
 	for building in get_tree().get_nodes_in_group("buildings"):
 		_on_SceneTree_node_added(building)
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
@@ -41,7 +41,7 @@ func _ready():
 		$UILayer/Sidebar/SettingsButton.hide()
 	else:
 		sidebar.start_game()
-	sidebar.get_node("CanvasLayer/TechTree").add_nodes()
+	sidebar.get_node_or_null("CanvasLayer/TechTree").add_nodes()
 	get_tree().call_group("preparable", "prepare")
 	show_correct_text()
 	update_resources()
@@ -84,7 +84,7 @@ func on_next_turn():
 	if GameStats.turn == 6 or GameStats.turn == 9 or GameStats.turn == 11:
 		$UILayer/Sidebar.scroll_down()
 	
-	get_node("/root/MainGameScene/AudioNextTurn").play()
+	get_node_or_null("/root/MainGameScene/AudioNextTurn").play()
 
 var num_died : int = 0
 var death_reasons : Array = []
@@ -191,7 +191,7 @@ func show_correct_text():
 	var old = $UpperLayer/TutorialText.bbcode_text
 	$UpperLayer/TutorialText.bbcode_text = text
 	if text != old:
-		get_node("/root/MainGameScene/AudioAlert").play()
+		get_node_or_null("/root/MainGameScene/AudioAlert").play()
 
 """
 	Place the building at the grid square (_x, _y).

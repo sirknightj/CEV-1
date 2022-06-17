@@ -60,8 +60,8 @@ func update_bar(is_next_turn_update: bool, production: float, consumption: float
 	
 	var max_bar_height = MAX_BAR_HEIGHT + (0 if (next_reserve > 0 and reserve > 0) else -20)
 
-	var top_value_old = get_meta("top_value")
-	var bottom_value_old = get_meta("bottom_value")
+	var top_value_old = get_meta("top_value") if has_meta("top_value") else 1
+	var bottom_value_old = get_meta("bottom_value") if has_meta("bottom_value") else 0
 
 	var top_value = max(reserve, next_reserve)
 	var bottom_value = min(min(reserve, next_reserve), 0)

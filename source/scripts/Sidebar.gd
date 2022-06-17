@@ -75,8 +75,8 @@ func cheat():
 	show_all()
 
 func check_buttons() -> void:
-	var old = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text
-	var current = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.strip_edges()
+	var old = get_parent().get_parent().get_node_or_null("UpperLayer/TutorialText").bbcode_text
+	var current = get_parent().get_parent().get_node_or_null("UpperLayer/TutorialText").bbcode_text.strip_edges()
 	var not_enough_energy_message : String = "You don't have enough [color=%s]energy[/color] to keep your buildings running! You'll need to sell some buildings or generate more [color=%s]energy[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY), GameData.get_resource_color_as_hex(GameData.ResourceType.ELECTRICITY)]
 	var not_enough_metal_message : String = "You don't have enough [color=%s]metal[/color] to keep your buildings running! You'll need to sell some buildings or generate more [color=%s]metal[/color]!" % [GameData.get_resource_color_as_hex(GameData.ResourceType.METAL), GameData.get_resource_color_as_hex(GameData.ResourceType.METAL)]
 	var ppl = GameStats.resources.get_reserve(GameData.ResourceType.PEOPLE)
@@ -94,8 +94,8 @@ func check_buttons() -> void:
 		current = current.strip_edges().trim_suffix(not_enough_metal_message).strip_edges()
 		toggle_next_month_button(true)
 	if old != current:
-		get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = current.strip_edges()
-		get_node("/root/MainGameScene/AudioAlert").play()
+		get_parent().get_parent().get_node_or_null("UpperLayer/TutorialText").bbcode_text = current.strip_edges()
+		get_node_or_null("/root/MainGameScene/AudioAlert").play()
 
 func repopulate_sidebar():
 	populate_sidebar_correctly()
@@ -156,7 +156,7 @@ func show_resources() -> void:
 func toggle_visibility(resource : int, hide : bool) -> void:
 	# Graph handles food, water, oxygen, metal, and energy
 	if $Graph.RESOURCE_TYPE_TO_STRING.has(resource):
-		var node = get_node("Graph/HBoxContainer/" + $Graph.RESOURCE_TYPE_TO_STRING[resource])
+		var node = get_node_or_null("Graph/HBoxContainer/" + $Graph.RESOURCE_TYPE_TO_STRING[resource])
 		node.visible = hide
 	elif resource == GameData.ResourceType.SCIENCE:
 		$Graph/Label.visible = hide
@@ -177,7 +177,7 @@ func populate_sidebar(buildings : Dictionary) -> void:
 	
 	# Remove any entries that are not in buildings
 	for child in entry_container.get_children():
-		if not child.get_meta("building_id") in buildings.keys():
+		if not child.has_meta("building_id") or not child.get_meta("building_id") in buildings.keys():
 			entry_container.remove_child(child)
 	
 	var scroll_offset = $ScrollContainer.get_v_scrollbar().value
@@ -196,9 +196,9 @@ func populate_sidebar(buildings : Dictionary) -> void:
 			entry.set_meta("building_id", building)
 			entry_container.add_child(entry)
 		else:
-			entry = entry_container.get_node(entry_name)
+			entry = entry_container.get_node_or_null(entry_name)
 
-		entry.get_node("BuildingName").text = GameStats.buildings_dict[building].name
+		entry.get_node_or_null("BuildingName").text = GameStats.buildings_dict[building].name
 
 		# building icon
 		var building_exists = entry.get_child_count() >= 4
@@ -226,8 +226,8 @@ func populate_sidebar(buildings : Dictionary) -> void:
 		# set cost and effect texts
 		var cost_text = _building.get_costs_as_bbcode()
 		var effects_text = _building.get_effects_as_bbcode()
-		entry.get_node("CostContainer/Text").bbcode_text = cost_text
-		entry.get_node("EffectsContainer/Text").bbcode_text = effects_text
+		entry.get_node_or_null("CostContainer/Text").bbcode_text = cost_text
+		entry.get_node_or_null("EffectsContainer/Text").bbcode_text = effects_text
 
 """
 	Returns true if the building is available
@@ -313,11 +313,11 @@ func _on_Next_Month_gui_input(event):
 						required_placements += str(quantity) + " more "
 					required_placements += GameStats.buildings_dict[building].format_str(quantity) + ", "
 				required_placements.erase(required_placements.length() - 2, 2)
-				get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = required_placements + "."
-				get_node("/root/MainGameScene/AudioAlert").play()
+				get_parent().get_parent().get_node_or_null("UpperLayer/TutorialText").bbcode_text = required_placements + "."
+				get_node_or_null("/root/MainGameScene/AudioAlert").play()
 			elif GameStats.turn == 10:
-				get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = "Please check out the [color=%s]Upgrades[/color] menu!" % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)
-				get_node("/root/MainGameScene/AudioAlert").play()
+				get_parent().get_parent().get_node_or_null("UpperLayer/TutorialText").bbcode_text = "Please check out the [color=%s]Upgrades[/color] menu!" % GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)
+				get_node_or_null("/root/MainGameScene/AudioAlert").play()
 		else:
 			game.on_next_turn()
 			$Graph.reset_for_next_turn()
@@ -331,7 +331,7 @@ func _on_Upgrades_gui_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT):
 		GameStats.logger.log_level_action(Logger.Actions.UpgradeMenuClicked)
 		if GameStats.turn == 10:
-			get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.trim_prefix("Your city has generated enough [color=%s]science[/color] for an upgrade! Spend [color=%s]science[/color] to unlock new buildings and increase building efficiency." % [GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE), GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)]).strip_edges()
+			get_parent().get_parent().get_node_or_null("UpperLayer/TutorialText").bbcode_text = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text.trim_prefix("Your city has generated enough [color=%s]science[/color] for an upgrade! Spend [color=%s]science[/color] to unlock new buildings and increase building efficiency." % [GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE), GameData.get_resource_color_as_hex(GameData.ResourceType.SCIENCE)]).strip_edges()
 			# get_node("/root/MainGameScene/AudioAlert").play()
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
@@ -345,7 +345,7 @@ func _on_SettingsButton_pressed():
 	$CanvasLayer/MenuScreen.show()
 
 func scroll_down():
-	var tween : Tween = get_node("Tween")
+	var tween : Tween = get_node_or_null("Tween")
 	var current : float = $ScrollContainer.get_v_scrollbar().value
 	var target : float = $ScrollContainer.get_v_scrollbar().max_value
 	if not tween.is_active() and current != target:
@@ -367,11 +367,11 @@ func on_ending() -> void:
 	$CanvasLayer/EndScreen.connect("on_close_clicked", self, "on_endingscreen_close")
 
 	var audio = "AudioWin" if GameStats.win_status else "AudioLose"
-	get_node("/root/MainGameScene/" + audio).play()
+	get_node_or_null("/root/MainGameScene/" + audio).play()
 
 func on_endingscreen_close() -> void:
 	GameStats.game.update_all()
-	get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text = ""
+	get_parent().get_parent().get_node_or_null("UpperLayer/TutorialText").bbcode_text = ""
 	$CanvasLayer/EndScreen.hide()
 
 """
