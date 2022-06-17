@@ -38,7 +38,9 @@ class Log:
 	var uid : String
 	
 	func _init() -> void:
-		self.enabled = OS.has_feature('JavaScript')
+		# self.enabled = OS.has_feature('JavaScript')
+		self.enabled = false
+		return
 		if self.enabled:
 			print("Has JavaScript support, enabling logging")
 		else:
