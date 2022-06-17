@@ -335,8 +335,7 @@ func _on_Upgrades_gui_input(event):
 			# get_node("/root/MainGameScene/AudioAlert").play()
 			toggle_next_month_button(true)
 		if not ignore_upgrades_button:
-			$Upgrades/AnimationPlayer.stop()
-			$Upgrades/AnimationPlayer.seek(0, true)
+			$Upgrades/AnimationPlayer.stop(true)
 			$CanvasLayer/TechTree.show()
 
 func _on_SettingsButton_pressed():
