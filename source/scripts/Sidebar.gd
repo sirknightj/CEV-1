@@ -35,7 +35,6 @@ func start_game():
 	update_turn_display()
 
 func show_all():
-	return
 	GameStats.shown_resources = GameData.ResourceType.values()
 	show_resources()
 	toggle_next_month_button(true)
@@ -44,8 +43,9 @@ func show_all():
 	GameStats.restrictions.clear()
 	GameStats.selling_enabled = true
 	GameStats.buildings_unlocked.append_array([GameData.BuildingType.WATER1, GameData.BuildingType.FOOD1, GameData.BuildingType.OXY1, GameData.BuildingType.METAL1, GameData.BuildingType.ELEC1, GameData.BuildingType.SCI1])
-	populate_sidebar_correctly()
 	update_turn_display()
+	$Graph.reset_for_next_turn()
+	populate_sidebar_correctly()
 
 func cheat():
 	var cheat_alot = true
@@ -71,9 +71,8 @@ func cheat():
 			GameData.ResourceType.SCIENCE: 5000.0,
 			GameData.ResourceType.PEOPLE: 1.0
 		})
-	GameStats.game.on_next_turn()
+	game.on_next_turn()
 	show_all()
-	GameStats.game.on_next_turn()
 
 func check_buttons() -> void:
 	var old = get_parent().get_parent().get_node("UpperLayer/TutorialText").bbcode_text
@@ -342,6 +341,7 @@ func _on_Upgrades_gui_input(event):
 
 func _on_SettingsButton_pressed():
 	# TODO - Log this
+	$SettingsButton.hide()
 	$CanvasLayer/MenuScreen.show()
 
 func scroll_down():

@@ -23,8 +23,13 @@ func _on_NewGame_gui_input(event):
 func _on_SettingsButton_pressed() -> void:
 	# TODO - Log this
 	.hide()
+	show_original_button()
+
+func show_original_button() -> void:
+	get_parent().get_parent().get_node("SettingsButton").show()
 
 func _unhandled_input(event : InputEvent):
 	if event.is_action_pressed("ui_cancel") and is_visible_in_tree():
 		get_tree().set_input_as_handled()
 		.hide()
+		show_original_button()

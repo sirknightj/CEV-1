@@ -98,7 +98,10 @@ func set_sidebar(name: int) -> void:
 	$SelectedUpgrade/Name.text = upgrade.name
 	
 	if upgrade.unlocked:
-		$SelectedUpgrade/Cost.text = "Unlocked for %s science" % upgrade.cost[GameData.ResourceType.SCIENCE]
+		if upgrade.cost[GameData.ResourceType.SCIENCE] == 0:
+			$SelectedUpgrade/Cost.text = "Unlocked for free"
+		else:
+			$SelectedUpgrade/Cost.text = "Unlocked for %s science" % upgrade.cost[GameData.ResourceType.SCIENCE]
 	else:
 		$SelectedUpgrade/Cost.text = "Cost: %s science\n" % upgrade.cost[GameData.ResourceType.SCIENCE]
 	if not upgrade.unlocked and upgrade.available and upgrade.can_afford():
