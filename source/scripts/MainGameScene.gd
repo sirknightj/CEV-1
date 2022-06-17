@@ -38,6 +38,7 @@ func _ready():
 	GameStats.resources.set_callback(funcref(self, "update_all"))
 	if GameStats.load_game():
 		$UILayer/Sidebar/CanvasLayer/MenuScreen.show()
+		$UILayer/Sidebar/SettingsButton.hide()
 	else:
 		sidebar.start_game()
 	sidebar.get_node("CanvasLayer/TechTree").add_nodes()
