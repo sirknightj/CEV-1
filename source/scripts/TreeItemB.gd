@@ -18,7 +18,7 @@ func _ready() -> void:
 
 func set_always_animate(val: bool) -> void:
 	always_animate = val
-	$GradientRect.get_material().set_shader_param("is_rainbow", val)
+	$GradientRect.get_material().set_shader_param("is_rainbow", 1 if val else 0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
