@@ -1,18 +1,20 @@
-import logo from './logo.svg';
 import './App.css';
+import { BuildingType } from './common/helpers';
+import Grid from './features/grid/Grid';
+import Sidebar from './features/sidebar/Sidebar';
 
 function App() {
+	const buildings: BuildingType[] = [
+		BuildingType.CENTER,
+		BuildingType.FOOD1,
+		BuildingType.WATER1,
+		BuildingType.WATER1,
+	];
+
 	return (
 		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.tsx</code> and save to reload.
-				</p>
-				<a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-					Learn React
-				</a>
-			</header>
+			<Grid size={15} buildings={buildings} />
+			<Sidebar />
 		</div>
 	);
 }

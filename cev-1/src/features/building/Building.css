@@ -1,0 +1,4 @@
+.Building img {
+	width: calc(50px * 3);
+	image-rendering: pixelated;
+}

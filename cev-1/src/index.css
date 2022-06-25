@@ -1,11 +1,39 @@
-body {
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
 	margin: 0;
+	padding: 0;
+}
+
+/*
+ * When changing these, make sure the contrast ratio with the background (#1A1A1A) * is at least 5:1. Use https://webaim.org/resources/contrastchecker/
+ * Also be sure to change the building images to match their main resource color
+ */
+:root {
+	--color-water: #0091e6;
+	--color-food: #00b050;
+	--color-oxygen: #ff3300;
+	--color-energy: #ffcc00;
+	--color-metal: #ff9933;
+	--color-science: #cc66ff;
+	--color-people: #8d8db0;
+}
+
+body {
+	color: #fafafa;
+	font-size: 18px;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
 		'Droid Sans', 'Helvetica Neue', sans-serif;
+	background: #1a1a1a;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 
-code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+button,
+input {
+	color: inherit;
+	font: inherit;
+	background: rgba(0, 0, 0, 0.5);
+	border: none;
 }

@@ -1,0 +1,30 @@
+.Grid {
+	position: relative;
+	margin: 16px;
+}
+
+.Grid .grid-cells {
+	display: grid;
+	grid-template-columns: repeat(15, 50px);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-right: 0;
+	border-bottom: 0;
+}
+
+.Cell {
+	width: 50px;
+	height: 50px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-top: 0;
+	border-left: 0;
+}
+
+.Grid .buildings {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.Grid .Building {
+	position: absolute;
+}

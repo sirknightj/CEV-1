@@ -1,0 +1,27 @@
+.Graph {
+	display: grid;
+	grid-template-columns: repeat(5, auto);
+	width: 100%;
+	background: rgba(0, 0, 0, 0.2);
+}
+
+.GraphBar {
+	margin: 16px;
+	padding: 16px;
+}
+
+.GraphBar.Water {
+	background: var(--color-water);
+}
+.GraphBar.Food {
+	background: var(--color-food);
+}
+.GraphBar.Oxygen {
+	background: var(--color-oxygen);
+}
+.GraphBar.Energy {
+	background: var(--color-energy);
+}
+.GraphBar.Metal {
+	background: var(--color-metal);
+}
