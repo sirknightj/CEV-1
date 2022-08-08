@@ -60,8 +60,28 @@ func set_condition(is_win: bool) -> void:
 func _get_gen(type: int) -> String:
 	return str(int(floor(GameStats.resources.resources_generated[type])))
 
+func formatted_time() -> String:
+	GameStats.update_time()
+	var milliseconds = GameStats.game_time_millis
+	var seconds = milliseconds / 1000
+	var minutes = seconds / 60
+	var hours = minutes / 60
+	seconds %= 60
+	minutes %= 60
+	
+	var vals : PoolStringArray = PoolStringArray()
+	if hours:
+		vals.append(str(hours) + "h")
+	if minutes:
+		vals.append(str(minutes) + "m")
+	if seconds:
+		vals.append(str(seconds) + "s")
+
+	return vals.join(" ")
+
 """
 Months
+Time elapsed
 Colonists born
 Deaths
 Upgrades purchased
@@ -74,6 +94,7 @@ Total metal
 Total science
 """
 func _set_stats(is_win: bool) -> void:
+
 	var months = GameStats.turn
 	var deaths = GameStats.dead
 	var upgrades_purchased = GameStats.upgrade_tree.get_num_bought()
@@ -83,6 +104,7 @@ func _set_stats(is_win: bool) -> void:
 		buildings_placed += n
 	
 	$Container/StatsRight.text = str(months) + "\n" + \
+	formatted_time() + "\n" + \
 	_get_gen(GameData.ResourceType.PEOPLE) + "\n" + \
 	str(deaths) + "\n" + \
 	str(upgrades_purchased) + "\n" + \

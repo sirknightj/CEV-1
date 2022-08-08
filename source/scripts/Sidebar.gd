@@ -342,6 +342,7 @@ func _on_SettingsButton_pressed():
 	# TODO - Log this
 	$SettingsButton.hide()
 	$CanvasLayer/MenuScreen.show()
+	GameStats.update_time()
 
 func scroll_down():
 	var tween : Tween = get_node_or_null("Tween")

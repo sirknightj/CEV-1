@@ -213,6 +213,12 @@ var grid_size : int # the number of squares the grid is at the moment
 var turn : int # The current month
 var dead : int # The number of dead colonists
 
+var last_time_millis : int # The unix timestamp, used to calculate the elapsed
+						   # time by subtracting this from the current time
+
+var game_time_millis : int # The total time the player has spent in this playthrough
+						   # excluding time spent in the pause/menu screen 
+
 var _initial_reserves = {
 	GameData.ResourceType.FOOD: 140.0,
 	GameData.ResourceType.OXYGEN: 450.0,
@@ -298,6 +304,8 @@ func reset_game(is_restart : bool):
 	scroll_down_queued = false
 	upgrade_tree = GameObjs.UpgradeTree.new()
 	win_status = false
+	game_time_millis = 0
+	last_time_millis = OS.get_ticks_msec()
 	if is_restart:
 		delete_save()
 		get_tree().reload_current_scene()
@@ -307,11 +315,12 @@ func reset_game(is_restart : bool):
 """
 func _input(event) -> void:
 	# Basically, only print this once per F9
-	if Input.is_key_pressed(KEY_F9) and not event.is_echo():
+	if event.is_action_pressed("debug_print"):
 		print("----------")
-		print("win_status " + str(win_status))
+		print("win_status: " + str(win_status))
 		print("just_won: " + str(just_won))
 		print("turn: " + str(turn))
+		print("game_time_millis: " + str(game_time_millis))
 		print("----------")
 
 """
@@ -358,11 +367,27 @@ func deserialize_buildings(buildings):
 const SERIALIZATION_VERSION = 3
 var SAVE_FILE = "user://cev-savegame-v%d.save" % [SERIALIZATION_VERSION]
 
-func delete_save():
+func delete_save() -> void:
 	var dir = Directory.new()
 	dir.remove(SAVE_FILE)
 
-func save_game():
+"""
+	Updates the time spent in the game
+"""
+func update_time() -> void:
+	var current_time : int = OS.get_ticks_msec()
+	game_time_millis += (current_time - last_time_millis)
+	last_time_millis = current_time
+
+"""
+	Sets last_time to now, basically throwing out the time
+	between the last time update and now
+"""
+func update_time_dont_count() -> void:
+	last_time_millis = OS.get_ticks_msec()
+
+func save_game() -> void:
+	update_time()
 	var save_game = File.new()
 	save_game.open(SAVE_FILE, File.WRITE)
 	save_game.store_line(JSON.print(serialize()))
@@ -400,7 +425,8 @@ func serialize():
 		"upgrades": upgrade_tree.serialize(),
 		"buildings": serialize_buildings(),
 		"grid_size": grid_size,
-		"just_won": just_won
+		"just_won": just_won,
+		"game_time_millis": game_time_millis
 	}
 
 func deserialize(data):
@@ -416,6 +442,7 @@ func deserialize(data):
 	deserialize_buildings(data.buildings)
 	upgrade_tree.deserialize(data.upgrades)
 	just_won = data.just_won
+	game_time_millis = data.game_time_millis
 	if not is_playing and dead >= colonist_death_threshold:
 		win_status = false
 		show_win_lose_screen(false)

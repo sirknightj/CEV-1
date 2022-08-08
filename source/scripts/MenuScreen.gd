@@ -10,6 +10,7 @@ func _on_Continue_gui_input(event):
 		# TODO: Log?
 		self.hide()
 		show_original_button()
+		GameStats.update_time_dont_count()
 
 func _on_NewGame_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT):
@@ -25,6 +26,7 @@ func _on_SettingsButton_pressed() -> void:
 	# TODO - Log this
 	.hide()
 	show_original_button()
+	GameStats.update_time_dont_count()
 
 func show_original_button() -> void:
 	get_parent().get_parent().get_node_or_null("SettingsButton").show()
@@ -34,3 +36,4 @@ func _unhandled_input(event : InputEvent):
 		get_tree().set_input_as_handled()
 		.hide()
 		show_original_button()
+		GameStats.update_time_dont_count()

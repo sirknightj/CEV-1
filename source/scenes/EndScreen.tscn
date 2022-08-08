@@ -99,12 +99,13 @@ autowrap = true
 
 [node name="StatsLeft" type="Label" parent="Container"]
 margin_left = 35.0
-margin_top = 456.0
+margin_top = 444.0
 margin_right = 205.0
-margin_bottom = 695.0
+margin_bottom = 705.0
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 4 )
 text = "Months
+Time elapsed
 Colonist births
 Colonist deaths
 Upgrades purchased
@@ -119,12 +120,13 @@ align = 2
 
 [node name="StatsRight" type="Label" parent="Container"]
 margin_left = 222.0
-margin_top = 456.0
+margin_top = 444.0
 margin_right = 314.0
-margin_bottom = 695.0
+margin_bottom = 683.0
 theme = ExtResource( 2 )
 custom_fonts/font = SubResource( 4 )
 text = "123456
+123456
 123456
 123456
 123456
@@ -138,9 +140,9 @@ text = "123456
 
 [node name="RankingContainer" type="VBoxContainer" parent="Container"]
 margin_left = 320.0
-margin_top = 456.0
+margin_top = 444.0
 margin_right = 530.0
-margin_bottom = 701.0
+margin_bottom = 689.0
 
 [node name="Title" type="Label" parent="Container/RankingContainer"]
 margin_right = 210.0
