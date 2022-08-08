@@ -297,9 +297,22 @@ func reset_game(is_restart : bool):
 	selling_enabled = false
 	scroll_down_queued = false
 	upgrade_tree = GameObjs.UpgradeTree.new()
+	win_status = false
 	if is_restart:
 		delete_save()
 		get_tree().reload_current_scene()
+
+"""
+	Prints the game state to the console for debugging purposes
+"""
+func _input(event) -> void:
+	# Basically, only print this once per F9
+	if Input.is_key_pressed(KEY_F9) and not event.is_echo():
+		print("----------")
+		print("win_status " + str(win_status))
+		print("just_won: " + str(just_won))
+		print("turn: " + str(turn))
+		print("----------")
 
 """
 	Show the win/lose screen
@@ -342,7 +355,7 @@ func deserialize_buildings(buildings):
 			buildings_owned[type] = 0
 		buildings_owned[type] += 1
 
-const SERIALIZATION_VERSION = 2
+const SERIALIZATION_VERSION = 3
 var SAVE_FILE = "user://cev-savegame-v%d.save" % [SERIALIZATION_VERSION]
 
 func delete_save():
@@ -387,8 +400,7 @@ func serialize():
 		"upgrades": upgrade_tree.serialize(),
 		"buildings": serialize_buildings(),
 		"grid_size": grid_size,
-		"group0": GameStats.logger.get_group(0),
-		"group1": GameStats.logger.get_group(1)
+		"just_won": just_won
 	}
 
 func deserialize(data):
@@ -403,6 +415,7 @@ func deserialize(data):
 	resources.deserialize(data.resources)
 	deserialize_buildings(data.buildings)
 	upgrade_tree.deserialize(data.upgrades)
+	just_won = data.just_won
 	if not is_playing and dead >= colonist_death_threshold:
 		win_status = false
 		show_win_lose_screen(false)
