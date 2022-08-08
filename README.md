@@ -6,13 +6,12 @@ You can try out the game on [itch.io](https://sirknightj.itch.io/cev-1) or on [c
 
 ### Developer Contact
 
-* Vishal - vishald [at] cs [dot] washington [dot] edu
-* Jeremy - jeremyg1 [at] cs [dot] washington [dot] edu
-* Joshua - froast [at] cs [dot] washington [dot] edu
+* Send an email to: cev-1-devs [at] sirknightj [dot] com
+* This mailing list reaches all three developers of CEV-1
 
 # Developing CEV-1
 
-TODO: Write CEV-1's behind the scenes
+Check out [this blog post](https://www.sirknightj.com/blog/2022/08/07/cev-1-development/)!
 
 ## Prerequisites
 
